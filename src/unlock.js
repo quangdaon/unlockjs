@@ -1,4 +1,12 @@
-(function () {
+(function (root, factory) {
+	if (typeof define === 'function' && define.amd) {
+		define(['Unlock'], factory);
+	} else if (typeof module === 'object' && module.exports) {
+		module.exports = factory();
+	} else {
+		root.Unlock = factory();
+	}
+})(typeof window !== 'undefined' ? window : this, function () {
 
 	let keyMap = {
 		tab: 9,
@@ -35,9 +43,5 @@
 		/* end-dev */
 	}
 
-	if (!window.Unlock) {
-		window.Unlock = Unlock;
-	} else {
-		throw new Error('Unable to instantiate Unlock.js');
-	}
-})();
+	return Unlock;
+});

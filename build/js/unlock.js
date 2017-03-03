@@ -1,6 +1,16 @@
 'use strict';
 
-(function () {
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+(function (root, factory) {
+	if (typeof define === 'function' && define.amd) {
+		define(['Unlock'], factory);
+	} else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
+		module.exports = factory();
+	} else {
+		root.Unlock = factory();
+	}
+})(typeof window !== 'undefined' ? window : undefined, function () {
 
 	var keyMap = {
 		tab: 9,
@@ -36,9 +46,5 @@
 		/* end-dev */
 	}
 
-	if (!window.Unlock) {
-		window.Unlock = Unlock;
-	} else {
-		throw new Error('Unable to instantiate Unlock.js');
-	}
-})();
+	return Unlock;
+});
