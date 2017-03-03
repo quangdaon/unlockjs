@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>UnlockJS Demo</title>
+</head>
+<body>
+
+	<script type="text/javascript" src="/js/unlock.min.js"></script>
+
+	<script type="text/javascript">
+		(function() {
+			if(typeof Unlock === 'undefined') {
+				document.body.textContent = 'Please run this though Gulp.';
+			} else {
+				var cheat = new Unlock;
+			}
+		})();
+	</script>
+</body>
+</html>
