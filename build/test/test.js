@@ -2,7 +2,7 @@
 	'use strict';
 	var unlocker = new Unlock;
 
-	Object.assign(window, unlocker._data)
+	var data = unlocker._data
 
 	describe('Unlock', function () {
 		it('is defined', function () {
@@ -24,7 +24,7 @@
 	});
 
 	describe('KeyMap', function () {
-		var km = keyMap;
+		var km = data.keyMap;
 
 		it('is an object', function () {
 			expect(typeof km).toBe('object');
@@ -53,6 +53,8 @@
 
 	/*** Note: Doesn't care about nested arrays ***/
 	describe('arraysMatch Function', function () {
+		var arraysMatch = data.arraysMatch;
+
 		it('matches [] and []', function () {
 			expect(arraysMatch([], [])).toBe(true);
 		});
@@ -115,7 +117,7 @@
 		});
 
 		it('is enabled by default', function () {
-			expect(unlocker.addCheat(cheatOptions)).not.toEqual(jasmine.objectContaining({
+			expect(unlocker.addCheat(cheatOptions)).toEqual(jasmine.objectContaining({
 				enabled: true
 			}));
 		});
@@ -190,6 +192,17 @@
 
 		it('is not triggered automatically', function () {
 			expect(activated).toBe(false);
+		});
+
+		it('is returned upon creation', function () {
+			cheatCode.enabled = false;
+			unlocker.trigger('cheat');
+
+			expect(activated).toBe(false);
+		});
+
+		it('can be retrieved using .find()', function () {
+			expect(unlocker.find('cheat')).toEqual(cheatCode);
 		});
 
 		it('triggers on cheat code match', function () {

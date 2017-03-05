@@ -1,8 +1,8 @@
 # UnlockJS
 
-Use keyboard keys to their fullest potential! UnlockJS is a JavaScript library to activate cheat codes and keyboard shortcuts\* in your project.
+UnlockJS is a JavaScript library to activate cheat codes and keyboard shortcuts\* in your project.
 
-\* Keyboard shortcuts are coming soon.
+\*Keyboard shortcuts are coming soon.
 
 ## Installation
 
@@ -30,7 +30,7 @@ By default, UnlockJS creates a global function in the browser, but it also suppo
 
 To get started, initialize a new Unlock object using:
 
-```
+```javascript
 var unlocker = new Unlock;
 var konamiCode = ['up', 'up', 'down', 'down', 'left', 'right', 'left', 'right', 'b', 'a', 'enter'];
 
@@ -41,7 +41,7 @@ unlocker.addCheat('konami', konamiCode, function () {
 
 The `.addCheat` method accepts three parameters: a name, code array, and callback function. The name is just an identifier and has no use other than to find the cheat later on, but it should be descriptive enough for other developers to identify. Currently, UnlockJS uses the standard American keyboard for mapping. Therefore, it recognizes keys such as 'ctrl' and 'alt', but not something like 'cmd' or 'option'. There are two ways of passing in the parameters. The first, as seen above, as by passing them in as normal. This accepts them in any order. Alternatively, they can be passed as an object:
 
-```
+```javascript
 unlocker.addCheat({
 	name: 'konami',
 	code: ['up', 'up', 'down', 'down', 'left', 'right', 'left', 'right', 'b', 'a', 'enter'],
@@ -51,11 +51,25 @@ unlocker.addCheat({
 })
 ```
 
+#### Options
+
+UnlockJS currently accepts one global `delay` setting that determines how long the timeout is, in milliseconds, before the keys list is reset. This can be set by passing in an object upon initializing or by using the `.settings()` method. It defaults to 500.
+
+```javascript
+var unlock = new Unlock({
+	delay: 1000
+});
+
+unlocker.settings({
+	delay: 800
+});
+```
+
 #### Enabling/Disabling Cheats
 
 Cheats can be enabled or disabled on command:
 
-```
+```javascript
 unlock.disable() // Disables all cheats.
 unlock.disable('konami') // Specifically disables cheat created above.
 ```

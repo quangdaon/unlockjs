@@ -1,5 +1,7 @@
 'use strict';
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 (function (root, factory) {
@@ -73,7 +75,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 		var _this = this;
 
-		var settings = Object.assign({
+		var settings = _extends({
 			delay: 500
 		}, userSettings);
 
@@ -143,13 +145,17 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			} else {
 				keys.cheatCodes.push(cheatCode);
 			}
-			return this;
+			return cheatCode;
+		};
+
+		this.settings = function (newSettings) {
+			_extends(settings, newSettings);
 		};
 
 		this.find = function (name) {
-			return keys.cheatCodes.find(function (x) {
+			return keys.cheatCodes.filter(function (x) {
 				return x.name === name;
-			});
+			})[0];
 		};
 
 		this.reset = function () {

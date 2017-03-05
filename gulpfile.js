@@ -32,7 +32,8 @@ gulp.task('build', () => {
 		.pipe(eslint('./.eslintrc.json'))
 		.pipe(eslint.format())
 		.pipe(babel({
-			presets: ['es2015']
+			presets: ['es2015'],
+			plugins: ['transform-object-assign']
 		}))
 		.pipe(gulp.dest(dest))
 		.pipe(uglify().on('error', err => {

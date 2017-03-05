@@ -137,10 +137,14 @@
 			} else {
 				keys.cheatCodes.push(cheatCode);
 			}
-			return this;
+			return cheatCode;
 		};
 
-		this.find = name => keys.cheatCodes.find(x => x.name === name);
+		this.settings = newSettings => {
+			Object.assign(settings, newSettings);
+		};
+
+		this.find = name => keys.cheatCodes.filter(x => x.name === name)[0];
 
 		this.reset = () => keys.cheatCodes.length = 0;
 
@@ -188,6 +192,7 @@
 		});
 
 		/* dev: */
+		/*** Passes private stuff for tests. ***/
 		this._data = {
 			keyMap,
 			arraysMatch,
