@@ -1,8 +1,8 @@
 {
   "name": "unlockjs",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Use keyboard keys to their fullest potential!",
-  "main": "./dist/unlock.js",
+  "main": "dist/unlock.js",
   "scripts": {
     "test": "gulp test",
     "build": "gulp build --dist",
@@ -13,6 +13,16 @@
     "type": "git",
     "url": "git+https://github.com/quangdaon/unlockjs.git"
   },
+  "keywords": [
+    "unlock",
+    "cheats",
+    "cheater",
+    "cheat",
+    "codes",
+    "keyboard",
+    "shortcuts",
+    "hotkeys"
+  ],
   "author": "Quangdao Nguyen",
   "license": "MIT",
   "bugs": {
@@ -27,6 +37,7 @@
     "gulp-eslint": "^3.0.1",
     "gulp-rename": "^1.2.2",
     "gulp-strip-code": "^0.1.4",
+    "gulp-strip-comments": "^2.4.5",
     "gulp-uglify": "^2.0.1",
     "yargs": "^6.6.0"
   },

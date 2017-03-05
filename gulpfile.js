@@ -1,6 +1,7 @@
 const gulp = require('gulp');
 const babel = require('gulp-babel');
-const strip = require('gulp-strip-code');
+const stripCode = require('gulp-strip-code');
+const stripComments = require('gulp-strip-comments');
 const rename = require('gulp-rename');
 const uglify = require('gulp-uglify');
 const eslint = require('gulp-eslint');
@@ -25,8 +26,9 @@ gulp.task('build', () => {
 			};
 	}
 
-	return gulp.src('src/unlock.js')
-		.pipe(strip(stripOpt))
+	return gulp.src('./src/unlock.js')
+		.pipe(stripCode(stripOpt))
+		.pipe(stripComments())
 		.pipe(eslint('./.eslintrc.json'))
 		.pipe(eslint.format())
 		.pipe(babel({
@@ -41,10 +43,6 @@ gulp.task('build', () => {
 			suffix: '.min'
 		}))
 		.pipe(gulp.dest(dest));
-});
-
-gulp.task('watch', ['build'], () => {
-	gulp.watch('src/unlock.js', ['build']);
 });
 
 gulp.task('serve', ['build'], () => {
@@ -62,7 +60,7 @@ gulp.task('serve', ['build'], () => {
 		notify: false,
 		ghostMode: false
 	});
-	gulp.watch('src/unlock.js', ['build']).on('change', browserSync.reload);
+	gulp.watch('./src/unlock.js', ['build']).on('change', browserSync.reload);
 });
 
 gulp.task('test', ['build'], () => {
@@ -80,7 +78,9 @@ gulp.task('test', ['build'], () => {
 		notify: false,
 		ghostMode: false
 	});
-	gulp.watch('src/unlock.js', ['build']).on('change', browserSync.reload);
+	gulp.watch('./src/unlock.js', ['build']).on('change', browserSync.reload);
 });
 
 gulp.task('concurrent', ['serve', 'test']);
+
+gulp.task('default', ['concurrent']);
