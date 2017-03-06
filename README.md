@@ -123,9 +123,9 @@ konami.set('callback', function() {
 
 konami.set('code', 'UUDDLRLRba');
 
-konami.set('name', 'konamiCode'); // Throws an error because names cannot be changed.
+// Now, it is triggered without the enter key and runs the `gainLives` function.
 
-// Now, it is triggered without
+konami.set('name', 'konamiCode'); // Throws an error because names cannot be changed.
 ```
 
 _Please note: While it is possible modify these properties directly using `konami.callback = function () { alert('derp') }`, this is highly discouraged as it bypasses any checks and may break the code. This is especially true with the "code" property, as `Cheat.code` is a function that returns the keycode array, and the raw code input is stored privately. This "feature" will be disabled as soon as I figure out how._
