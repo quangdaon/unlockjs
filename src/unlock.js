@@ -60,11 +60,72 @@
 		return true; //If Nothing Doesn't Match, Everything Matches; Therefore, Arrays Match
 	}
 
+	/*** Private single cheat factory ***/
+	function Cheat(data) {
+		/*** Todo: Make properties readonly ***/
+		this.name = data.name;
+		this.callback = data.callback;
+
+		let rawCode = data.code;
+
+		let enabled = (typeof data.enabled !== 'undefined') ? data.enabled : true;
+
+		const stringKeyMap = {
+			U: 'up',
+			D: 'down',
+			L: 'left',
+			R: 'right',
+			X: 'esc',
+			'_': 'tab',
+			'^': 'ctrl',
+			'+': 'shift',
+			'!': 'alt',
+			'#': 'win',
+			'<': 'backspace',
+			'>': 'enter'
+		};
+
+		this.code = () => [...rawCode].map(x => stringKeyMap[x] || x).map(item => {
+			if (!keyMap[item.toLowerCase()]) throw new Error(`Unrecognized key: ${item}`);
+			return keyMap[item.toLowerCase()];
+		});
+
+		this.isEnabled = () => enabled;
+		this.enable = () => enabled = true;
+		this.disable = () => enabled = false;
+		this.toggle = () => enabled = !enabled;
+		this.trigger = () => enabled && this.callback();
+
+		this.set = (set, val) => {
+			switch (set) {
+			case 'name':
+				throw new Error('Name cannot be changed');
+			case 'callback':
+				if (typeof val === 'function') {
+					this.callback = val;
+				} else {
+					throw new Error(`Invalid callback. Expected a function, got ${typeof val}`);
+				}
+				break;
+			case 'code':
+				if (typeof val === 'object' || typeof val === 'string') {
+					rawCode = val;
+				} else {
+					throw new Error(`Invalid callback. Expected an array or string, got ${typeof val}`);
+				}
+				break;
+			default:
+				throw new Error('Invalid Setting');
+			}
+		};
+	}
+
 	function Unlock(userSettings) {
 		const keys = {
 			current: [],
 			timer: null,
-			cheatCodes: []
+			cheatCodes: [],
+			hotKey: []
 		};
 
 		let enabled = true;
@@ -84,7 +145,7 @@
 
 		function checkKeys() {
 			for (let i = keys.cheatCodes.length - 1; i >= 0; i--) {
-				if (arraysMatch(keys.current, keys.cheatCodes[i].code)) {
+				if (arraysMatch(keys.current, keys.cheatCodes[i].code())) {
 					_this.trigger(keys.cheatCodes[i].name);
 					clrKeys();
 				}
@@ -124,44 +185,19 @@
 				}
 			}
 
-			cheatCode.enabled = (typeof (cheatCode.enabled) === undefined) ? cheatCode.enabled : true;
-
-			if(typeof cheatCode.code === 'string') {
-				const stringKeyMap = {
-					U: 'up',
-					D: 'down',
-					L: 'left',
-					R: 'right',
-					X: 'esc',
-					'_': 'tab',
-					'^': 'ctrl',
-					'+': 'shift',
-					'!': 'alt',
-					'#': 'win',
-					'<': 'backspace',
-					'>': 'enter'
-				};
-
-				cheatCode.code = [...cheatCode.code].map(x => stringKeyMap[x] || x);
-			}
-
-			cheatCode.code = cheatCode.code.map(item => {
-				if(!keyMap[item.toLowerCase()]) throw new Error(`Unrecognized key: ${item}`);
-				return keyMap[item.toLowerCase()];
-			});
-
 			if (this.find(cheatCode.name)) {
 				throw new Error(`Cheat already exists with name ${cheatCode.name}`);
-			} else if (!cheatCode.code || typeof (cheatCode.code) !== 'object') {
+			} else if (!cheatCode.code || typeof (cheatCode.code) !== 'object' && typeof (cheatCode.code) !== 'string') {
 				throw new Error('Missing or invalid "code" property');
 			} else if (!cheatCode.callback || typeof (cheatCode.callback) !== 'function') {
 				throw new Error('Missing or invalid cheat code function');
 			} else if (!cheatCode.name || typeof (cheatCode.name) !== 'string') {
 				throw new Error('Invalid name');
 			} else {
+				cheatCode = new Cheat(cheatCode);
 				keys.cheatCodes.push(cheatCode);
 			}
-			return cheatCode;
+			return this.find(cheatCode.name);
 		};
 
 		this.settings = newSettings => {
@@ -170,12 +206,12 @@
 
 		this.find = name => keys.cheatCodes.filter(x => x.name === name)[0];
 
-		this.reset = () => keys.cheatCodes.length = 0;
+		this.reset = () => keys.cheatCodes = [];
 
 		this.enable = function (name) {
 			if (name) {
 				const cheat = this.find(name);
-				cheat.enabled = true;
+				cheat.enable();
 			} else {
 				enabled = true;
 			}
@@ -184,7 +220,7 @@
 		this.disable = function (name) {
 			if (name) {
 				const cheat = this.find(name);
-				cheat.enabled = false;
+				cheat.disable();
 			} else {
 				enabled = false;
 			}
@@ -193,7 +229,7 @@
 		this.toggle = function (name) {
 			if (name) {
 				const cheat = this.find(name);
-				cheat.enabled = !cheat.enabled;
+				cheat.toggle();
 			} else {
 				enabled = !enabled;
 			}
@@ -202,7 +238,7 @@
 		this.trigger = function (name) {
 			const cheat = this.find(name);
 
-			if (enabled && cheat.enabled) cheat.callback();
+			if (enabled) cheat.trigger();
 		};
 
 		document.addEventListener('keydown', event => { //Get Key When Pressed
@@ -219,8 +255,7 @@
 		/*** Passes private stuff for tests. ***/
 		this._data = {
 			keyMap,
-			arraysMatch,
-			isEnabled: () => enabled
+			arraysMatch
 		};
 		/* end-dev */
 	}

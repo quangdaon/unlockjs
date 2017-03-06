@@ -39,7 +39,7 @@ unlocker.addCheat('konami', konamiCode, function () {
 });
 ```
 
-The `.addCheat` method accepts three parameters: a name, code array, and callback function. The name is just an identifier and has no use other than to find the cheat later on, but it should be descriptive enough for other developers to identify. Currently, UnlockJS uses the standard American keyboard for mapping. Therefore, it recognizes keys such as 'ctrl' and 'alt', but not something like 'cmd' or 'option'. There are two ways of passing in the parameters. The first, as seen above, as by passing them in as normal. This accepts them in any order. Alternatively, they can be passed as an object:
+The `.addCheat` method accepts three parameters: a name, code array, and callback function. The name is just an identifier and has no use other than to find the cheat later on, but it should be descriptive enough for other developers to identify. Currently, UnlockJS uses the standard American keyboard for mapping. Therefore, it recognizes keys such as 'ctrl' and 'alt', but not something like 'cmd' or 'option'. There are two ways of passing in the parameters. The first, as seen above, is by passing them in as normal. This accepts them in any order. Alternatively, they can be passed as an object:
 
 ```javascript
 unlocker.addCheat({
@@ -48,9 +48,9 @@ unlocker.addCheat({
 	callback: function() {
 		alert('Cheater!');
 	}
-})
+});
 ```
-When passing the parameters as an object, the code property also accepts a string of individual characters. For example, the cheatcode above can be rewritten as `code: 'UUDDLRLRba>'`. Below is a list of key codes, as used in an array and the single character counterpart. Special key symbols are loosely based off of [AutoHotKey](https://autohotkey.com/docs/Hotkeys.htm#Symbols).
+When passing the parameters as an object, the code property also accepts a string of individual characters. For example, the cheat code above can be rewritten as `code: 'UUDDLRLRba>'`. Below is a list of key codes, as used in an array and the single character counterpart. Special key symbols are loosely based off of [AutoHotKey](https://autohotkey.com/docs/Hotkeys.htm#Symbols).
 
 | Key             | Array Item (case insensitive) | Character (match case) |
 |:----------------|:------------------------------|:-----------------------|
@@ -76,7 +76,7 @@ When passing the parameters as an object, the code property also accepts a strin
 UnlockJS currently accepts one global `delay` setting that determines how long the timeout is, in milliseconds, before the keys list is reset. This can be set by passing in an object upon initializing or by using the `.settings()` method. It defaults to 500.
 
 ```javascript
-var unlock = new Unlock({
+var unlocker = new Unlock({
 	delay: 1000
 });
 
@@ -90,16 +90,51 @@ unlocker.settings({
 Cheats can be enabled or disabled on command:
 
 ```javascript
-unlock.disable() // Disables all cheats.
-unlock.disable('konami') // Specifically disables cheat created above.
+unlocker.disable() // Disables all cheats.
+unlocker.disable('konami') // Specifically disables cheat created above.
 ```
 
 `unlocker.enable` and `unlocker.toggle` can be used in the same way.
 
+#### Modifying Cheats
+
+Newly created cheats return themselves, and can be passed by reference to a variable. Alternatively, you can use `unlocker.find(name)` to obtain the cheat using the name used to create it.
+
+```javascript
+var konami = unlocker.addCheat({
+	name: 'konami',
+	code: ['up', 'up', 'down', 'down', 'left', 'right', 'left', 'right', 'b', 'a', 'enter'],
+	callback: function() {
+		alert('Cheater!');
+	}
+});
+
+// is the same as:
+
+var konami = unlocker.find('konami');
+```
+
+The cheat object contains the same enabling methods as the Unlock object, but is specific to itself (meaning you can use `konami.disabled()` to disabled that specific cheat). Furthermore, you can set the trigger and callback using the `.set()` method:
+
+```javascript
+konami.set('callback', function() {
+	gainLives(30);
+});
+
+konami.set('code', 'UUDDLRLRba');
+
+konami.set('name', 'konamiCode'); // Throws an error because names cannot be changed.
+
+// Now, it is triggered without
+```
+
+_Please note: While it is possible modify these properties directly using `konami.callback = function () { alert('derp') }`, this is highly discouraged as it bypasses any checks and may break the code. This is especially true with the "code" property, as `Cheat.code` is a function that returns the keycode array, and the raw code input is stored privately. This "feature" will be disabled as soon as I figure out how._
+
 ## ToDo
 
-- Add keyboard shortcuts.
-- Add intuitive way to update cheat callback and code.
+[ ] Add keyboard shortcuts.
+[ ] Make Cheat prototype readonly.
+[X] Add intuitive way to update cheat callback and code.
 
 ## Contribution
 

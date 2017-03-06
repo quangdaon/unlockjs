@@ -68,11 +68,86 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 		return true;
 	}
 
+	function Cheat(data) {
+		var _this2 = this;
+
+		this.name = data.name;
+		this.callback = data.callback;
+
+		var rawCode = data.code;
+
+		var enabled = typeof data.enabled !== 'undefined' ? data.enabled : true;
+
+		var stringKeyMap = {
+			U: 'up',
+			D: 'down',
+			L: 'left',
+			R: 'right',
+			X: 'esc',
+			'_': 'tab',
+			'^': 'ctrl',
+			'+': 'shift',
+			'!': 'alt',
+			'#': 'win',
+			'<': 'backspace',
+			'>': 'enter'
+		};
+
+		this.code = function () {
+			return [].concat(_toConsumableArray(rawCode)).map(function (x) {
+				return stringKeyMap[x] || x;
+			}).map(function (item) {
+				if (!keyMap[item.toLowerCase()]) throw new Error('Unrecognized key: ' + item);
+				return keyMap[item.toLowerCase()];
+			});
+		};
+
+		this.isEnabled = function () {
+			return enabled;
+		};
+		this.enable = function () {
+			return enabled = true;
+		};
+		this.disable = function () {
+			return enabled = false;
+		};
+		this.toggle = function () {
+			return enabled = !enabled;
+		};
+		this.trigger = function () {
+			return enabled && _this2.callback();
+		};
+
+		this.set = function (set, val) {
+			switch (set) {
+				case 'name':
+					throw new Error('Name cannot be changed');
+				case 'callback':
+					if (typeof val === 'function') {
+						_this2.callback = val;
+					} else {
+						throw new Error('Invalid callback. Expected a function, got ' + (typeof val === 'undefined' ? 'undefined' : _typeof(val)));
+					}
+					break;
+				case 'code':
+					if ((typeof val === 'undefined' ? 'undefined' : _typeof(val)) === 'object' || typeof val === 'string') {
+						rawCode = val;
+					} else {
+						throw new Error('Invalid callback. Expected an array or string, got ' + (typeof val === 'undefined' ? 'undefined' : _typeof(val)));
+					}
+					break;
+				default:
+					throw new Error('Invalid Setting');
+			}
+		};
+	}
+
 	function Unlock(userSettings) {
 		var keys = {
 			current: [],
 			timer: null,
-			cheatCodes: []
+			cheatCodes: [],
+			hotKey: []
 		};
 
 		var enabled = true;
@@ -92,7 +167,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 		function checkKeys() {
 			for (var i = keys.cheatCodes.length - 1; i >= 0; i--) {
-				if (arraysMatch(keys.current, keys.cheatCodes[i].code)) {
+				if (arraysMatch(keys.current, keys.cheatCodes[i].code())) {
 					_this.trigger(keys.cheatCodes[i].name);
 					clrKeys();
 				}
@@ -132,46 +207,19 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 				}
 			}
 
-			cheatCode.enabled = _typeof(cheatCode.enabled) === undefined ? cheatCode.enabled : true;
-
-			if (typeof cheatCode.code === 'string') {
-				var stringKeyMap = {
-					U: 'up',
-					D: 'down',
-					L: 'left',
-					R: 'right',
-					X: 'esc',
-					'_': 'tab',
-					'^': 'ctrl',
-					'+': 'shift',
-					'!': 'alt',
-					'#': 'win',
-					'<': 'backspace',
-					'>': 'enter'
-				};
-
-				cheatCode.code = [].concat(_toConsumableArray(cheatCode.code)).map(function (x) {
-					return stringKeyMap[x] || x;
-				});
-			}
-
-			cheatCode.code = cheatCode.code.map(function (item) {
-				if (!keyMap[item.toLowerCase()]) throw new Error('Unrecognized key: ' + item);
-				return keyMap[item.toLowerCase()];
-			});
-
 			if (this.find(cheatCode.name)) {
 				throw new Error('Cheat already exists with name ' + cheatCode.name);
-			} else if (!cheatCode.code || _typeof(cheatCode.code) !== 'object') {
+			} else if (!cheatCode.code || _typeof(cheatCode.code) !== 'object' && typeof cheatCode.code !== 'string') {
 				throw new Error('Missing or invalid "code" property');
 			} else if (!cheatCode.callback || typeof cheatCode.callback !== 'function') {
 				throw new Error('Missing or invalid cheat code function');
 			} else if (!cheatCode.name || typeof cheatCode.name !== 'string') {
 				throw new Error('Invalid name');
 			} else {
+				cheatCode = new Cheat(cheatCode);
 				keys.cheatCodes.push(cheatCode);
 			}
-			return cheatCode;
+			return this.find(cheatCode.name);
 		};
 
 		this.settings = function (newSettings) {
@@ -185,13 +233,13 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 		};
 
 		this.reset = function () {
-			return keys.cheatCodes.length = 0;
+			return keys.cheatCodes = [];
 		};
 
 		this.enable = function (name) {
 			if (name) {
 				var cheat = this.find(name);
-				cheat.enabled = true;
+				cheat.enable();
 			} else {
 				enabled = true;
 			}
@@ -200,7 +248,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 		this.disable = function (name) {
 			if (name) {
 				var cheat = this.find(name);
-				cheat.enabled = false;
+				cheat.disable();
 			} else {
 				enabled = false;
 			}
@@ -209,7 +257,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 		this.toggle = function (name) {
 			if (name) {
 				var cheat = this.find(name);
-				cheat.enabled = !cheat.enabled;
+				cheat.toggle();
 			} else {
 				enabled = !enabled;
 			}
@@ -218,7 +266,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 		this.trigger = function (name) {
 			var cheat = this.find(name);
 
-			if (enabled && cheat.enabled) cheat.callback();
+			if (enabled) cheat.trigger();
 		};
 
 		document.addEventListener('keydown', function (event) {
@@ -233,10 +281,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 		this._data = {
 			keyMap: keyMap,
-			arraysMatch: arraysMatch,
-			isEnabled: function isEnabled() {
-				return enabled;
-			}
+			arraysMatch: arraysMatch
 		};
 	}
 
