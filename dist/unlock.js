@@ -4,6 +4,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 (function (root, factory) {
 	if (typeof window === 'undefined') console.log('Please be aware that this library is intended for use in the browser.');
 
@@ -25,9 +27,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			right: 39,
 			enter: 13,
 			space: 32,
+			' ': 32,
 			shift: 16,
 			ctrl: 17,
 			alt: 18,
+			win: 91,
 			backspace: 8,
 			capsLock: 20,
 			',': 188,
@@ -64,11 +68,86 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		return true;
 	}
 
+	function Cheat(data) {
+		var _this2 = this;
+
+		this.name = data.name;
+		this.callback = data.callback;
+
+		var rawCode = data.code;
+
+		var enabled = typeof data.enabled !== 'undefined' ? data.enabled : true;
+
+		var stringKeyMap = {
+			U: 'up',
+			D: 'down',
+			L: 'left',
+			R: 'right',
+			X: 'esc',
+			'_': 'tab',
+			'^': 'ctrl',
+			'+': 'shift',
+			'!': 'alt',
+			'#': 'win',
+			'<': 'backspace',
+			'>': 'enter'
+		};
+
+		this.code = function () {
+			return [].concat(_toConsumableArray(rawCode)).map(function (x) {
+				return stringKeyMap[x] || x;
+			}).map(function (item) {
+				if (!keyMap[item.toLowerCase()]) throw new Error('Unrecognized key: ' + item);
+				return keyMap[item.toLowerCase()];
+			});
+		};
+
+		this.isEnabled = function () {
+			return enabled;
+		};
+		this.enable = function () {
+			return enabled = true;
+		};
+		this.disable = function () {
+			return enabled = false;
+		};
+		this.toggle = function () {
+			return enabled = !enabled;
+		};
+		this.trigger = function () {
+			return enabled && _this2.callback();
+		};
+
+		this.set = function (set, val) {
+			switch (set) {
+				case 'name':
+					throw new Error('Name cannot be changed');
+				case 'callback':
+					if (typeof val === 'function') {
+						_this2.callback = val;
+					} else {
+						throw new Error('Invalid callback. Expected a function, got ' + (typeof val === 'undefined' ? 'undefined' : _typeof(val)));
+					}
+					break;
+				case 'code':
+					if ((typeof val === 'undefined' ? 'undefined' : _typeof(val)) === 'object' || typeof val === 'string') {
+						rawCode = val;
+					} else {
+						throw new Error('Invalid callback. Expected an array or string, got ' + (typeof val === 'undefined' ? 'undefined' : _typeof(val)));
+					}
+					break;
+				default:
+					throw new Error('Invalid Setting');
+			}
+		};
+	}
+
 	function Unlock(userSettings) {
 		var keys = {
 			current: [],
 			timer: null,
-			cheatCodes: []
+			cheatCodes: [],
+			hotKey: []
 		};
 
 		var enabled = true;
@@ -88,7 +167,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 		function checkKeys() {
 			for (var i = keys.cheatCodes.length - 1; i >= 0; i--) {
-				if (arraysMatch(keys.current, keys.cheatCodes[i].code)) {
+				if (arraysMatch(keys.current, keys.cheatCodes[i].code())) {
 					_this.trigger(keys.cheatCodes[i].name);
 					clrKeys();
 				}
@@ -128,24 +207,19 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				}
 			}
 
-			cheatCode.enabled = _typeof(cheatCode.enabled) === undefined ? cheatCode.enabled : true;
-
-			cheatCode.code = cheatCode.code.map(function (item) {
-				return keyMap[item];
-			});
-
 			if (this.find(cheatCode.name)) {
 				throw new Error('Cheat already exists with name ' + cheatCode.name);
-			} else if (!cheatCode.code || _typeof(cheatCode.code) !== 'object') {
+			} else if (!cheatCode.code || _typeof(cheatCode.code) !== 'object' && typeof cheatCode.code !== 'string') {
 				throw new Error('Missing or invalid "code" property');
 			} else if (!cheatCode.callback || typeof cheatCode.callback !== 'function') {
 				throw new Error('Missing or invalid cheat code function');
 			} else if (!cheatCode.name || typeof cheatCode.name !== 'string') {
 				throw new Error('Invalid name');
 			} else {
+				cheatCode = new Cheat(cheatCode);
 				keys.cheatCodes.push(cheatCode);
 			}
-			return cheatCode;
+			return this.find(cheatCode.name);
 		};
 
 		this.settings = function (newSettings) {
@@ -159,13 +233,13 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		};
 
 		this.reset = function () {
-			return keys.cheatCodes.length = 0;
+			return keys.cheatCodes = [];
 		};
 
 		this.enable = function (name) {
 			if (name) {
 				var cheat = this.find(name);
-				cheat.enabled = true;
+				cheat.enable();
 			} else {
 				enabled = true;
 			}
@@ -174,7 +248,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		this.disable = function (name) {
 			if (name) {
 				var cheat = this.find(name);
-				cheat.enabled = false;
+				cheat.disable();
 			} else {
 				enabled = false;
 			}
@@ -183,7 +257,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		this.toggle = function (name) {
 			if (name) {
 				var cheat = this.find(name);
-				cheat.enabled = !cheat.enabled;
+				cheat.toggle();
 			} else {
 				enabled = !enabled;
 			}
@@ -192,7 +266,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		this.trigger = function (name) {
 			var cheat = this.find(name);
 
-			if (enabled && cheat.enabled) cheat.callback();
+			if (enabled) cheat.trigger();
 		};
 
 		document.addEventListener('keydown', function (event) {
