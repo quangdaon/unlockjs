@@ -19,9 +19,11 @@
 			right: 39,
 			enter: 13,
 			space: 32,
+			' ': 32,
 			shift: 16,
 			ctrl: 17,
 			alt: 18,
+			win: 91,
 			backspace: 8,
 			capsLock: 20,
 			',': 188,
@@ -124,7 +126,29 @@
 
 			cheatCode.enabled = (typeof (cheatCode.enabled) === undefined) ? cheatCode.enabled : true;
 
-			cheatCode.code = cheatCode.code.map(item => keyMap[item]);
+			if(typeof cheatCode.code === 'string') {
+				const stringKeyMap = {
+					U: 'up',
+					D: 'down',
+					L: 'left',
+					R: 'right',
+					X: 'esc',
+					'_': 'tab',
+					'^': 'ctrl',
+					'+': 'shift',
+					'!': 'alt',
+					'#': 'win',
+					'<': 'backspace',
+					'>': 'enter'
+				};
+
+				cheatCode.code = [...cheatCode.code].map(x => stringKeyMap[x] || x);
+			}
+
+			cheatCode.code = cheatCode.code.map(item => {
+				if(!keyMap[item.toLowerCase()]) throw new Error(`Unrecognized key: ${item}`);
+				return keyMap[item.toLowerCase()];
+			});
 
 			if (this.find(cheatCode.name)) {
 				throw new Error(`Cheat already exists with name ${cheatCode.name}`);

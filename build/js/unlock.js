@@ -4,6 +4,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 (function (root, factory) {
 	if (typeof window === 'undefined') console.log('Please be aware that this library is intended for use in the browser.');
 
@@ -25,9 +27,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			right: 39,
 			enter: 13,
 			space: 32,
+			' ': 32,
 			shift: 16,
 			ctrl: 17,
 			alt: 18,
+			win: 91,
 			backspace: 8,
 			capsLock: 20,
 			',': 188,
@@ -130,8 +134,30 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 			cheatCode.enabled = _typeof(cheatCode.enabled) === undefined ? cheatCode.enabled : true;
 
+			if (typeof cheatCode.code === 'string') {
+				var stringKeyMap = {
+					U: 'up',
+					D: 'down',
+					L: 'left',
+					R: 'right',
+					X: 'esc',
+					'_': 'tab',
+					'^': 'ctrl',
+					'+': 'shift',
+					'!': 'alt',
+					'#': 'win',
+					'<': 'backspace',
+					'>': 'enter'
+				};
+
+				cheatCode.code = [].concat(_toConsumableArray(cheatCode.code)).map(function (x) {
+					return stringKeyMap[x] || x;
+				});
+			}
+
 			cheatCode.code = cheatCode.code.map(function (item) {
-				return keyMap[item];
+				if (!keyMap[item.toLowerCase()]) throw new Error('Unrecognized key: ' + item);
+				return keyMap[item.toLowerCase()];
 			});
 
 			if (this.find(cheatCode.name)) {

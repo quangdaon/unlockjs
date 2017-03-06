@@ -159,11 +159,18 @@
 				}).toThrowError();
 			});
 
-			it('must be an array', function () {
-				cheatOptions.code = 'name';
+			it('throws an error on unrecognized keys', function () {
+				cheatOptions.code = ['key'];
 				expect(function () {
 					unlocker.addCheat(cheatOptions);
 				}).toThrowError();
+			});
+
+			it('accepts and expands a string', function () {
+				cheatOptions.code = 'UUDDLRLRba>';
+				expect(unlocker.addCheat(cheatOptions)).toEqual(jasmine.objectContaining({
+					code: [38, 38, 40, 40, 37, 39, 37, 39, 66, 65, 13]
+				}));
 			});
 		});
 	});

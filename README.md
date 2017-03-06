@@ -50,6 +50,26 @@ unlocker.addCheat({
 	}
 })
 ```
+When passing the parameters as an object, the code property also accepts a string of individual characters. For example, the cheatcode above can be rewritten as `code: 'UUDDLRLRba>'`. Below is a list of key codes, as used in an array and the single character counterpart. Special key symbols are loosely based off of [AutoHotKey](https://autohotkey.com/docs/Hotkeys.htm#Symbols).
+
+| Key             | Array Item (case insensitive) | Character (match case) |
+|:----------------|:------------------------------|:-----------------------|
+| A-Z             | a-z                           | a-z                    |
+| 0-9             | 0-9                           | 0-9                    |
+| NumPad 0-9      | pad0-pad9                     | Unsupported            |
+| Up Arrow Key    | up                            | U                      |
+| Down Arrow Key  | down                          | D                      |
+| Left Arrow Key  | left                          | L                      |
+| Right Arrow Key | right                         | R                      |
+| Tab             | tab                           | \_                     |
+| Esc             | esc                           | X                      |
+| Ctrl            | ctrl                          | ^                      |
+| Shift           | shift                         | +                      |
+| Alt             | alt                           | !                      |
+| Backspace       | backspace                     | <                      |
+| Enter           | enter                         | >                      |
+| Windows         | win                           | #                      |
+| Caps Lock       | capsLock                      | Unsupported            |
 
 #### Options
 

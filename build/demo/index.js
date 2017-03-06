@@ -11,4 +11,6 @@
 	cheat.addCheat('konami', ['up', 'up', 'down', 'down', 'left', 'right', 'left', 'right', 'b', 'a', 'enter'], function () {
 		alert('Cheater!');
 	});
+
+	document.body.textContent = (cheat.find('konami').code);
 })();
