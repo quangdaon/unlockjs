@@ -12,6 +12,9 @@
 			expect(typeof Unlock).toBe('function');
 		});
 
+		xit('supports CommonJS');
+		xit('supports AMD');
+
 	});
 
 	describe('new Unlock', function () {
@@ -117,9 +120,7 @@
 		});
 
 		it('is enabled by default', function () {
-			expect(unlocker.addCheat(cheatOptions)).toEqual(jasmine.objectContaining({
-				enabled: true
-			}));
+			expect(unlocker.addCheat(cheatOptions).isEnabled()).toEqual(true);
 		});
 
 		describe('name parameter', function () {
@@ -159,19 +160,25 @@
 				}).toThrowError();
 			});
 
+			it('must be a string or array', function () {
+				cheatOptions.code = function () {};
+				expect(function () {
+					unlocker.addCheat(cheatOptions)
+				}).toThrowError();
+			});
+
 			it('throws an error on unrecognized keys', function () {
 				cheatOptions.code = ['key'];
 				expect(function () {
-					unlocker.addCheat(cheatOptions);
+					unlocker.addCheat(cheatOptions).code();
 				}).toThrowError();
 			});
 
 			it('accepts and expands a string', function () {
 				cheatOptions.code = 'UUDDLRLRba>';
-				expect(unlocker.addCheat(cheatOptions)).toEqual(jasmine.objectContaining({
-					code: [38, 38, 40, 40, 37, 39, 37, 39, 66, 65, 13]
-				}));
+				expect(unlocker.addCheat(cheatOptions).code()).toEqual([38, 38, 40, 40, 37, 39, 37, 39, 66, 65, 13]);
 			});
+
 		});
 	});
 
@@ -202,13 +209,13 @@
 		});
 
 		it('is returned upon creation', function () {
-			cheatCode.enabled = false;
+			cheatCode.disable();
 			unlocker.trigger('cheat');
 
 			expect(activated).toBe(false);
 		});
 
-		it('can be retrieved using .find()', function () {
+		it('can be retrieved using Unlock.find()', function () {
 			expect(unlocker.find('cheat')).toEqual(cheatCode);
 		});
 
@@ -217,17 +224,129 @@
 			expect(activated).toBe(true);
 		});
 
-		it('can be triggered manually', function () {
-			unlocker.trigger('cheat');
-
-			expect(activated).toBe(true);
+		xit('does not allow write access', function() {
+			expect(function() {
+				cheatCode.name = 'notcheat';
+			}).toThrowError();
 		});
 
-		it('can be disabled', function () {
-			unlocker.disable('cheat');
-			unlocker.trigger('cheat');
+		describe('can be triggered manually', function () {
+			it('using Unlock.trigger(name)', function () {
+				unlocker.trigger('cheat');
 
-			expect(activated).toBe(false);
+				expect(activated).toBe(true);
+			});
+
+			it('using cheat.trigger()', function () {
+				cheatCode.trigger();
+
+				expect(activated).toBe(true);
+			});
+		});
+
+		describe('can be disabled', function () {
+			it('using Unlock.disable(name)', function () {
+				unlocker.disable('cheat');
+				cheatCode.trigger();
+
+				expect(activated).toBe(false);
+			});
+
+			it('using cheat.disable()', function () {
+				cheatCode.disable('cheat');
+				cheatCode.trigger();
+
+				expect(activated).toBe(false);
+			});
+		});
+
+		describe('can be toggled', function () {
+			it('using Unlock.toggle(name)', function () {
+				unlocker.toggle('cheat');
+				cheatCode.trigger();
+
+				expect(activated).toBe(false);
+
+				unlocker.toggle('cheat');
+				cheatCode.trigger();
+
+				expect(activated).toBe(true);
+			});
+
+
+			it('using cheat.toggle()', function () {
+				cheatCode.toggle();
+				cheatCode.trigger();
+
+				expect(activated).toBe(false);
+
+				cheatCode.toggle();
+				cheatCode.trigger();
+
+				expect(activated).toBe(true);
+			});
+		});
+
+		describe('.set()', function () {
+			it('cannot update name', function () {
+				expect(function () {
+					cheatCode.set('name', 'notTest');
+				}).toThrowError();
+			});
+
+			it('can update callback', function () {
+				cheatCode.set('callback', function () {
+					activated = 'idk';
+				});
+
+				cheatCode.trigger();
+				expect(activated).toEqual('idk');
+			});
+
+			it('rejects invalid callback', function () {
+				expect(function () {
+					cheatCode.set('callback', 'derp');
+				}).toThrowError();
+			});
+
+			it('can update code using array', function () {
+				cheatCode.set('code', ['c', 'b', 'a']);
+				expect(cheatCode.code()).toEqual([67, 66, 65]);
+			});
+
+			it('can update code using string', function () {
+				cheatCode.set('code', '>cba');
+				expect(cheatCode.code()).toEqual([13, 67, 66, 65]);
+			});
+
+			it('rejects invalid code', function () {
+				expect(function () {
+					cheatCode.set('code', function () {
+						return false;
+					});
+				}).toThrowError();
+			});
+		});
+	});
+
+	describe('Resetting', function() {
+		var activated = false;
+		var cheat = unlocker.addCheat({
+			name: 'mycheat',
+			code: 'ab',
+			callback: function() {
+				activated = true;
+			}
+		});
+
+		it('clears cheats', function() {
+			cheat.trigger();
+			expect(activated).toBe(true);
+
+			unlocker.reset();
+
+			cheat.trigger();
+			expect(activated).toBe(true);
 		});
 	});
 })();

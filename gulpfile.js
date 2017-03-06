@@ -27,10 +27,10 @@ gulp.task('build', () => {
 	}
 
 	return gulp.src('./src/unlock.js')
-		.pipe(stripCode(stripOpt))
-		.pipe(stripComments())
 		.pipe(eslint('./.eslintrc.json'))
 		.pipe(eslint.format())
+		.pipe(stripCode(stripOpt))
+		.pipe(stripComments())
 		.pipe(babel({
 			presets: ['es2015'],
 			plugins: ['transform-object-assign']
