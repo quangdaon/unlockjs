@@ -42,7 +42,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		var alph = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
 
 		for (var i = 0; i < alph.length; i++) {
-			keys[alph[i]] = i + 65;
+			keys[alph[i]] = i + 97;
 		}
 
 		for (var j = 0; j <= 9; j++) {
@@ -162,12 +162,15 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 		var handler = function handler(event) {
 			var keyEvents = {};
+			var keyCode = void 0;
 
 			if (window.event) {
-				keyEvents.code = window.event.keyCode;
+				keyCode = window.event.keyCode;
 			} else {
-				keyEvents.code = event.which;
+				keyCode = event.keyCode > 0 ? event.keyCode : event.which;
 			}
+
+			console.log('Hotkey:', keyCode);
 
 			var metaMap = {
 				'^': event.ctrlKey,
@@ -191,7 +194,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				return state && metaMap[next];
 			}, true);
 
-			if (held && keyEvents.code === keyMap[stringKeyMap[keyEvents.trigger] || keyEvents.trigger]) {
+			if (held && keyCode === keyMap[stringKeyMap[keyEvents.trigger] || keyEvents.trigger]) {
 				if (keyEvents.default) event.preventDefault();
 				_this3.callback();
 				if (keyEvents.default) return false;
@@ -224,8 +227,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			if (window.event) {
 				keyCode = window.event.keyCode;
 			} else {
-				keyCode = event.which;
+				keyCode = event.keyCode > 0 ? event.keyCode : event.which;
 			}
+
+			console.log('Cheat:', keyCode);
 
 			clearTimeout(keys.timer);
 			keys.current.push(keyCode);
@@ -383,7 +388,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			if (enabled) cheat.trigger();
 		};
 
-		document.addEventListener('keydown', keyPress);
+		document.addEventListener('keypress', keyPress);
 
 		this._data = {
 			keyMap: keyMap,

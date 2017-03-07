@@ -36,7 +36,7 @@
 		const alph = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
 
 		for (let i = 0; i < alph.length; i++) {
-			keys[alph[i]] = i + 65;
+			keys[alph[i]] = i + 97;
 		}
 
 		for (let j = 0; j <= 9; j++) {
@@ -144,12 +144,15 @@
 
 		const handler = event => {
 			const keyEvents = {};
+			let keyCode;
 
 			if (window.event) { //Browser Compatibility Thingy
-				keyEvents.code = window.event.keyCode;
+				keyCode = window.event.keyCode;
 			} else {
-				keyEvents.code = event.which;
+				keyCode = event.keyCode > 0 ? event.keyCode : event.which;
 			}
+
+			console.log('Hotkey:', keyCode);
 
 			const metaMap = {
 				'^': event.ctrlKey,
@@ -172,7 +175,7 @@
 
 			const held = keyEvents.meta.reduce((state, next) => state && metaMap[next], true);
 
-			if (held && keyEvents.code === keyMap[stringKeyMap[keyEvents.trigger] || keyEvents.trigger]) {
+			if (held && keyCode === keyMap[stringKeyMap[keyEvents.trigger] || keyEvents.trigger]) {
 				if(keyEvents.default) event.preventDefault();
 				this.callback();
 				if(keyEvents.default) return false;
@@ -205,8 +208,10 @@
 			if (window.event) { //Browser Compatibility Thingy
 				keyCode = window.event.keyCode;
 			} else {
-				keyCode = event.which;
+				keyCode = event.keyCode > 0 ? event.keyCode : event.which;
 			}
+
+			console.log('Cheat:', keyCode);
 
 			clearTimeout(keys.timer); //Clears Timer
 			keys.current.push(keyCode); //Add Key Pressed to Array
@@ -356,7 +361,7 @@
 			if (enabled) cheat.trigger();
 		};
 
-		document.addEventListener('keydown', keyPress);
+		document.addEventListener('keypress', keyPress);
 
 		/* dev: */
 		/*** Passes private stuff for tests. ***/

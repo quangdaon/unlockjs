@@ -31,9 +31,9 @@
 		}
 
 		if (oEvent.initKeyboardEvent) {
-			oEvent.initKeyboardEvent("keydown", true, true, document.defaultView, specialKeys.ctrl, specialKeys.alt, specialKeys.shift, specialKeys.meta, code, code);
+			oEvent.initKeyboardEvent("keypress", true, true, document.defaultView, specialKeys.ctrl, specialKeys.alt, specialKeys.shift, specialKeys.meta, code, code);
 		} else {
-			oEvent.initKeyEvent("keydown", true, true, document.defaultView, specialKeys.ctrl, specialKeys.alt, specialKeys.shift, specialKeys.meta, code, 0);
+			oEvent.initKeyEvent("keypress", true, true, document.defaultView, specialKeys.ctrl, specialKeys.alt, specialKeys.shift, specialKeys.meta, code, 0);
 		}
 
 		oEvent.keyCodeVal = code;
@@ -95,7 +95,7 @@
 		});
 
 		it('recognizes the [A] key', function () {
-			expect(km['a']).toBe(65);
+			expect(km['a']).toBe(97);
 		});
 
 		it('recognizes the [0] key', function () {
@@ -169,25 +169,25 @@
 		});
 
 		it('triggers on cheat code match', function () {
-			press(65).chain(66).chain(67).end(pending, function() {
+			press(97).chain(98).chain(99).end(pending, function() {
 				expect(activated).toBe(true);
 			}); // a, b, c
 
 
 			activated = false;
 
-			press(65).chain(67).chain(66).end(pending, function() {
+			press(97).chain(99).chain(98).end(pending, function() {
 				expect(activated).toBe(false);
 			}); // a, c, b
 
 		});
 
 		it('resets on timeout', function (done) {
-			press(65).chain(67).chain(66).end(pending, function() {
+			press(97).chain(99).chain(98).end(pending, function() {
 				expect(activated).toBe(false);
 
 				setTimeout(function () {
-					press(65).chain(66).chain(67).end(pending, function() {
+					press(97).chain(98).chain(99).end(pending, function() {
 						expect(activated).toBe(true);
 
 						done();
@@ -299,7 +299,7 @@
 
 				it('accepts and expands a string', function () {
 					cheatOptions.code = 'UUDDLRLRba>';
-					expect(unlocker.addCheat(cheatOptions).code()).toEqual([38, 38, 40, 40, 37, 39, 37, 39, 66, 65, 13]);
+					expect(unlocker.addCheat(cheatOptions).code()).toEqual([38, 38, 40, 40, 37, 39, 37, 39, 98, 97, 13]);
 				});
 
 			});
@@ -384,12 +384,12 @@
 
 			it('can update code using array', function () {
 				cheatCode.set('code', ['c', 'b', 'a']);
-				expect(cheatCode.code()).toEqual([67, 66, 65]);
+				expect(cheatCode.code()).toEqual([99, 98, 97]);
 			});
 
 			it('can update code using string', function () {
 				cheatCode.set('code', '>cba');
-				expect(cheatCode.code()).toEqual([13, 67, 66, 65]);
+				expect(cheatCode.code()).toEqual([13, 99, 98, 97]);
 			});
 
 			it('rejects invalid code', function () {
