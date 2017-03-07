@@ -8,8 +8,12 @@
 		});
 	}
 
-	var myCheat = cheat.addCheat('konami', ['up', 'up', 'down', 'down', 'left', 'right', 'left', 'right', 'b', 'a', 'enter'], function () {
+	cheat.addCheat('konami', ['up', 'up', 'down', 'down', 'left', 'right', 'left', 'right', 'b', 'a', 'enter'], function () {
 		alert('Cheater!');
+	});
+
+	cheat.addHotkey('-^s', function() {
+		alert('Saved!')
 	});
 
 	// document.body.textContent = (cheat.find('konami').code());

@@ -50,6 +50,21 @@
 		return keys;
 	})();
 
+	const stringKeyMap = {
+		U: 'up',
+		D: 'down',
+		L: 'left',
+		R: 'right',
+		X: 'esc',
+		'_': 'tab',
+		'^': 'ctrl',
+		'+': 'shift',
+		'!': 'alt',
+		'#': 'win',
+		'<': 'backspace',
+		'>': 'enter'
+	};
+
 	function arraysMatch(arr1, arr2) { //Checks if Array Match - Not My Script
 		if (arr1.length !== arr2.length) return false; //If Array Lengths Don't Match, Return False
 		for (let i = 0, len = arr1.length; i < len; i++) { //Cycle Through Array Contents
@@ -62,6 +77,7 @@
 
 	/*** Private single cheat factory ***/
 	function Cheat(data) {
+
 		/*** Todo: Make properties readonly ***/
 		this.name = data.name;
 		this.callback = data.callback;
@@ -71,21 +87,6 @@
 		let rawCode = data.code;
 
 		let enabled = (typeof data.enabled !== 'undefined') ? data.enabled : true;
-
-		const stringKeyMap = {
-			U: 'up',
-			D: 'down',
-			L: 'left',
-			R: 'right',
-			X: 'esc',
-			'_': 'tab',
-			'^': 'ctrl',
-			'+': 'shift',
-			'!': 'alt',
-			'#': 'win',
-			'<': 'backspace',
-			'>': 'enter'
-		};
 
 		this.code = () => {
 			var codeArray = (typeof rawCode === 'string') ? rawCode.split('') : rawCode;
@@ -131,12 +132,64 @@
 		};
 	}
 
+	/*** Private Hotkey ***/
+	function Hotkey(settings) {
+		const triggerRegex = /^(-)?([\^+!#]*)([\w\d])$/;
+
+		this.trigger = settings.trigger;
+
+		this.callback = settings.callback;
+
+		this.selector = settings.selector;
+
+		const handler = event => {
+			const keyEvents = {};
+
+			if (window.event) { //Browser Compatibility Thingy
+				keyEvents.code = window.event.keyCode;
+			} else {
+				keyEvents.code = event.which;
+			}
+
+			const metaMap = {
+				'^': event.ctrlKey,
+				'+': event.shiftKey,
+				'!': event.altKey,
+				'#': event.metaKey
+			};
+
+			var triggerArray = this.trigger.match(triggerRegex);
+
+			const {
+				1: override,
+				2: metaKeys,
+				3: triggerKey
+			} = triggerArray;
+
+			keyEvents.default = override === '-';
+			keyEvents.meta = metaKeys.split('');
+			keyEvents.trigger = triggerKey;
+
+			const held = keyEvents.meta.reduce((state, next) => state && metaMap[next], true);
+
+			if (held && keyEvents.code === keyMap[stringKeyMap[keyEvents.trigger] || keyEvents.trigger]) {
+				if(keyEvents.default) event.preventDefault();
+				this.callback();
+				if(keyEvents.default) return false;
+			}
+		};
+
+		const element = this.selector ? document.querySelector(this.selector) : document.body;
+
+		element.addEventListener('keypress', handler);
+	}
+
 	function Unlock(userSettings) {
 		const keys = {
 			current: [],
 			timer: null,
 			cheatCodes: [],
-			hotKey: []
+			hotKeys: []
 		};
 
 		let enabled = true;
@@ -147,7 +200,14 @@
 			delay: 500
 		}, userSettings);
 
-		function keyPress(keyCode) { //Record Key Pressed
+		function keyPress(event) { //Record Key Pressed
+			let keyCode;
+			if (window.event) { //Browser Compatibility Thingy
+				keyCode = window.event.keyCode;
+			} else {
+				keyCode = event.which;
+			}
+
 			clearTimeout(keys.timer); //Clears Timer
 			keys.current.push(keyCode); //Add Key Pressed to Array
 			checkKeys(); //Go to checkKeys() Function
@@ -155,12 +215,14 @@
 		}
 
 		function checkKeys() {
-			for (let i = keys.cheatCodes.length - 1; i >= 0; i--) {
-				if (arraysMatch(keys.current, keys.cheatCodes[i].code())) {
-					_this.trigger(keys.cheatCodes[i].name);
+			keys.cheatCodes.forEach(cheat => {
+				if (arraysMatch(keys.current, cheat.code())) {
+					_this.trigger(cheat.name);
 					clrKeys();
 				}
-			}
+			});
+			// for (let i = keys.cheatCodes.length - 1; i >= 0; i--) {
+			// }
 		}
 
 		function clrKeys() {
@@ -175,7 +237,7 @@
 			};
 			if (arguments.length === 1) {
 				const cheatInput = arguments[0];
-				if (typeof (cheatCode) !== 'object') {
+				if (typeof (cheatInput) !== 'object') {
 					throw new Error(`Expected object, got ${typeof (arguments[0])}`);
 				} else {
 					cheatCode = cheatInput;
@@ -208,7 +270,46 @@
 				cheatCode = new Cheat(cheatCode);
 				keys.cheatCodes.push(cheatCode);
 			}
-			return this.find(cheatCode.name);
+			return cheatCode;
+		};
+
+		this.addHotkey = function (...args) {
+			let hotkey = {
+				trigger: '',
+				selector: '',
+				callback: false
+			};
+
+			switch (args.length) {
+			case 1:
+				if (typeof args[0] !== 'object') {
+					throw new Error(`Expected object, got ${typeof (arguments[0])}`);
+				} else {
+					Object.assign(hotkey, args[0]);
+				}
+				break;
+			case 2:
+				hotkey.trigger = args[0];
+				hotkey.callback = args[1];
+				break;
+			default:
+				hotkey.trigger = args[0];
+				hotkey.selector = args[1];
+				hotkey.callback = args[2];
+				break;
+			}
+
+			if (typeof hotkey.trigger !== 'string') {
+				throw new Error('Missing or invalid trigger');
+			} else if (hotkey.selector && typeof hotkey.selector !== 'string') {
+				throw new Error('Invalid selector');
+			} else if (!hotkey.callback || typeof hotkey.callback !== 'function') {
+				throw new Error('Missing or invalid callback');
+			} else {
+				hotkey = new Hotkey(hotkey);
+				keys.hotKeys.push(hotkey);
+			}
+			return hotkey;
 		};
 
 		this.settings = newSettings => {
@@ -255,15 +356,7 @@
 			if (enabled) cheat.trigger();
 		};
 
-		document.addEventListener('keydown', event => { //Get Key When Pressed
-			let holder;
-			if (window.event) { //Browser Compatibility Thingy
-				holder = window.event.keyCode;
-			} else {
-				holder = event.which;
-			}
-			keyPress(holder); //Go to keyPress Function
-		});
+		document.addEventListener('keydown', keyPress);
 
 		/* dev: */
 		/*** Passes private stuff for tests. ***/

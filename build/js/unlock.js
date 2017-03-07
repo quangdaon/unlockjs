@@ -56,6 +56,21 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		return keys;
 	}();
 
+	var stringKeyMap = {
+		U: 'up',
+		D: 'down',
+		L: 'left',
+		R: 'right',
+		X: 'esc',
+		'_': 'tab',
+		'^': 'ctrl',
+		'+': 'shift',
+		'!': 'alt',
+		'#': 'win',
+		'<': 'backspace',
+		'>': 'enter'
+	};
+
 	function arraysMatch(arr1, arr2) {
 		if (arr1.length !== arr2.length) return false;
 		for (var i = 0, len = arr1.length; i < len; i++) {
@@ -77,21 +92,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		var rawCode = data.code;
 
 		var enabled = typeof data.enabled !== 'undefined' ? data.enabled : true;
-
-		var stringKeyMap = {
-			U: 'up',
-			D: 'down',
-			L: 'left',
-			R: 'right',
-			X: 'esc',
-			'_': 'tab',
-			'^': 'ctrl',
-			'+': 'shift',
-			'!': 'alt',
-			'#': 'win',
-			'<': 'backspace',
-			'>': 'enter'
-		};
 
 		this.code = function () {
 			var codeArray = typeof rawCode === 'string' ? rawCode.split('') : rawCode;
@@ -149,12 +149,66 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		};
 	}
 
+	function Hotkey(settings) {
+		var _this3 = this;
+
+		var triggerRegex = /^(-)?([\^+!#]*)([\w\d])$/;
+
+		this.trigger = settings.trigger;
+
+		this.callback = settings.callback;
+
+		this.selector = settings.selector;
+
+		var handler = function handler(event) {
+			var keyEvents = {};
+
+			if (window.event) {
+				keyEvents.code = window.event.keyCode;
+			} else {
+				keyEvents.code = event.which;
+			}
+
+			var metaMap = {
+				'^': event.ctrlKey,
+				'+': event.shiftKey,
+				'!': event.altKey,
+				'#': event.metaKey
+			};
+
+			var triggerArray = _this3.trigger.match(triggerRegex);
+
+			var override = triggerArray[1],
+			    metaKeys = triggerArray[2],
+			    triggerKey = triggerArray[3];
+
+
+			keyEvents.default = override === '-';
+			keyEvents.meta = metaKeys.split('');
+			keyEvents.trigger = triggerKey;
+
+			var held = keyEvents.meta.reduce(function (state, next) {
+				return state && metaMap[next];
+			}, true);
+
+			if (held && keyEvents.code === keyMap[stringKeyMap[keyEvents.trigger] || keyEvents.trigger]) {
+				if (keyEvents.default) event.preventDefault();
+				_this3.callback();
+				if (keyEvents.default) return false;
+			}
+		};
+
+		var element = this.selector ? document.querySelector(this.selector) : document.body;
+
+		element.addEventListener('keypress', handler);
+	}
+
 	function Unlock(userSettings) {
 		var keys = {
 			current: [],
 			timer: null,
 			cheatCodes: [],
-			hotKey: []
+			hotKeys: []
 		};
 
 		var enabled = true;
@@ -165,7 +219,14 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			delay: 500
 		}, userSettings);
 
-		function keyPress(keyCode) {
+		function keyPress(event) {
+			var keyCode = void 0;
+			if (window.event) {
+				keyCode = window.event.keyCode;
+			} else {
+				keyCode = event.which;
+			}
+
 			clearTimeout(keys.timer);
 			keys.current.push(keyCode);
 			checkKeys();
@@ -173,12 +234,12 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		}
 
 		function checkKeys() {
-			for (var i = keys.cheatCodes.length - 1; i >= 0; i--) {
-				if (arraysMatch(keys.current, keys.cheatCodes[i].code())) {
-					_this.trigger(keys.cheatCodes[i].name);
+			keys.cheatCodes.forEach(function (cheat) {
+				if (arraysMatch(keys.current, cheat.code())) {
+					_this.trigger(cheat.name);
 					clrKeys();
 				}
-			}
+			});
 		}
 
 		function clrKeys() {
@@ -193,7 +254,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			};
 			if (arguments.length === 1) {
 				var cheatInput = arguments[0];
-				if ((typeof cheatCode === 'undefined' ? 'undefined' : _typeof(cheatCode)) !== 'object') {
+				if ((typeof cheatInput === 'undefined' ? 'undefined' : _typeof(cheatInput)) !== 'object') {
 					throw new Error('Expected object, got ' + _typeof(arguments[0]));
 				} else {
 					cheatCode = cheatInput;
@@ -226,7 +287,50 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				cheatCode = new Cheat(cheatCode);
 				keys.cheatCodes.push(cheatCode);
 			}
-			return this.find(cheatCode.name);
+			return cheatCode;
+		};
+
+		this.addHotkey = function () {
+			for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+				args[_key] = arguments[_key];
+			}
+
+			var hotkey = {
+				trigger: '',
+				selector: '',
+				callback: false
+			};
+
+			switch (args.length) {
+				case 1:
+					if (_typeof(args[0]) !== 'object') {
+						throw new Error('Expected object, got ' + _typeof(arguments[0]));
+					} else {
+						_extends(hotkey, args[0]);
+					}
+					break;
+				case 2:
+					hotkey.trigger = args[0];
+					hotkey.callback = args[1];
+					break;
+				default:
+					hotkey.trigger = args[0];
+					hotkey.selector = args[1];
+					hotkey.callback = args[2];
+					break;
+			}
+
+			if (typeof hotkey.trigger !== 'string') {
+				throw new Error('Missing or invalid trigger');
+			} else if (hotkey.selector && typeof hotkey.selector !== 'string') {
+				throw new Error('Invalid selector');
+			} else if (!hotkey.callback || typeof hotkey.callback !== 'function') {
+				throw new Error('Missing or invalid callback');
+			} else {
+				hotkey = new Hotkey(hotkey);
+				keys.hotKeys.push(hotkey);
+			}
+			return hotkey;
 		};
 
 		this.settings = function (newSettings) {
@@ -279,15 +383,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			if (enabled) cheat.trigger();
 		};
 
-		document.addEventListener('keydown', function (event) {
-			var holder = void 0;
-			if (window.event) {
-				holder = window.event.keyCode;
-			} else {
-				holder = event.which;
-			}
-			keyPress(holder);
-		});
+		document.addEventListener('keydown', keyPress);
 
 		this._data = {
 			keyMap: keyMap,

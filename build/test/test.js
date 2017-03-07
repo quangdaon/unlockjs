@@ -1,6 +1,6 @@
 (function () {
 	'use strict';
-	var unlocker = new Unlock;
+	var unlocker = new Unlock({delay: 1000});
 
 	var data = unlocker._data;
 
@@ -47,10 +47,12 @@
 		delegate.dispatchEvent(oEvent);
 
 		return {
-			onError: function (cb) {
+			chain: press,
+			end: function (err, cb) {
 				if (unsupported) {
-					cb('Browser does not support manually triggering keypresses.');
+					return err('Browser does not support manually triggering keypresses.');
 				}
+				cb && cb();
 			}
 		}
 	}
@@ -151,6 +153,8 @@
 
 			unlocker.reset();
 
+			cheatCode = null;
+
 		});
 
 		it('is not triggered automatically', function () {
@@ -165,37 +169,34 @@
 		});
 
 		it('triggers on cheat code match', function () {
-			press(65).onError(pending); // a
-			press(66); // b
-			press(67); // c
+			press(65).chain(66).chain(67).end(pending, function() {
+				expect(activated).toBe(true);
+			}); // a, b, c
 
-			expect(activated).toBe(true);
 
 			activated = false;
 
-			press(65); // a
-			press(67); // c
-			press(66); // b
+			press(65).chain(67).chain(66).end(pending, function() {
+				expect(activated).toBe(false);
+			}); // a, c, b
 
-			expect(activated).toBe(false);
 		});
 
 		it('resets on timeout', function (done) {
-			press(65).onError(pending); // a
-			press(67); // c
-			press(66); // b
+			press(65).chain(67).chain(66).end(pending, function() {
+				expect(activated).toBe(false);
 
-			expect(activated).toBe(false);
+				setTimeout(function () {
+					press(65).chain(66).chain(67).end(pending, function() {
+						expect(activated).toBe(true);
 
-			setTimeout(function () {
-				press(65); // a
-				press(66); // b
-				press(67); // c
+						done();
+					}); // a, b, c
 
-				expect(activated).toBe(true);
+				}, 1200);
+			}); // a, c, b
 
-				done();
-			}, 1000);
+
 		});
 
 		it('does not allow write access', function () {
