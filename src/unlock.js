@@ -66,6 +66,8 @@
 		this.name = data.name;
 		this.callback = data.callback;
 
+		let dead = false;
+
 		let rawCode = data.code;
 
 		let enabled = (typeof data.enabled !== 'undefined') ? data.enabled : true;
@@ -85,16 +87,25 @@
 			'>': 'enter'
 		};
 
-		this.code = () => [...rawCode].map(x => stringKeyMap[x] || x).map(item => {
-			if (!keyMap[item.toLowerCase()]) throw new Error(`Unrecognized key: ${item}`);
-			return keyMap[item.toLowerCase()];
-		});
+		this.code = () => {
+			var codeArray = (typeof rawCode === 'string') ? rawCode.split('') : rawCode;
+
+			return codeArray.map(x => stringKeyMap[x] || x).map(item => {
+				if (!keyMap[item.toLowerCase()]) throw new Error(`Unrecognized key: ${item}`);
+				return keyMap[item.toLowerCase()];
+			});
+		};
 
 		this.isEnabled = () => enabled;
-		this.enable = () => enabled = true;
+		this.enable = () => enabled = !dead && true;
 		this.disable = () => enabled = false;
-		this.toggle = () => enabled = !enabled;
+		this.toggle = () => enabled = !dead && !enabled;
 		this.trigger = () => enabled && this.callback();
+
+		this.kill = () => {
+			dead = true;
+			enabled = false;
+		};
 
 		this.set = (set, val) => {
 			switch (set) {
@@ -206,7 +217,10 @@
 
 		this.find = name => keys.cheatCodes.filter(x => x.name === name)[0];
 
-		this.reset = () => keys.cheatCodes = [];
+		this.reset = () => {
+			keys.cheatCodes.forEach(a => a.kill());
+			keys.cheatCodes.length = 0;
+		};
 
 		this.enable = function (name) {
 			if (name) {

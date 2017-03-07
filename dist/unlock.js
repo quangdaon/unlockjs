@@ -276,6 +276,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 			} else {
 				holder = event.which;
 			}
+			console.log(holder);
 			keyPress(holder);
 		});
 	}

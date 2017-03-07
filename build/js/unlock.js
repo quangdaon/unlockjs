@@ -4,8 +4,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
 (function (root, factory) {
 	if (typeof window === 'undefined') console.log('Please be aware that this library is intended for use in the browser.');
 
@@ -74,6 +72,8 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 		this.name = data.name;
 		this.callback = data.callback;
 
+		var dead = false;
+
 		var rawCode = data.code;
 
 		var enabled = typeof data.enabled !== 'undefined' ? data.enabled : true;
@@ -94,7 +94,9 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 		};
 
 		this.code = function () {
-			return [].concat(_toConsumableArray(rawCode)).map(function (x) {
+			var codeArray = typeof rawCode === 'string' ? rawCode.split('') : rawCode;
+
+			return codeArray.map(function (x) {
 				return stringKeyMap[x] || x;
 			}).map(function (item) {
 				if (!keyMap[item.toLowerCase()]) throw new Error('Unrecognized key: ' + item);
@@ -106,16 +108,21 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 			return enabled;
 		};
 		this.enable = function () {
-			return enabled = true;
+			return enabled = !dead && true;
 		};
 		this.disable = function () {
 			return enabled = false;
 		};
 		this.toggle = function () {
-			return enabled = !enabled;
+			return enabled = !dead && !enabled;
 		};
 		this.trigger = function () {
 			return enabled && _this2.callback();
+		};
+
+		this.kill = function () {
+			dead = true;
+			enabled = false;
 		};
 
 		this.set = function (set, val) {
@@ -233,7 +240,10 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 		};
 
 		this.reset = function () {
-			return keys.cheatCodes = [];
+			keys.cheatCodes.forEach(function (a) {
+				return a.kill();
+			});
+			keys.cheatCodes.length = 0;
 		};
 
 		this.enable = function (name) {
