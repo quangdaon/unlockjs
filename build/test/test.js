@@ -1,6 +1,8 @@
 (function () {
 	'use strict';
-	var unlocker = new Unlock({delay: 1000});
+	var unlocker = new Unlock({
+		delay: 1000
+	});
 
 	var data = unlocker._data;
 
@@ -11,7 +13,7 @@
 			ctrl: keys && keys.indexOf('ctrl') > -1,
 			alt: keys && keys.indexOf('alt') > -1,
 			shift: keys && keys.indexOf('shift') > -1,
-			meta: keys && keys.indexOf('meta') > -1,
+			meta: keys && keys.indexOf('meta') > -1
 		}
 
 		var unsupported = false;
@@ -31,9 +33,9 @@
 		}
 
 		if (oEvent.initKeyboardEvent) {
-			oEvent.initKeyboardEvent("keypress", true, true, document.defaultView, specialKeys.ctrl, specialKeys.alt, specialKeys.shift, specialKeys.meta, code, code);
+			oEvent.initKeyboardEvent('keypress', true, true, document.defaultView, specialKeys.ctrl, specialKeys.alt, specialKeys.shift, specialKeys.meta, code, code);
 		} else {
-			oEvent.initKeyEvent("keypress", true, true, document.defaultView, specialKeys.ctrl, specialKeys.alt, specialKeys.shift, specialKeys.meta, code, 0);
+			oEvent.initKeyEvent('keypress', true, true, document.defaultView, specialKeys.ctrl, specialKeys.alt, specialKeys.shift, specialKeys.meta, code, 0);
 		}
 
 		oEvent.keyCodeVal = code;
@@ -54,26 +56,27 @@
 				}
 				cb && cb();
 			}
-		}
+		};
 	}
 
 	describe('Unlock', function () {
 		it('is defined', function () {
 			expect(Unlock).toBeDefined();
-		})
+		});
+
 		it('is a function', function () {
 			expect(typeof Unlock).toBe('function');
 		});
 
 		it('supports CommonJS');
 		it('supports AMD');
-
 	});
 
 	describe('new Unlock', function () {
 		it('is an object', function () {
 			expect(typeof (unlocker)).toBe('object');
 		});
+
 		it('matches prototype of parent', function () {
 			expect(unlocker.__proto__).toBe(Unlock.prototype);
 		});
@@ -147,7 +150,7 @@
 					activated = true;
 				}
 			});
-		})
+		});
 
 		afterEach(function () {
 
@@ -169,25 +172,23 @@
 		});
 
 		it('triggers on cheat code match', function () {
-			press(97).chain(98).chain(99).end(pending, function() {
+			press(97).chain(98).chain(99).end(pending, function () {
 				expect(activated).toBe(true);
 			}); // a, b, c
 
-
 			activated = false;
 
-			press(97).chain(99).chain(98).end(pending, function() {
+			press(97).chain(99).chain(98).end(pending, function () {
 				expect(activated).toBe(false);
 			}); // a, c, b
-
 		});
 
 		it('resets on timeout', function (done) {
-			press(97).chain(99).chain(98).end(pending, function() {
+			press(97).chain(99).chain(98).end(pending, function () {
 				expect(activated).toBe(false);
 
 				setTimeout(function () {
-					press(97).chain(98).chain(99).end(pending, function() {
+					press(97).chain(98).chain(99).end(pending, function () {
 						expect(activated).toBe(true);
 
 						done();
@@ -195,15 +196,6 @@
 
 				}, 1200);
 			}); // a, c, b
-
-
-		});
-
-		it('does not allow write access', function () {
-			pending('I don\'t know how to do this...')
-			expect(function () {
-				cheatCode.name = 'notcheat';
-			}).toThrowError();
 		});
 
 		describe('creation', function () {
@@ -254,7 +246,7 @@
 				});
 
 				it('must be a string', function () {
-					cheatOptions.name = ['name']
+					cheatOptions.name = ['name'];
 					expect(function () {
 						unlocker.addCheat(cheatOptions);
 					}).toThrowError();
@@ -286,20 +278,20 @@
 				it('must be a string or array', function () {
 					cheatOptions.code = function () {};
 					expect(function () {
-						unlocker.addCheat(cheatOptions)
+						unlocker.addCheat(cheatOptions);
 					}).toThrowError();
 				});
 
 				it('throws an error on unrecognized keys', function () {
 					cheatOptions.code = ['key'];
 					expect(function () {
-						unlocker.addCheat(cheatOptions).code();
+						unlocker.addCheat(cheatOptions).code;
 					}).toThrowError();
 				});
 
 				it('accepts and expands a string', function () {
 					cheatOptions.code = 'UUDDLRLRba>';
-					expect(unlocker.addCheat(cheatOptions).code()).toEqual([38, 38, 40, 40, 37, 39, 37, 39, 98, 97, 13]);
+					expect(unlocker.addCheat(cheatOptions).code).toEqual([38, 38, 40, 40, 37, 39, 37, 39, 98, 97, 13]);
 				});
 
 			});
@@ -360,44 +352,148 @@
 			});
 		});
 
-		describe('.set()', function () {
-			it('cannot update name', function () {
-				expect(function () {
-					cheatCode.set('name', 'notTest');
-				}).toThrowError();
+		describe('setting', function () {
+			describe('name', function() {
+				it('cannot be updated', function () {
+					expect(function () {
+						cheatCode.name = 'notTest';
+					}).toThrowError();
+				});
 			});
 
-			it('can update callback', function () {
-				cheatCode.set('callback', function () {
-					activated = 'idk';
+			describe('callback', function() {
+				it('updates correctly', function () {
+					cheatCode.callback = function () {
+						activated = 'idk';
+					};
+
+					cheatCode.trigger();
+					expect(activated).toEqual('idk');
 				});
 
-				cheatCode.trigger();
-				expect(activated).toEqual('idk');
+				it('rejects invalid', function () {
+					expect(function () {
+						cheatCode.callback = 'derp';
+					}).toThrowError();
+				});
 			});
 
-			it('rejects invalid callback', function () {
-				expect(function () {
-					cheatCode.set('callback', 'derp');
-				}).toThrowError();
+			describe('code', function() {
+				it('can update using array', function () {
+					cheatCode.code = ['c', 'b', 'a'];
+					expect(cheatCode.code).toEqual([99, 98, 97]);
+				});
+
+				it('can update using string', function () {
+					cheatCode.code = '>cba';
+					expect(cheatCode.code).toEqual([13, 99, 98, 97]);
+				});
+
+				it('rejects invalid', function () {
+					expect(function () {
+						cheatCode.code = function () {
+							return false;
+						};
+					}).toThrowError();
+				});
 			});
 
-			it('can update code using array', function () {
-				cheatCode.set('code', ['c', 'b', 'a']);
-				expect(cheatCode.code()).toEqual([99, 98, 97]);
+		});
+	});
+
+	describe('Hotkey', function () {
+		var activated = false;
+
+		var hotKey;
+		var keyOptions;
+
+		beforeEach(function () {
+			activated = false;
+
+			keyOptions = {
+				trigger: '-^a',
+				callback: function () {
+					activated = true;
+				}
+			};
+
+			hotKey = unlocker.addHotkey(keyOptions);
+		});
+
+		afterEach(function () {
+			unlocker.reset();
+			hotKey = null;
+		});
+
+		it('is not triggered automatically', function () {
+			expect(activated).toBe(false);
+		});
+
+		it('is returned upon creation', function () {
+			expect(hotKey.trigger).toBe('-^a');
+		});
+
+		it('triggers on input match', function () {
+			press(97, ['ctrl']).end(pending, function () {
+				expect(activated).toBe(true);
+			}); // ctrl + a
+		});
+
+		describe('creation', function () {
+			it('accepts an object');
+			it('accepts individual');
+
+			describe('trigger parameter', function () {
+				it('cannot be missing', function () {
+					expect(function () {
+						unlocker.addHotkey({
+							callback: keyOptions.callback
+						});
+					}).toThrowError();
+				});
+
+				it('must be string', function () {
+					keyOptions.trigger = ['^s'];
+					expect(function () {
+						unlocker.addHotkey(keyOptions);
+					}).toThrowError();
+				});
+
+				it('must be in correct format', function () {
+					keyOptions.trigger = 'rgkeoigjrtiogvjro';
+					expect(function () {
+						unlocker.addHotkey(keyOptions);
+					}).toThrowError();
+				});
 			});
 
-			it('can update code using string', function () {
-				cheatCode.set('code', '>cba');
-				expect(cheatCode.code()).toEqual([13, 99, 98, 97]);
+			describe('callback parameter', function () {
+				it('cannot be missing');
+				it('must be a function');
 			});
 
-			it('rejects invalid code', function () {
-				expect(function () {
-					cheatCode.set('code', function () {
-						return false;
-					});
-				}).toThrowError();
+			describe('selector parameter', function () {
+				it('accepts a string');
+				it('accepts an element');
+				it('returns body of not provided');
+				it('rejects other types');
+			});
+
+		});
+
+		describe('setting', function () {
+			describe('trigger', function() {
+				it('validates trigger format');
+			});
+
+			describe('callback', function() {
+				it('must be a function');
+			});
+
+			describe('selector', function() {
+				it('must be a string or element');
+				it('clears previous event handler');
+				it('sets new handler');
 			});
 		});
 	});
@@ -437,6 +533,8 @@
 				cheat.trigger();
 				expect(activated).toBe(false);
 			});
+
+			it('clears hotkeys');
 		});
 
 	});

@@ -4,8 +4,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
 (function (root, factory) {
 	if (typeof window === 'undefined') console.log('Please be aware that this library is intended for use in the browser.');
 
@@ -44,7 +42,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 		var alph = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
 
 		for (var i = 0; i < alph.length; i++) {
-			keys[alph[i]] = i + 65;
+			keys[alph[i]] = i + 97;
 		}
 
 		for (var j = 0; j <= 9; j++) {
@@ -58,6 +56,21 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 		return keys;
 	}();
 
+	var stringKeyMap = {
+		U: 'up',
+		D: 'down',
+		L: 'left',
+		R: 'right',
+		X: 'esc',
+		'_': 'tab',
+		'^': 'ctrl',
+		'+': 'shift',
+		'!': 'alt',
+		'#': 'win',
+		'<': 'backspace',
+		'>': 'enter'
+	};
+
 	function arraysMatch(arr1, arr2) {
 		if (arr1.length !== arr2.length) return false;
 		for (var i = 0, len = arr1.length; i < len; i++) {
@@ -68,78 +81,202 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 		return true;
 	}
 
+	var def = function def(target, prop, val, desc) {
+		var descriptor = {
+			enumerable: false,
+			configurable: false
+		};
+
+		if (!val.get && !val.set) {
+			if (typeof val === 'function' && !desc) {
+				descriptor.get = function () {
+					return val;
+				};
+			} else {
+				descriptor.writable = true;
+				descriptor.value = val;
+			}
+		} else {
+			desc = val;
+		}
+
+		_extends(descriptor, desc);
+
+		Object.defineProperty(target, prop, descriptor);
+	};
+
 	function Cheat(data) {
 		var _this2 = this;
 
-		this.name = data.name;
-		this.callback = data.callback;
+		var callback = data.callback,
+		    code = data.code;
 
-		var rawCode = data.code;
+
+		def(this, 'name', data.name, {
+			writable: false
+		});
+
+		def(this, 'callback', {
+			set: function set(val) {
+				if (typeof val === 'function') {
+					callback = val;
+				} else {
+					throw new Error('Invalid callback. Expected a function, got ' + (typeof val === 'undefined' ? 'undefined' : _typeof(val)));
+				}
+			},
+			get: function get() {
+				return callback;
+			}
+		});
+
+		def(this, 'code', {
+			set: function set(val) {
+				if ((typeof val === 'undefined' ? 'undefined' : _typeof(val)) === 'object' || typeof val === 'string') {
+					code = val;
+				} else {
+					throw new Error('Invalid callback. Expected an array or string, got ' + (typeof val === 'undefined' ? 'undefined' : _typeof(val)));
+				}
+			},
+			get: function get() {
+				var codeArray = typeof code === 'string' ? code.split('') : code;
+
+				return codeArray.map(function (x) {
+					return stringKeyMap[x] || x;
+				}).map(function (item) {
+					if (!keyMap[item.toLowerCase()]) throw new Error('Unrecognized key: ' + item);
+					return keyMap[item.toLowerCase()];
+				});
+			}
+		});
 
 		var enabled = typeof data.enabled !== 'undefined' ? data.enabled : true;
+		var dead = false;
 
-		var stringKeyMap = {
-			U: 'up',
-			D: 'down',
-			L: 'left',
-			R: 'right',
-			X: 'esc',
-			'_': 'tab',
-			'^': 'ctrl',
-			'+': 'shift',
-			'!': 'alt',
-			'#': 'win',
-			'<': 'backspace',
-			'>': 'enter'
-		};
-
-		this.code = function () {
-			return [].concat(_toConsumableArray(rawCode)).map(function (x) {
-				return stringKeyMap[x] || x;
-			}).map(function (item) {
-				if (!keyMap[item.toLowerCase()]) throw new Error('Unrecognized key: ' + item);
-				return keyMap[item.toLowerCase()];
-			});
-		};
-
-		this.isEnabled = function () {
+		def(this, 'isEnabled', function () {
 			return enabled;
-		};
-		this.enable = function () {
-			return enabled = true;
-		};
-		this.disable = function () {
+		});
+		def(this, 'enable', function () {
+			return enabled = !dead && true;
+		});
+		def(this, 'disable', function () {
 			return enabled = false;
-		};
-		this.toggle = function () {
-			return enabled = !enabled;
-		};
-		this.trigger = function () {
+		});
+		def(this, 'toggle', function () {
+			return enabled = !dead && !enabled;
+		});
+		def(this, 'trigger', function () {
 			return enabled && _this2.callback();
-		};
+		});
+
+		def(this, 'kill', function () {
+			dead = true;
+			enabled = false;
+		});
 
 		this.set = function (set, val) {
-			switch (set) {
-				case 'name':
-					throw new Error('Name cannot be changed');
-				case 'callback':
-					if (typeof val === 'function') {
-						_this2.callback = val;
-					} else {
-						throw new Error('Invalid callback. Expected a function, got ' + (typeof val === 'undefined' ? 'undefined' : _typeof(val)));
-					}
-					break;
-				case 'code':
-					if ((typeof val === 'undefined' ? 'undefined' : _typeof(val)) === 'object' || typeof val === 'string') {
-						rawCode = val;
-					} else {
-						throw new Error('Invalid callback. Expected an array or string, got ' + (typeof val === 'undefined' ? 'undefined' : _typeof(val)));
-					}
-					break;
-				default:
-					throw new Error('Invalid Setting');
-			}
+			console.warn('Cheat.set() is deprecated. You can just set values using Cheat.property = value.');
+			_this2[set] = val;
 		};
+	}
+
+	function Hotkey(data) {
+		var triggerRegex = /^(-)?([\^+!#]*)([\w\d])$/;
+
+		var trigger = data.trigger,
+		    callback = data.callback,
+		    selector = data.selector;
+
+
+		var element = void 0;
+
+		console.log(trigger);
+
+		def(this, 'trigger', {
+			set: function set(val) {
+				if (triggerRegex.test(val)) {
+					trigger = val;
+				} else {
+					throw new Error('Invalid trigger. For more information, please refer to the docs.');
+				}
+			},
+			get: function get() {
+				return trigger;
+			}
+		});
+
+		def(this, 'callback', {
+			set: function set(val) {
+				callback = val;
+			},
+			get: function get() {
+				return callback;
+			}
+		});
+
+		def(this, 'selector', {
+			set: function set(val) {
+				if (element) element.removeEventListener('keypress', handler);
+				if (val) {
+					if (typeof val === 'string') {
+						selector = val;
+						element = document.querySelector(val);
+					} else if (val.nodeType) {
+						selector = val;
+						element = val;
+					} else {
+						throw new Error('Invalid Selector. Expected an array or string, got ' + (typeof val === 'undefined' ? 'undefined' : _typeof(val)) + '.');
+					}
+				} else {
+					selector = val;
+					element = document.body;
+				}
+				element.addEventListener('keypress', handler);
+			},
+			get: function get() {
+				return selector;
+			}
+		});
+
+		this.selector = selector;
+
+		function handler(event) {
+			var keyEvents = {};
+			var keyCode = void 0;
+
+			if (window.event) {
+				keyCode = window.event.keyCode;
+			} else {
+				keyCode = event.keyCode > 0 ? event.keyCode : event.which;
+			}
+
+			var metaMap = {
+				'^': event.ctrlKey,
+				'+': event.shiftKey,
+				'!': event.altKey,
+				'#': event.metaKey
+			};
+
+			var triggerArray = trigger.match(triggerRegex);
+
+			var override = triggerArray[1],
+			    metaKeys = triggerArray[2],
+			    triggerKey = triggerArray[3];
+
+
+			keyEvents.default = override === '-';
+			keyEvents.meta = metaKeys.split('');
+			keyEvents.trigger = triggerKey;
+
+			var held = keyEvents.meta.reduce(function (state, next) {
+				return state && metaMap[next];
+			}, true);
+
+			if (held && keyCode === keyMap[stringKeyMap[keyEvents.trigger] || keyEvents.trigger]) {
+				if (keyEvents.default) event.preventDefault();
+				callback();
+				if (keyEvents.default) return false;
+			}
+		}
 	}
 
 	function Unlock(userSettings) {
@@ -147,7 +284,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 			current: [],
 			timer: null,
 			cheatCodes: [],
-			hotKey: []
+			hotkeys: []
 		};
 
 		var enabled = true;
@@ -158,7 +295,14 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 			delay: 500
 		}, userSettings);
 
-		function keyPress(keyCode) {
+		function keyPress(event) {
+			var keyCode = void 0;
+			if (window.event) {
+				keyCode = window.event.keyCode;
+			} else {
+				keyCode = event.keyCode > 0 ? event.keyCode : event.which;
+			}
+
 			clearTimeout(keys.timer);
 			keys.current.push(keyCode);
 			checkKeys();
@@ -166,12 +310,12 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 		}
 
 		function checkKeys() {
-			for (var i = keys.cheatCodes.length - 1; i >= 0; i--) {
-				if (arraysMatch(keys.current, keys.cheatCodes[i].code())) {
-					_this.trigger(keys.cheatCodes[i].name);
+			keys.cheatCodes.forEach(function (cheat) {
+				if (arraysMatch(keys.current, cheat.code)) {
+					_this.trigger(cheat.name);
 					clrKeys();
 				}
-			}
+			});
 		}
 
 		function clrKeys() {
@@ -186,7 +330,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 			};
 			if (arguments.length === 1) {
 				var cheatInput = arguments[0];
-				if ((typeof cheatCode === 'undefined' ? 'undefined' : _typeof(cheatCode)) !== 'object') {
+				if ((typeof cheatInput === 'undefined' ? 'undefined' : _typeof(cheatInput)) !== 'object') {
 					throw new Error('Expected object, got ' + _typeof(arguments[0]));
 				} else {
 					cheatCode = cheatInput;
@@ -219,7 +363,52 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 				cheatCode = new Cheat(cheatCode);
 				keys.cheatCodes.push(cheatCode);
 			}
-			return this.find(cheatCode.name);
+			return cheatCode;
+		};
+
+		this.addHotkey = function () {
+			for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+				args[_key] = arguments[_key];
+			}
+
+			var hotkey = {
+				trigger: '',
+				selector: '',
+				callback: false
+			};
+
+			switch (args.length) {
+				case 1:
+					if (_typeof(args[0]) !== 'object') {
+						throw new Error('Expected object, got ' + _typeof(arguments[0]));
+					} else {
+						_extends(hotkey, args[0]);
+					}
+					break;
+				case 2:
+					hotkey.trigger = args[0];
+					hotkey.callback = args[1];
+					break;
+				default:
+					hotkey.trigger = args[0];
+					hotkey.selector = args[1];
+					hotkey.callback = args[2];
+					break;
+			}
+
+			if (typeof hotkey.trigger !== 'string') {
+				throw new Error('Missing or invalid trigger');
+			} else if (!/^(-)?([\^+!#]*)([\w\d])$/.test(hotkey.trigger)) {
+				throw new Error('Invalid trigger. Please refer to docs');
+			} else if (hotkey.selector && typeof hotkey.selector !== 'string') {
+				throw new Error('Invalid selector');
+			} else if (!hotkey.callback || typeof hotkey.callback !== 'function') {
+				throw new Error('Missing or invalid callback');
+			} else {
+				hotkey = new Hotkey(hotkey);
+				keys.hotkeys.push(hotkey);
+			}
+			return hotkey;
 		};
 
 		this.settings = function (newSettings) {
@@ -233,7 +422,10 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 		};
 
 		this.reset = function () {
-			return keys.cheatCodes = [];
+			keys.cheatCodes.forEach(function (a) {
+				return a.kill();
+			});
+			keys.cheatCodes.length = 0;
 		};
 
 		this.enable = function (name) {
@@ -269,16 +461,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 			if (enabled) cheat.trigger();
 		};
 
-		document.addEventListener('keydown', function (event) {
-			var holder = void 0;
-			if (window.event) {
-				holder = window.event.keyCode;
-			} else {
-				holder = event.which;
-			}
-			console.log(holder);
-			keyPress(holder);
-		});
+		document.addEventListener('keypress', keyPress);
 	}
 
 	return Unlock;

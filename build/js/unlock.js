@@ -81,86 +81,165 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		return true;
 	}
 
+	var def = function def(target, prop, val, desc) {
+		var descriptor = {
+			enumerable: false,
+			configurable: false
+		};
+
+		if (!val.get && !val.set) {
+			if (typeof val === 'function' && !desc) {
+				descriptor.get = function () {
+					return val;
+				};
+			} else {
+				descriptor.writable = true;
+				descriptor.value = val;
+			}
+		} else {
+			desc = val;
+		}
+
+		_extends(descriptor, desc);
+
+		Object.defineProperty(target, prop, descriptor);
+	};
+
 	function Cheat(data) {
 		var _this2 = this;
 
-		this.name = data.name;
-		this.callback = data.callback;
+		var callback = data.callback,
+		    code = data.code;
 
-		var dead = false;
 
-		var rawCode = data.code;
+		def(this, 'name', data.name, {
+			writable: false
+		});
+
+		def(this, 'callback', {
+			set: function set(val) {
+				if (typeof val === 'function') {
+					callback = val;
+				} else {
+					throw new Error('Invalid callback. Expected a function, got ' + (typeof val === 'undefined' ? 'undefined' : _typeof(val)));
+				}
+			},
+			get: function get() {
+				return callback;
+			}
+		});
+
+		def(this, 'code', {
+			set: function set(val) {
+				if ((typeof val === 'undefined' ? 'undefined' : _typeof(val)) === 'object' || typeof val === 'string') {
+					code = val;
+				} else {
+					throw new Error('Invalid callback. Expected an array or string, got ' + (typeof val === 'undefined' ? 'undefined' : _typeof(val)));
+				}
+			},
+			get: function get() {
+				var codeArray = typeof code === 'string' ? code.split('') : code;
+
+				return codeArray.map(function (x) {
+					return stringKeyMap[x] || x;
+				}).map(function (item) {
+					if (!keyMap[item.toLowerCase()]) throw new Error('Unrecognized key: ' + item);
+					return keyMap[item.toLowerCase()];
+				});
+			}
+		});
 
 		var enabled = typeof data.enabled !== 'undefined' ? data.enabled : true;
+		var dead = false;
 
-		this.code = function () {
-			var codeArray = typeof rawCode === 'string' ? rawCode.split('') : rawCode;
-
-			return codeArray.map(function (x) {
-				return stringKeyMap[x] || x;
-			}).map(function (item) {
-				if (!keyMap[item.toLowerCase()]) throw new Error('Unrecognized key: ' + item);
-				return keyMap[item.toLowerCase()];
-			});
-		};
-
-		this.isEnabled = function () {
+		def(this, 'isEnabled', function () {
 			return enabled;
-		};
-		this.enable = function () {
+		});
+		def(this, 'enable', function () {
 			return enabled = !dead && true;
-		};
-		this.disable = function () {
+		});
+		def(this, 'disable', function () {
 			return enabled = false;
-		};
-		this.toggle = function () {
+		});
+		def(this, 'toggle', function () {
 			return enabled = !dead && !enabled;
-		};
-		this.trigger = function () {
+		});
+		def(this, 'trigger', function () {
 			return enabled && _this2.callback();
-		};
+		});
 
-		this.kill = function () {
+		def(this, 'kill', function () {
 			dead = true;
 			enabled = false;
-		};
+		});
 
 		this.set = function (set, val) {
-			switch (set) {
-				case 'name':
-					throw new Error('Name cannot be changed');
-				case 'callback':
-					if (typeof val === 'function') {
-						_this2.callback = val;
-					} else {
-						throw new Error('Invalid callback. Expected a function, got ' + (typeof val === 'undefined' ? 'undefined' : _typeof(val)));
-					}
-					break;
-				case 'code':
-					if ((typeof val === 'undefined' ? 'undefined' : _typeof(val)) === 'object' || typeof val === 'string') {
-						rawCode = val;
-					} else {
-						throw new Error('Invalid callback. Expected an array or string, got ' + (typeof val === 'undefined' ? 'undefined' : _typeof(val)));
-					}
-					break;
-				default:
-					throw new Error('Invalid Setting');
-			}
+			console.warn('Cheat.set() is deprecated. You can just set values using Cheat.property = value.');
+			_this2[set] = val;
 		};
 	}
 
-	function Hotkey(settings) {
-		var _this3 = this;
-
+	function Hotkey(data) {
 		var triggerRegex = /^(-)?([\^+!#]*)([\w\d])$/;
 
-		this.trigger = settings.trigger;
+		var trigger = data.trigger,
+		    callback = data.callback,
+		    selector = data.selector;
 
-		this.callback = settings.callback;
 
-		this.selector = settings.selector;
+		var element = void 0;
 
-		var handler = function handler(event) {
+		console.log(trigger);
+
+		def(this, 'trigger', {
+			set: function set(val) {
+				if (triggerRegex.test(val)) {
+					trigger = val;
+				} else {
+					throw new Error('Invalid trigger. For more information, please refer to the docs.');
+				}
+			},
+			get: function get() {
+				return trigger;
+			}
+		});
+
+		def(this, 'callback', {
+			set: function set(val) {
+				callback = val;
+			},
+			get: function get() {
+				return callback;
+			}
+		});
+
+		def(this, 'selector', {
+			set: function set(val) {
+				if (element) element.removeEventListener('keypress', handler);
+				if (val) {
+					if (typeof val === 'string') {
+						selector = val;
+						element = document.querySelector(val);
+					} else if (val.nodeType) {
+						selector = val;
+						element = val;
+					} else {
+						throw new Error('Invalid Selector. Expected an array or string, got ' + (typeof val === 'undefined' ? 'undefined' : _typeof(val)) + '.');
+					}
+				} else {
+					selector = val;
+					element = document.body;
+				}
+				element.addEventListener('keypress', handler);
+			},
+			get: function get() {
+				return selector;
+			}
+		});
+
+		this.selector = selector;
+
+		function handler(event) {
 			var keyEvents = {};
 			var keyCode = void 0;
 
@@ -170,8 +249,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				keyCode = event.keyCode > 0 ? event.keyCode : event.which;
 			}
 
-			console.log('Hotkey:', keyCode);
-
 			var metaMap = {
 				'^': event.ctrlKey,
 				'+': event.shiftKey,
@@ -179,7 +256,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				'#': event.metaKey
 			};
 
-			var triggerArray = _this3.trigger.match(triggerRegex);
+			var triggerArray = trigger.match(triggerRegex);
 
 			var override = triggerArray[1],
 			    metaKeys = triggerArray[2],
@@ -196,14 +273,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 			if (held && keyCode === keyMap[stringKeyMap[keyEvents.trigger] || keyEvents.trigger]) {
 				if (keyEvents.default) event.preventDefault();
-				_this3.callback();
+				callback();
 				if (keyEvents.default) return false;
 			}
-		};
-
-		var element = this.selector ? document.querySelector(this.selector) : document.body;
-
-		element.addEventListener('keypress', handler);
+		}
 	}
 
 	function Unlock(userSettings) {
@@ -211,7 +284,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			current: [],
 			timer: null,
 			cheatCodes: [],
-			hotKeys: []
+			hotkeys: []
 		};
 
 		var enabled = true;
@@ -230,8 +303,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				keyCode = event.keyCode > 0 ? event.keyCode : event.which;
 			}
 
-			console.log('Cheat:', keyCode);
-
 			clearTimeout(keys.timer);
 			keys.current.push(keyCode);
 			checkKeys();
@@ -240,7 +311,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 		function checkKeys() {
 			keys.cheatCodes.forEach(function (cheat) {
-				if (arraysMatch(keys.current, cheat.code())) {
+				if (arraysMatch(keys.current, cheat.code)) {
 					_this.trigger(cheat.name);
 					clrKeys();
 				}
@@ -327,13 +398,15 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 			if (typeof hotkey.trigger !== 'string') {
 				throw new Error('Missing or invalid trigger');
+			} else if (!/^(-)?([\^+!#]*)([\w\d])$/.test(hotkey.trigger)) {
+				throw new Error('Invalid trigger. Please refer to docs');
 			} else if (hotkey.selector && typeof hotkey.selector !== 'string') {
 				throw new Error('Invalid selector');
 			} else if (!hotkey.callback || typeof hotkey.callback !== 'function') {
 				throw new Error('Missing or invalid callback');
 			} else {
 				hotkey = new Hotkey(hotkey);
-				keys.hotKeys.push(hotkey);
+				keys.hotkeys.push(hotkey);
 			}
 			return hotkey;
 		};

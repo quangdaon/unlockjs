@@ -75,74 +75,148 @@
 		return true; //If Nothing Doesn't Match, Everything Matches; Therefore, Arrays Match
 	}
 
+	const def = (target, prop, val, desc) => {
+		const descriptor = {
+			enumerable: false,
+			configurable: false,
+		};
+
+		if (!val.get && !val.set) {
+			if (typeof val === 'function' && !desc) {
+				descriptor.get = () => val;
+			} else {
+				descriptor.writable = true;
+				descriptor.value = val;
+			}
+		} else {
+			desc = val;
+		}
+
+		Object.assign(descriptor, desc);
+
+		Object.defineProperty(target, prop, descriptor);
+	};
+
 	/*** Private single cheat factory ***/
 	function Cheat(data) {
 
-		/*** Todo: Make properties readonly ***/
-		this.name = data.name;
-		this.callback = data.callback;
+		let {
+			callback,
+			code
+		} = data;
 
-		let dead = false;
+		def(this, 'name', data.name, {
+			writable: false
+		});
 
-		let rawCode = data.code;
-
-		let enabled = (typeof data.enabled !== 'undefined') ? data.enabled : true;
-
-		this.code = () => {
-			var codeArray = (typeof rawCode === 'string') ? rawCode.split('') : rawCode;
-
-			return codeArray.map(x => stringKeyMap[x] || x).map(item => {
-				if (!keyMap[item.toLowerCase()]) throw new Error(`Unrecognized key: ${item}`);
-				return keyMap[item.toLowerCase()];
-			});
-		};
-
-		this.isEnabled = () => enabled;
-		this.enable = () => enabled = !dead && true;
-		this.disable = () => enabled = false;
-		this.toggle = () => enabled = !dead && !enabled;
-		this.trigger = () => enabled && this.callback();
-
-		this.kill = () => {
-			dead = true;
-			enabled = false;
-		};
-
-		this.set = (set, val) => {
-			switch (set) {
-			case 'name':
-				throw new Error('Name cannot be changed');
-			case 'callback':
+		def(this, 'callback', {
+			set: (val) => {
 				if (typeof val === 'function') {
-					this.callback = val;
+					callback = val;
 				} else {
 					throw new Error(`Invalid callback. Expected a function, got ${typeof val}`);
 				}
-				break;
-			case 'code':
+			},
+			get: () => callback
+		});
+
+		def(this, 'code', {
+			set: (val) => {
 				if (typeof val === 'object' || typeof val === 'string') {
-					rawCode = val;
+					code = val;
 				} else {
 					throw new Error(`Invalid callback. Expected an array or string, got ${typeof val}`);
 				}
-				break;
-			default:
-				throw new Error('Invalid Setting');
+			},
+			get: () => {
+				var codeArray = (typeof code === 'string') ? code.split('') : code;
+
+				return codeArray.map(x => stringKeyMap[x] || x).map(item => {
+					if (!keyMap[item.toLowerCase()]) throw new Error(`Unrecognized key: ${item}`);
+					return keyMap[item.toLowerCase()];
+				});
 			}
+		});
+
+		// Object.defineProperty(this, '')
+
+		let enabled = (typeof data.enabled !== 'undefined') ? data.enabled : true;
+		let dead = false;
+
+		def(this, 'isEnabled', () => enabled);
+		def(this, 'enable', () => enabled = !dead && true);
+		def(this, 'disable', () => enabled = false);
+		def(this, 'toggle', () => enabled = !dead && !enabled);
+		def(this, 'trigger', () => enabled && this.callback());
+
+		def(this, 'kill', () => {
+			dead = true;
+			enabled = false;
+		});
+
+		this.set = (set, val) => {
+			console.warn('Cheat.set() is deprecated. You can just set values using Cheat.property = value.');
+			this[set] = val;
 		};
 	}
 
 	/*** Private Hotkey ***/
-	function Hotkey(settings) {
+	function Hotkey(data) {
 		const triggerRegex = /^(-)?([\^+!#]*)([\w\d])$/;
 
-		this.trigger = settings.trigger;
+		let {
+			trigger,
+			callback,
+			selector
+		} = data;
 
-		this.callback = settings.callback;
+		let element;
 
-		this.selector = settings.selector;
+		console.log(trigger);
 
-		const handler = event => {
+		def(this, 'trigger', {
+			set: val => {
+				if (triggerRegex.test(val)) {
+					trigger = val;
+				} else {
+					throw new Error('Invalid trigger. For more information, please refer to the docs.');
+				}
+			},
+			get: () => trigger
+		});
+
+		def(this, 'callback', {
+			set: val => {
+				callback = val;
+			},
+			get: () => callback
+		});
+
+		def(this, 'selector', {
+			set: val => {
+				if (element) element.removeEventListener('keypress', handler);
+				if (val) {
+					if (typeof val === 'string') {
+						selector = val;
+						element = document.querySelector(val);
+					} else if (val.nodeType) {
+						selector = val;
+						element = val;
+					} else {
+						throw new Error(`Invalid Selector. Expected an array or string, got ${typeof val}.`);
+					}
+				} else {
+					selector = val;
+					element = document.body;
+				}
+				element.addEventListener('keypress', handler);
+			},
+			get: () => selector
+		});
+
+		this.selector = selector;
+
+		function handler(event) {
 			const keyEvents = {};
 			let keyCode;
 
@@ -152,8 +226,6 @@
 				keyCode = event.keyCode > 0 ? event.keyCode : event.which;
 			}
 
-			console.log('Hotkey:', keyCode);
-
 			const metaMap = {
 				'^': event.ctrlKey,
 				'+': event.shiftKey,
@@ -161,7 +233,7 @@
 				'#': event.metaKey
 			};
 
-			var triggerArray = this.trigger.match(triggerRegex);
+			var triggerArray = trigger.match(triggerRegex);
 
 			const {
 				1: override,
@@ -176,15 +248,11 @@
 			const held = keyEvents.meta.reduce((state, next) => state && metaMap[next], true);
 
 			if (held && keyCode === keyMap[stringKeyMap[keyEvents.trigger] || keyEvents.trigger]) {
-				if(keyEvents.default) event.preventDefault();
-				this.callback();
-				if(keyEvents.default) return false;
+				if (keyEvents.default) event.preventDefault();
+				callback();
+				if (keyEvents.default) return false;
 			}
-		};
-
-		const element = this.selector ? document.querySelector(this.selector) : document.body;
-
-		element.addEventListener('keypress', handler);
+		}
 	}
 
 	function Unlock(userSettings) {
@@ -192,7 +260,7 @@
 			current: [],
 			timer: null,
 			cheatCodes: [],
-			hotKeys: []
+			hotkeys: []
 		};
 
 		let enabled = true;
@@ -211,8 +279,6 @@
 				keyCode = event.keyCode > 0 ? event.keyCode : event.which;
 			}
 
-			console.log('Cheat:', keyCode);
-
 			clearTimeout(keys.timer); //Clears Timer
 			keys.current.push(keyCode); //Add Key Pressed to Array
 			checkKeys(); //Go to checkKeys() Function
@@ -221,7 +287,7 @@
 
 		function checkKeys() {
 			keys.cheatCodes.forEach(cheat => {
-				if (arraysMatch(keys.current, cheat.code())) {
+				if (arraysMatch(keys.current, cheat.code)) {
 					_this.trigger(cheat.name);
 					clrKeys();
 				}
@@ -306,13 +372,15 @@
 
 			if (typeof hotkey.trigger !== 'string') {
 				throw new Error('Missing or invalid trigger');
+			} else if (!/^(-)?([\^+!#]*)([\w\d])$/.test(hotkey.trigger)) {
+				throw new Error('Invalid trigger. Please refer to docs');
 			} else if (hotkey.selector && typeof hotkey.selector !== 'string') {
 				throw new Error('Invalid selector');
 			} else if (!hotkey.callback || typeof hotkey.callback !== 'function') {
 				throw new Error('Missing or invalid callback');
 			} else {
 				hotkey = new Hotkey(hotkey);
-				keys.hotKeys.push(hotkey);
+				keys.hotkeys.push(hotkey);
 			}
 			return hotkey;
 		};
