@@ -83,11 +83,11 @@
 
 		if (!val.get && !val.set) {
 			if (typeof val === 'function' && !desc) {
-				descriptor.get = () => val;
+				descriptor.writable = false;
 			} else {
 				descriptor.writable = true;
-				descriptor.value = val;
 			}
+			descriptor.value = val;
 		} else {
 			desc = val;
 		}

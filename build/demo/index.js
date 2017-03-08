@@ -10,4 +10,6 @@
 	var hotKey = cheat.addHotkey('-^s', 'textarea', function () {
 		alert('Saved!');
 	});
+
+	console.log(cheatCode);
 })();

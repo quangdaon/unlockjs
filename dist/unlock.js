@@ -89,13 +89,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 		if (!val.get && !val.set) {
 			if (typeof val === 'function' && !desc) {
-				descriptor.get = function () {
-					return val;
-				};
+				descriptor.writable = false;
 			} else {
 				descriptor.writable = true;
-				descriptor.value = val;
 			}
+			descriptor.value = val;
 		} else {
 			desc = val;
 		}
