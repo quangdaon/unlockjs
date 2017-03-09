@@ -172,7 +172,7 @@
 
 		let element;
 
-		console.log(trigger);
+		// console.log(trigger);
 
 		def(this, 'trigger', {
 			set: val => {
@@ -186,8 +186,12 @@
 		});
 
 		def(this, 'callback', {
-			set: val => {
-				callback = val;
+			set: (val) => {
+				if (typeof val === 'function') {
+					callback = val;
+				} else {
+					throw new Error(`Invalid callback. Expected a function, got ${typeof val}`);
+				}
 			},
 			get: () => callback
 		});
@@ -195,6 +199,7 @@
 		def(this, 'selector', {
 			set: val => {
 				if (element) element.removeEventListener('keypress', handler);
+				console.log(element);
 				if (val) {
 					if (typeof val === 'string') {
 						selector = val;
@@ -209,9 +214,14 @@
 					selector = val;
 					element = document.body;
 				}
-				element.addEventListener('keypress', handler);
+				console.log(element);
+				try {
+					element.addEventListener('keypress', handler);
+				} catch(e) {
+					console.warn('Element Not Found.');
+				}
 			},
-			get: () => selector
+			get: () => [selector, element]
 		});
 
 		this.selector = selector;

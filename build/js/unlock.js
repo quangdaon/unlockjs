@@ -89,13 +89,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 		if (!val.get && !val.set) {
 			if (typeof val === 'function' && !desc) {
-				descriptor.get = function () {
-					return val;
-				};
+				descriptor.writable = false;
 			} else {
 				descriptor.writable = true;
-				descriptor.value = val;
 			}
+			descriptor.value = val;
 		} else {
 			desc = val;
 		}
@@ -189,8 +187,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 		var element = void 0;
 
-		console.log(trigger);
-
 		def(this, 'trigger', {
 			set: function set(val) {
 				if (triggerRegex.test(val)) {
@@ -206,7 +202,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 		def(this, 'callback', {
 			set: function set(val) {
-				callback = val;
+				if (typeof val === 'function') {
+					callback = val;
+				} else {
+					throw new Error('Invalid callback. Expected a function, got ' + (typeof val === 'undefined' ? 'undefined' : _typeof(val)));
+				}
 			},
 			get: function get() {
 				return callback;
@@ -216,6 +216,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		def(this, 'selector', {
 			set: function set(val) {
 				if (element) element.removeEventListener('keypress', handler);
+				console.log(element);
 				if (val) {
 					if (typeof val === 'string') {
 						selector = val;
@@ -230,10 +231,15 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 					selector = val;
 					element = document.body;
 				}
-				element.addEventListener('keypress', handler);
+				console.log(element);
+				try {
+					element.addEventListener('keypress', handler);
+				} catch (e) {
+					console.warn('Element Not Found.');
+				}
 			},
 			get: function get() {
-				return selector;
+				return [selector, element];
 			}
 		});
 

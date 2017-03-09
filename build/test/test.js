@@ -46,6 +46,8 @@
 
 		var delegate = element || document.body;
 
+		console.log(delegate);
+
 		delegate.dispatchEvent(oEvent);
 
 		return {
@@ -353,7 +355,7 @@
 		});
 
 		describe('setting', function () {
-			describe('name', function() {
+			describe('name', function () {
 				it('cannot be updated', function () {
 					expect(function () {
 						cheatCode.name = 'notTest';
@@ -361,7 +363,7 @@
 				});
 			});
 
-			describe('callback', function() {
+			describe('callback', function () {
 				it('updates correctly', function () {
 					cheatCode.callback = function () {
 						activated = 'idk';
@@ -378,7 +380,7 @@
 				});
 			});
 
-			describe('code', function() {
+			describe('code', function () {
 				it('can update using array', function () {
 					cheatCode.code = ['c', 'b', 'a'];
 					expect(cheatCode.code).toEqual([99, 98, 97]);
@@ -440,8 +442,24 @@
 		});
 
 		describe('creation', function () {
-			it('accepts an object');
-			it('accepts individual');
+			it('accepts an object', function () {
+				expect(function () {
+					unlocker.addHotkey({
+						trigger: '^X',
+						callback: function () {
+
+						}
+					});
+				}).not.toThrowError();
+			});
+
+			it('accepts individual', function () {
+				expect(function () {
+					unlocker.addHotkey('^+X', function () {
+
+					});
+				}).not.toThrowError();
+			});
 
 			describe('trigger parameter', function () {
 				it('cannot be missing', function () {
@@ -449,6 +467,10 @@
 						unlocker.addHotkey({
 							callback: keyOptions.callback
 						});
+					}).toThrowError();
+
+					expect(function () {
+						unlocker.addHotkey(keyOptions.callback);
 					}).toThrowError();
 				});
 
@@ -464,36 +486,145 @@
 					expect(function () {
 						unlocker.addHotkey(keyOptions);
 					}).toThrowError();
+
+					keyOptions.trigger = '-^z';
+					expect(function () {
+						unlocker.addHotkey(keyOptions);
+					}).not.toThrowError();
 				});
 			});
 
 			describe('callback parameter', function () {
-				it('cannot be missing');
-				it('must be a function');
+				it('cannot be missing', function () {
+					expect(function () {
+						unlocker.addHotkey(keyOptions.name);
+					}).toThrowError();
+
+					expect(function () {
+						unlocker.addHotkey({
+							name: keyOptions.name
+						});
+					}).toThrowError();
+
+				});
+
+				it('must be a function', function () {
+					keyOptions.callback = 'not a function';
+
+					expect(function () {
+						unlocker.addHotkey(keyOptions);
+					}).toThrowError();
+				});
 			});
 
 			describe('selector parameter', function () {
-				it('accepts a string');
-				it('accepts an element');
-				it('returns body of not provided');
-				it('rejects other types');
+				it('accepts a string', function () {
+					keyOptions.selector = '.jasmine-title';
+
+					expect(function () {
+						unlocker.addHotkey(keyOptions);
+					}).not.toThrowError();
+				});
+
+				it('accepts an element', function () {
+					keyOptions.selector = document.querySelector('p');
+
+					expect(function () {
+						unlocker.addHotkey(keyOptions);
+					}).not.toThrowError();
+				});
+
+				it('requires existing element', function () {
+					keyOptions.selector = '.derp';
+
+					console.warn = jasmine.createSpy("warn");
+
+					unlocker.addHotkey(keyOptions);
+
+					expect(console.warn).toHaveBeenCalledWith('Element Not Found.');
+
+					// keyOptions.selector = '.derp';
+
+					// expect(console.warn).toHaveBeenCalledWith(unlocker.addHotkey(keyOptions));
+				});
+
+				it('returns body of not provided', function () {
+					expect(hotKey.selector[1]).toBe(document.body);
+				});
+
+				it('rejects other types', function () {
+					keyOptions.selector = function () {};
+
+					expect(function () {
+						unlocker.addHotkey(keyOptions);
+					}).toThrowError();
+				});
 			});
 
 		});
 
 		describe('setting', function () {
-			describe('trigger', function() {
-				it('validates trigger format');
+			describe('trigger', function () {
+				it('validates trigger format', function () {
+					expect(function () {
+						hotKey.trigger = '^f';
+					}).not.toThrowError();
+
+					expect(function () {
+						hotKey.trigger = '^fa';
+					}).toThrowError();
+				});
 			});
 
-			describe('callback', function() {
-				it('must be a function');
+			describe('callback', function () {
+				it('must be a function', function () {
+					expect(function () {
+						hotKey.callback = function () {
+							return 1;
+						};
+					}).not.toThrowError();
+
+					expect(function () {
+						hotKey.callback = 'a';
+					}).toThrowError();
+				});
 			});
 
-			describe('selector', function() {
-				it('must be a string or element');
-				it('clears previous event handler');
-				it('sets new handler');
+			describe('selector', function () {
+				it('must be a string or element', function() {
+					expect(function () {
+						hotKey.selector = 'p';
+					}).not.toThrowError();
+
+					expect(function () {
+						hotKey.selector = document.createElement('div');
+					}).not.toThrowError();
+
+					expect(function () {
+						hotKey.selector = ['a'];
+					}).toThrowError();
+				});
+
+				it('binds to element', function() {
+					pending('Manual test seems to work, so must be somthing wrong with press function.');
+					var elem = document.createElement('input');
+
+					console.log('MEMES');
+					hotKey.selector = elem;
+					console.log('MEMES');
+
+					press(97, ['ctrl'], elem).end(pending, function () {
+						expect(activated).toBe(true);
+					}); // ctrl + a
+
+					activated = false;
+
+
+					press(97, ['ctrl'], document.querySelector('div')).end(pending, function () {
+						expect(activated).toBe(false);
+					}); // ctrl + a
+				});
+				// it('sets new handler');
 			});
 		});
 	});

@@ -11,5 +11,7 @@
 		alert('Saved!');
 	});
 
+	hotKey.selector = document.querySelector('input');
+
 	console.log(cheatCode);
 })();
