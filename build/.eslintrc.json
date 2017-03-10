@@ -1,0 +1,17 @@
+{
+	"env": {
+		"browser": true
+	},
+	"globals": {
+		"describe": true,
+		"it": true,
+		"expect": true,
+		"beforeEach": true,
+		"afterEach": true,
+		"Unlock": true
+	},
+	"extends": "eslint:recommended",
+	"rules": {
+		"no-console": "off"
+	}
+}
