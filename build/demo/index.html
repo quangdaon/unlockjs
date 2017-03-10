@@ -1,14 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-	<meta charset="UTF-8">
-	<title>UnlockJS Demo</title>
+    <meta charset="UTF-8">
+    <title>UnlockJS Demo</title>
+    <script type="text/javascript" src="../js/unlock.js"></script>
 </head>
+
 <body>
+    <div id="demo">
+        <p>Please note that this is a limited demo. More content and features will be coming soon. For now, simply input the Konami Code to check it out (using the enter key in place of "Start")!</p>
+        <script type="text/javascript">
+        var cheat = new Unlock({
+        	delay: 1000
+        });
 
-	<p>Please note that this is a limited demo. More content and features will be coming soon. For now, simply input the Konami Code to check it out (using the enter key in place of "Start")!</p>
+        var cheatCode = cheat.addCheat('konami', ['up', 'up', 'down', 'down', 'left', 'right', 'left', 'right', 'b', 'a', 'enter'], function() {
+            alert('Cheater!');
+        });
+        </script>
+        <input type="text" name="">
+    </div>
+    <script type="text/javascript">
+    var demo = document.querySelector('#demo');
 
-	<script type="text/javascript" src="/js/unlock.min.js"></script>
-	<script type="text/javascript" src="./index.js"></script>
+    console.log(demo);
+
+    demo.innerHTML = demo.innerHTML.replace(/<(\/?)script.*?>/g, '<$1pre>');
+    </script>
 </body>
 </html>

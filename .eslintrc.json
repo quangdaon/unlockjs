@@ -25,6 +25,10 @@
             "error",
             "always"
         ],
-        "no-console": "off"
+        "no-console": "off",
+        "eqeqeq": ["error", "always"],
+	    "prefer-template": "error",
+	    "operator-assignment": ["error", "always"],
+	    "no-array-constructor": "error"
     }
 }

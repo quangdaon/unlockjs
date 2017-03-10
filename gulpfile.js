@@ -11,7 +11,7 @@ const reload = browserSync.reload;
 
 const dist = require('yargs').argv.dist;
 
-gulp.task('build', () => {
+gulp.task('build', done => {
 	let dest = 'build/js',
 		stripOpt = {
 			start_comment: "dist:",
@@ -47,7 +47,8 @@ gulp.task('build', () => {
 });
 
 gulp.task('serve', ['build'], () => {
-	browserSync.create().init({
+	const server = browserSync.create();
+	server.init({
 		port: 5600,
 		server: {
 			baseDir: './build/demo',
@@ -61,11 +62,14 @@ gulp.task('serve', ['build'], () => {
 		notify: false,
 		ghostMode: false
 	});
-	gulp.watch('./src/unlock.js', ['build']).on('change', browserSync.reload);
+
+	gulp.watch('src/unlock.js', ['build']);
+	gulp.watch('build/js/*.js', server.reload);
 });
 
 gulp.task('test', ['build'], () => {
-	browserSync.create().init({
+	const server = browserSync.create();
+	server.init({
 		port: 5700,
 		server: {
 			baseDir: './build/test',
@@ -79,7 +83,8 @@ gulp.task('test', ['build'], () => {
 		notify: false,
 		ghostMode: false
 	});
-	gulp.watch('./src/unlock.js', ['build']).on('change', browserSync.reload);
+
+	gulp.watch('build/js/*.js', server.reload);
 });
 
 gulp.task('concurrent', ['serve', 'test']);

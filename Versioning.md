@@ -3,7 +3,7 @@
 All version numbers should match the following regex:
 
 ```regex
-/^(?<core>\d+)\.(?<subver>\d)\.(?<miniver>\d)(?:-(?<dev>alpha|beta)\.(?<devver>\d))?(?:-(?<fuck>\d+))?$/
+/^(?<core>\d+)\.(?<subver>\d)\.(?<miniver>\d)(?:-(?<dev>alpha|beta)\.(?<devver>\d))?(?:-(?<eff>\d+))?$/
 ```
 
 ## e.g. v3.0.1-alpha.5-8
@@ -14,4 +14,4 @@ All version numbers should match the following regex:
 	- ${miniver} (1) - Mini-version: Bug fixes in core/stable version
 	- ${dev} (alpha) - Alpha - Dev; Beta - Testing
 	- ${devver} (5) - Alpha/Beta version - mainly bug fixes or major updates while in dev
-	- ${fuck} (8) - Fuck-up version: Often accompanied by the commit message "fucking forgot to..."; mainly things that were missed in the deployment process, but library is expected to work
+	- ${eff} (8) - Fuck-up version: Often accompanied by the commit message "fucking forgot to..."; mainly things that were missed in the deployment process, but library is expected to work
