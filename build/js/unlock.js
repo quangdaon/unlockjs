@@ -1,8 +1,22 @@
 'use strict';
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+var _extends = Object.assign || function (target) {
+		for (var i = 1; i < arguments.length; i++) {
+			var source = arguments[i];
+			for (var key in source) {
+				if (Object.prototype.hasOwnProperty.call(source, key)) {
+					target[key] = source[key];
+				}
+			}
+		}
+		return target;
+	};
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+	                                                                                  return typeof obj;
+                                                                                  } : function (obj) {
+	                                                                                  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+                                                                                  };
 
 (function (root, factory) {
 	if (typeof window === 'undefined') console.log('Please be aware that this library is intended for use in the browser.');
@@ -81,40 +95,43 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		return true;
 	}
 
-	var def = function def(target, prop, val, desc) {
-		var descriptor = {
-			enumerable: false,
-			configurable: false
-		};
+	var defineNewProperty = function defineNewProperty(target) {
+		return function (prop, val, desc) {
+			var descriptor = {
+				enumerable: false,
+				configurable: false
+			};
 
-		if (!val.get && !val.set) {
-			if (typeof val === 'function' && !desc) {
-				descriptor.writable = false;
+			if (!val.get && !val.set) {
+				if (typeof val === 'function' && !desc) {
+					descriptor.writable = false;
+				} else {
+					descriptor.writable = true;
+				}
+				descriptor.value = val;
 			} else {
-				descriptor.writable = true;
+				desc = val;
 			}
-			descriptor.value = val;
-		} else {
-			desc = val;
-		}
 
-		_extends(descriptor, desc);
+			_extends(descriptor, desc);
 
-		Object.defineProperty(target, prop, descriptor);
+			Object.defineProperty(target, prop, descriptor);
+		};
 	};
 
 	function Cheat(data) {
 		var _this2 = this;
 
+		var def = defineNewProperty(this);
+
 		var callback = data.callback,
-		    code = data.code;
+			code = data.code;
 
-
-		def(this, 'name', data.name, {
+		def('name', data.name, {
 			writable: false
 		});
 
-		def(this, 'callback', {
+		def('callback', {
 			set: function set(val) {
 				if (typeof val === 'function') {
 					callback = val;
@@ -127,7 +144,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			}
 		});
 
-		def(this, 'code', {
+		def('code', {
 			set: function set(val) {
 				if ((typeof val === 'undefined' ? 'undefined' : _typeof(val)) === 'object' || typeof val === 'string') {
 					code = val;
@@ -150,23 +167,23 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		var enabled = typeof data.enabled !== 'undefined' ? data.enabled : true;
 		var dead = false;
 
-		def(this, 'isEnabled', function () {
+		def('isEnabled', function () {
 			return enabled;
 		});
-		def(this, 'enable', function () {
+		def('enable', function () {
 			return enabled = !dead && true;
 		});
-		def(this, 'disable', function () {
+		def('disable', function () {
 			return enabled = false;
 		});
-		def(this, 'toggle', function () {
+		def('toggle', function () {
 			return enabled = !dead && !enabled;
 		});
-		def(this, 'trigger', function () {
+		def('trigger', function () {
 			return enabled && _this2.callback();
 		});
 
-		def(this, 'kill', function () {
+		def('kill', function () {
 			dead = true;
 			enabled = false;
 		});
@@ -178,16 +195,17 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 	}
 
 	function Hotkey(data) {
+		var def = defineNewProperty(this);
+
 		var triggerRegex = /^(-)?([\^+!#]*)([\w\d])$/;
 
 		var trigger = data.trigger,
-		    callback = data.callback,
-		    selector = data.selector;
-
+			callback = data.callback,
+			selector = data.selector;
 
 		var element = void 0;
 
-		def(this, 'trigger', {
+		def('trigger', {
 			set: function set(val) {
 				if (triggerRegex.test(val)) {
 					trigger = val;
@@ -200,7 +218,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			}
 		});
 
-		def(this, 'callback', {
+		def('callback', {
 			set: function set(val) {
 				if (typeof val === 'function') {
 					callback = val;
@@ -213,10 +231,9 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			}
 		});
 
-		def(this, 'selector', {
+		def('selector', {
 			set: function set(val) {
 				if (element) element.removeEventListener('keypress', handler);
-				console.log(element);
 				if (val) {
 					if (typeof val === 'string') {
 						selector = val;
@@ -231,7 +248,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 					selector = val;
 					element = document.body;
 				}
-				console.log(element);
 				try {
 					element.addEventListener('keypress', handler);
 				} catch (e) {
@@ -245,7 +261,29 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 		this.selector = selector;
 
+		var enabled = typeof data.enabled !== 'undefined' ? data.enabled : true;
+		var dead = false;
+
+		def('isEnabled', function () {
+			return enabled;
+		});
+		def('enable', function () {
+			return enabled = !dead && true;
+		});
+		def('disable', function () {
+			return enabled = false;
+		});
+		def('toggle', function () {
+			return enabled = !dead && !enabled;
+		});
+
+		def('kill', function () {
+			dead = true;
+			enabled = false;
+		});
+
 		function handler(event) {
+			if (!enabled) return true;
 			var keyEvents = {};
 			var keyCode = void 0;
 
@@ -265,17 +303,21 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			var triggerArray = trigger.match(triggerRegex);
 
 			var override = triggerArray[1],
-			    metaKeys = triggerArray[2],
-			    triggerKey = triggerArray[3];
-
+				metaKeys = triggerArray[2],
+				triggerKey = triggerArray[3];
 
 			keyEvents.default = override === '-';
 			keyEvents.meta = metaKeys.split('');
 			keyEvents.trigger = triggerKey;
 
-			var held = keyEvents.meta.reduce(function (state, next) {
-				return state && metaMap[next];
-			}, true);
+			var held = true;
+
+			for (var char in metaMap) {
+				if (keyEvents.meta.indexOf(char) > -1 !== metaMap[char]) {
+					held = false;
+					break;
+				}
+			}
 
 			if (held && keyCode === keyMap[stringKeyMap[keyEvents.trigger] || keyEvents.trigger]) {
 				if (keyEvents.default) event.preventDefault();
@@ -286,6 +328,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 	}
 
 	function Unlock(userSettings) {
+		var _this3 = this;
+
+		var def = defineNewProperty(this);
+
 		var keys = {
 			current: [],
 			timer: null,
@@ -328,36 +374,40 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			keys.current = [];
 		}
 
-		this.addCheat = function () {
+		def('addCheat', function () {
+			for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+				args[_key] = arguments[_key];
+			}
+
 			var cheatCode = {
 				name: '',
 				code: '',
 				callback: false
 			};
-			if (arguments.length === 1) {
-				var cheatInput = arguments[0];
+			if (args.length === 1) {
+				var cheatInput = args[0];
 				if ((typeof cheatInput === 'undefined' ? 'undefined' : _typeof(cheatInput)) !== 'object') {
-					throw new Error('Expected object, got ' + _typeof(arguments[0]));
+					throw new Error('Expected object, got ' + _typeof(args[0]));
 				} else {
 					cheatCode = cheatInput;
 				}
 			} else {
-				for (var i = 0; i < arguments.length; i++) {
-					switch (_typeof(arguments[i])) {
-						case 'string':
-							cheatCode.name = cheatCode.name || arguments[i];
-							break;
-						case 'object':
-							cheatCode.code = cheatCode.code || arguments[i];
-							break;
-						case 'function':
-							cheatCode.callback = cheatCode.callback || arguments[i];
-							break;
+				for (var i = 0; i < args.length; i++) {
+					switch (_typeof(args[i])) {
+					case 'string':
+						cheatCode.name = cheatCode.name || args[i];
+						break;
+					case 'object':
+						cheatCode.code = cheatCode.code || args[i];
+						break;
+					case 'function':
+						cheatCode.callback = cheatCode.callback || args[i];
+						break;
 					}
 				}
 			}
 
-			if (this.find(cheatCode.name)) {
+			if (_this3.find(cheatCode.name)) {
 				throw new Error('Cheat already exists with name ' + cheatCode.name);
 			} else if (!cheatCode.code || _typeof(cheatCode.code) !== 'object' && typeof cheatCode.code !== 'string') {
 				throw new Error('Missing or invalid "code" property');
@@ -370,36 +420,32 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				keys.cheatCodes.push(cheatCode);
 			}
 			return cheatCode;
-		};
+		});
 
-		this.addHotkey = function () {
-			for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-				args[_key] = arguments[_key];
-			}
-
+		def('addHotkey', function () {
 			var hotkey = {
 				trigger: '',
 				selector: '',
 				callback: false
 			};
 
-			switch (args.length) {
-				case 1:
-					if (_typeof(args[0]) !== 'object') {
-						throw new Error('Expected object, got ' + _typeof(arguments[0]));
-					} else {
-						_extends(hotkey, args[0]);
-					}
-					break;
-				case 2:
-					hotkey.trigger = args[0];
-					hotkey.callback = args[1];
-					break;
-				default:
-					hotkey.trigger = args[0];
-					hotkey.selector = args[1];
-					hotkey.callback = args[2];
-					break;
+			switch (arguments.length) {
+			case 1:
+				if (_typeof(arguments.length <= 0 ? undefined : arguments[0]) !== 'object') {
+					throw new Error('Expected object, got ' + _typeof(arguments.length <= 0 ? undefined : arguments[0]));
+				} else {
+					_extends(hotkey, arguments.length <= 0 ? undefined : arguments[0]);
+				}
+				break;
+			case 2:
+				hotkey.trigger = arguments.length <= 0 ? undefined : arguments[0];
+				hotkey.callback = arguments.length <= 1 ? undefined : arguments[1];
+				break;
+			default:
+				hotkey.trigger = arguments.length <= 0 ? undefined : arguments[0];
+				hotkey.selector = arguments.length <= 1 ? undefined : arguments[1];
+				hotkey.callback = arguments.length <= 2 ? undefined : arguments[2];
+				break;
 			}
 
 			if (typeof hotkey.trigger !== 'string') {
@@ -415,57 +461,61 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				keys.hotkeys.push(hotkey);
 			}
 			return hotkey;
-		};
+		});
 
-		this.settings = function (newSettings) {
-			_extends(settings, newSettings);
-		};
+		def('settings', function (newSettings) {
+			return _extends(settings, newSettings);
+		});
 
-		this.find = function (name) {
+		def('find', function (name) {
 			return keys.cheatCodes.filter(function (x) {
 				return x.name === name;
 			})[0];
-		};
+		});
 
-		this.reset = function () {
+		def('reset', function () {
 			keys.cheatCodes.forEach(function (a) {
 				return a.kill();
 			});
 			keys.cheatCodes.length = 0;
-		};
+			keys.hotkeys.forEach(function (a) {
+				return a.kill();
+			});
+			keys.hotkeys.length = 0;
+		});
 
-		this.enable = function (name) {
+		def('enable', function (name) {
 			if (name) {
-				var cheat = this.find(name);
+				var cheat = _this3.find(name);
 				cheat.enable();
 			} else {
 				enabled = true;
 			}
-		};
+		});
 
-		this.disable = function (name) {
+		def('disable', function (name) {
 			if (name) {
-				var cheat = this.find(name);
+				var cheat = _this3.find(name);
 				cheat.disable();
 			} else {
 				enabled = false;
 			}
-		};
+		});
 
-		this.toggle = function (name) {
+		def('toggle', function (name) {
 			if (name) {
-				var cheat = this.find(name);
+				var cheat = _this3.find(name);
 				cheat.toggle();
 			} else {
 				enabled = !enabled;
 			}
-		};
+		});
 
-		this.trigger = function (name) {
-			var cheat = this.find(name);
+		def('trigger', function (name) {
+			var cheat = _this3.find(name);
 
 			if (enabled) cheat.trigger();
-		};
+		});
 
 		document.addEventListener('keypress', keyPress);
 

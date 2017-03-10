@@ -133,7 +133,7 @@ Please Note: The name property is read-only and will fail silently.
 
 Hotkeys are added in pretty much the same way as cheatcodes:
 
-```
+```javascript
 unlocker.addHotkey('^z', '.selector', function() {
 	alert('Undo!');
 });
@@ -157,26 +157,16 @@ The trigger is what activates the callback and must be in the following format:
 '^+a'
 ```
 
-- One or more modifier key character (^, +, !, or #).
+- Zero or more modifier key character (^, +, !, or #).
 - Exactly one trigger key (Any non-modifier key character).
 
-The supported characters match the [character chart above](#character-chart).
+The supported characters match the [character chart above](#character-chart). The initial behavior of a hotkey is not disabled by default (i.e. Ctrl+S still opens a save dialog). To prevent the default behavior, prepend your trigger string with a hyphen. For example, `^s` (Ctrl+S) should be replaced with `-^s`.
 
 #### Modifying Hotkeys
 
 Like cheat codes, hotkey parameters can be modified by assigning them a new value.
 
 \* Please note that hotkeys are still in a young stage and has not been thoroughly tested. Use at your own risk.
-
-## ToDo
-
-- [X] Add keyboard shortcuts.
-- [X] Make Cheat prototype readonly.
-- [X] Add intuitive way to update cheat callback and code.
-- [ ] Support for multiple trigger in hotkey.
-- [ ] Fix issue allowing Ctrl+Shift+A to match Ctrl+A and etc.
-- [ ] Make proper example/demo.
-- [ ] Host official docs.
 
 ## Contribution
 

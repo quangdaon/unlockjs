@@ -65,51 +65,50 @@
 		'>': 'enter'
 	};
 
-	function arraysMatch(arr1, arr2) { //Checks if Array Match - Not My Script
-		if (arr1.length !== arr2.length) return false; //If Array Lengths Don't Match, Return False
-		for (let i = 0, len = arr1.length; i < len; i++) { //Cycle Through Array Contents
-			if (arr1[i] !== arr2[i]) { //Checks if Content in Location Match
+	function arraysMatch(firstArr, secondArr) { //Checks if Array Match - Not My Script
+		if (firstArr.length !== secondArr.length) return false; //If Array Lengths Don't Match, Return False
+		for (let i = 0, len = firstArr.length; i < len; i++) { //Cycle Through Array Contents
+			if (firstArr[i] !== secondArr[i]) { //Checks if Content in Location Match
 				return false; //If They Don't Match, Return False
 			}
 		}
 		return true; //If Nothing Doesn't Match, Everything Matches; Therefore, Arrays Match
 	}
 
-	const def = (target, prop, val, desc) => {
-		const descriptor = {
-			enumerable: false,
-			configurable: false,
-		};
+	const defineNewProperty = (target) => {
+		return (prop, val, desc) => {
+			const descriptor = {
+				enumerable: false,
+				configurable: false,
+			};
 
-		if (!val.get && !val.set) {
-			if (typeof val === 'function' && !desc) {
-				descriptor.writable = false;
+			if (!val.get && !val.set) {
+				descriptor.writable = typeof val !== 'function' || desc;
+				descriptor.value = val;
 			} else {
-				descriptor.writable = true;
+				desc = val;
 			}
-			descriptor.value = val;
-		} else {
-			desc = val;
-		}
 
-		Object.assign(descriptor, desc);
+			Object.assign(descriptor, desc);
 
-		Object.defineProperty(target, prop, descriptor);
+			Object.defineProperty(target, prop, descriptor);
+		};
 	};
 
 	/*** Private single cheat factory ***/
 	function Cheat(data) {
+		const def = defineNewProperty(this);
 
 		let {
 			callback,
 			code
 		} = data;
 
-		def(this, 'name', data.name, {
+		def('name', data.name, {
 			writable: false
 		});
 
-		def(this, 'callback', {
+		def('callback', {
 			set: (val) => {
 				if (typeof val === 'function') {
 					callback = val;
@@ -120,7 +119,7 @@
 			get: () => callback
 		});
 
-		def(this, 'code', {
+		def('code', {
 			set: (val) => {
 				if (typeof val === 'object' || typeof val === 'string') {
 					code = val;
@@ -129,7 +128,7 @@
 				}
 			},
 			get: () => {
-				var codeArray = (typeof code === 'string') ? code.split('') : code;
+				const codeArray = (typeof code === 'string') ? code.split('') : code;
 
 				return codeArray.map(x => stringKeyMap[x] || x).map(item => {
 					if (!keyMap[item.toLowerCase()]) throw new Error(`Unrecognized key: ${item}`);
@@ -143,13 +142,13 @@
 		let enabled = (typeof data.enabled !== 'undefined') ? data.enabled : true;
 		let dead = false;
 
-		def(this, 'isEnabled', () => enabled);
-		def(this, 'enable', () => enabled = !dead && true);
-		def(this, 'disable', () => enabled = false);
-		def(this, 'toggle', () => enabled = !dead && !enabled);
-		def(this, 'trigger', () => enabled && this.callback());
+		def('isEnabled', () => enabled);
+		def('enable', () => enabled = !dead && true);
+		def('disable', () => enabled = false);
+		def('toggle', () => enabled = !dead && !enabled);
+		def('trigger', () => enabled && this.callback());
 
-		def(this, 'kill', () => {
+		def('kill', () => {
 			dead = true;
 			enabled = false;
 		});
@@ -162,6 +161,8 @@
 
 	/*** Private Hotkey ***/
 	function Hotkey(data) {
+		const def = defineNewProperty(this);
+
 		const triggerRegex = /^(-)?([\^+!#]*)([\w\d])$/;
 
 		let {
@@ -174,7 +175,7 @@
 
 		// console.log(trigger);
 
-		def(this, 'trigger', {
+		def('trigger', {
 			set: val => {
 				if (triggerRegex.test(val)) {
 					trigger = val;
@@ -185,7 +186,7 @@
 			get: () => trigger
 		});
 
-		def(this, 'callback', {
+		def('callback', {
 			set: (val) => {
 				if (typeof val === 'function') {
 					callback = val;
@@ -196,10 +197,10 @@
 			get: () => callback
 		});
 
-		def(this, 'selector', {
+		def('selector', {
 			set: val => {
 				if (element) element.removeEventListener('keypress', handler);
-				console.log(element);
+				// console.log(element);
 				if (val) {
 					if (typeof val === 'string') {
 						selector = val;
@@ -214,10 +215,10 @@
 					selector = val;
 					element = document.body;
 				}
-				console.log(element);
+				// console.log(element);
 				try {
 					element.addEventListener('keypress', handler);
-				} catch(e) {
+				} catch (e) {
 					console.warn('Element Not Found.');
 				}
 			},
@@ -226,7 +227,21 @@
 
 		this.selector = selector;
 
+		let enabled = (typeof data.enabled !== 'undefined') ? data.enabled : true;
+		let dead = false;
+
+		def('isEnabled', () => enabled);
+		def('enable', () => enabled = !dead && true);
+		def('disable', () => enabled = false);
+		def('toggle', () => enabled = !dead && !enabled);
+
+		def('kill', () => {
+			dead = true;
+			enabled = false;
+		});
+
 		function handler(event) {
+			if (!enabled) return true;
 			const keyEvents = {};
 			let keyCode;
 
@@ -243,7 +258,7 @@
 				'#': event.metaKey
 			};
 
-			var triggerArray = trigger.match(triggerRegex);
+			const triggerArray = trigger.match(triggerRegex);
 
 			const {
 				1: override,
@@ -255,7 +270,14 @@
 			keyEvents.meta = metaKeys.split('');
 			keyEvents.trigger = triggerKey;
 
-			const held = keyEvents.meta.reduce((state, next) => state && metaMap[next], true);
+			let held = true;
+
+			for (let char in metaMap) {
+				if (keyEvents.meta.indexOf(char) > -1 !== metaMap[char]) {
+					held = false;
+					break;
+				}
+			}
 
 			if (held && keyCode === keyMap[stringKeyMap[keyEvents.trigger] || keyEvents.trigger]) {
 				if (keyEvents.default) event.preventDefault();
@@ -266,6 +288,8 @@
 	}
 
 	function Unlock(userSettings) {
+		const def = defineNewProperty(this);
+
 		const keys = {
 			current: [],
 			timer: null,
@@ -289,6 +313,8 @@
 				keyCode = event.keyCode > 0 ? event.keyCode : event.which;
 			}
 
+			// console.log(keyCode);
+
 			clearTimeout(keys.timer); //Clears Timer
 			keys.current.push(keyCode); //Add Key Pressed to Array
 			checkKeys(); //Go to checkKeys() Function
@@ -310,30 +336,30 @@
 			keys.current = [];
 		}
 
-		this.addCheat = function () {
+		def('addCheat', (...args) => {
 			let cheatCode = {
 				name: '',
 				code: '',
 				callback: false
 			};
-			if (arguments.length === 1) {
-				const cheatInput = arguments[0];
+			if (args.length === 1) {
+				const cheatInput = args[0];
 				if (typeof (cheatInput) !== 'object') {
-					throw new Error(`Expected object, got ${typeof (arguments[0])}`);
+					throw new Error(`Expected object, got ${typeof (args[0])}`);
 				} else {
 					cheatCode = cheatInput;
 				}
 			} else {
-				for (let i = 0; i < arguments.length; i++) {
-					switch (typeof (arguments[i])) {
+				for (let i = 0; i < args.length; i++) {
+					switch (typeof (args[i])) {
 					case 'string':
-						cheatCode.name = cheatCode.name || arguments[i];
+						cheatCode.name = cheatCode.name || args[i];
 						break;
 					case 'object':
-						cheatCode.code = cheatCode.code || arguments[i];
+						cheatCode.code = cheatCode.code || args[i];
 						break;
 					case 'function':
-						cheatCode.callback = cheatCode.callback || arguments[i];
+						cheatCode.callback = cheatCode.callback || args[i];
 						break;
 					}
 				}
@@ -352,9 +378,9 @@
 				keys.cheatCodes.push(cheatCode);
 			}
 			return cheatCode;
-		};
+		});
 
-		this.addHotkey = function (...args) {
+		def('addHotkey', (...args) => {
 			let hotkey = {
 				trigger: '',
 				selector: '',
@@ -364,7 +390,7 @@
 			switch (args.length) {
 			case 1:
 				if (typeof args[0] !== 'object') {
-					throw new Error(`Expected object, got ${typeof (arguments[0])}`);
+					throw new Error(`Expected object, got ${typeof (args[0])}`);
 				} else {
 					Object.assign(hotkey, args[0]);
 				}
@@ -393,51 +419,51 @@
 				keys.hotkeys.push(hotkey);
 			}
 			return hotkey;
-		};
+		});
 
-		this.settings = newSettings => {
-			Object.assign(settings, newSettings);
-		};
+		def('settings', newSettings => Object.assign(settings, newSettings));
 
-		this.find = name => keys.cheatCodes.filter(x => x.name === name)[0];
+		def('find', name => keys.cheatCodes.filter(x => x.name === name)[0]);
 
-		this.reset = () => {
+		def('reset', () => {
 			keys.cheatCodes.forEach(a => a.kill());
 			keys.cheatCodes.length = 0;
-		};
+			keys.hotkeys.forEach(a => a.kill());
+			keys.hotkeys.length = 0;
+		});
 
-		this.enable = function (name) {
+		def('enable', name => {
 			if (name) {
 				const cheat = this.find(name);
 				cheat.enable();
 			} else {
 				enabled = true;
 			}
-		};
+		});
 
-		this.disable = function (name) {
+		def('disable', name => {
 			if (name) {
 				const cheat = this.find(name);
 				cheat.disable();
 			} else {
 				enabled = false;
 			}
-		};
+		});
 
-		this.toggle = function (name) {
+		def('toggle', name => {
 			if (name) {
 				const cheat = this.find(name);
 				cheat.toggle();
 			} else {
 				enabled = !enabled;
 			}
-		};
+		});
 
-		this.trigger = function (name) {
+		def('trigger', name => {
 			const cheat = this.find(name);
 
 			if (enabled) cheat.trigger();
-		};
+		});
 
 		document.addEventListener('keypress', keyPress);
 

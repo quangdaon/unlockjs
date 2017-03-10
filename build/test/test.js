@@ -46,8 +46,6 @@
 
 		var delegate = element || document.body;
 
-		console.log(delegate);
-
 		delegate.dispatchEvent(oEvent);
 
 		return {
@@ -435,10 +433,74 @@
 			expect(hotKey.trigger).toBe('-^a');
 		});
 
-		it('triggers on input match', function () {
-			press(97, ['ctrl']).end(pending, function () {
-				expect(activated).toBe(true);
-			}); // ctrl + a
+		describe('triggering', function () {
+			it('happens on input match', function () {
+				press(97, ['ctrl']).end(pending, function () {
+					expect(activated).toBe(true);
+				}); // ctrl + a
+			});
+
+			it('accepts no meta key', function () {
+				hotKey.trigger = '-a';
+				press(97, ['ctrl']).end(pending, function () {
+					expect(activated).toBe(false);
+				}); // ctrl + a
+				press(97).end(pending, function () {
+					expect(activated).toBe(true);
+				}); // alt + a
+			});
+
+			it('accepts alt key', function () {
+				hotKey.trigger = '-!a';
+				press(97, ['ctrl']).end(pending, function () {
+					expect(activated).toBe(false);
+				}); // ctrl + a
+				press(97, ['alt']).end(pending, function () {
+					expect(activated).toBe(true);
+				}); // alt + a
+			});
+
+			it('accepts shift key', function () {
+				hotKey.trigger = '-+a';
+				press(97, ['ctrl']).end(pending, function () {
+					expect(activated).toBe(false);
+				}); // ctrl + a
+				press(97, ['shift']).end(pending, function () {
+					expect(activated).toBe(true);
+				}); // shift + a
+			});
+
+			it('accepts Windows key', function () {
+				hotKey.trigger = '-#a';
+				press(97, ['ctrl']).end(pending, function () {
+					expect(activated).toBe(false);
+				}); // ctrl + a
+				press(97, ['meta']).end(pending, function () {
+					expect(activated).toBe(true);
+				}); // win + a
+			});
+
+			it('requires exact metakey combo', function () {
+				press(97, ['ctrl']).end(pending, function () {
+					expect(activated).toBe(true);
+				}); // ctrl + a
+
+				activated = false;
+
+				press(97, ['ctrl', 'shift']).end(pending, function () {
+					expect(activated).toBe(false);
+				}); // ctrl + a
+
+				hotKey.trigger = '-^+a';
+
+				press(97, ['ctrl']).end(pending, function () {
+					expect(activated).toBe(false);
+				}); // ctrl + a
+
+				press(97, ['ctrl', 'shift']).end(pending, function () {
+					expect(activated).toBe(true);
+				}); // ctrl + a
+			});
 		});
 
 		describe('creation', function () {
@@ -591,7 +653,7 @@
 			});
 
 			describe('selector', function () {
-				it('must be a string or element', function() {
+				it('must be a string or element', function () {
 					expect(function () {
 						hotKey.selector = 'p';
 					}).not.toThrowError();
@@ -605,20 +667,17 @@
 					}).toThrowError();
 				});
 
-				it('binds to element', function() {
+				it('binds to element', function () {
 					pending('Manual test seems to work, so must be somthing wrong with press function.');
 					var elem = document.createElement('input');
 
-					console.log('MEMES');
 					hotKey.selector = elem;
-					console.log('MEMES');
 
 					press(97, ['ctrl'], elem).end(pending, function () {
 						expect(activated).toBe(true);
 					}); // ctrl + a
 
 					activated = false;
-
 
 					press(97, ['ctrl'], document.querySelector('div')).end(pending, function () {
 						expect(activated).toBe(false);
@@ -631,7 +690,7 @@
 
 	describe('Unlock Methods', function () {
 		var activated = false;
-		var cheat;
+		var cheat, hotkey;
 
 		afterEach(function () {
 			unlocker.reset();
@@ -640,6 +699,13 @@
 			cheat = unlocker.addCheat({
 				name: 'mycheat',
 				code: 'ab',
+				callback: function () {
+					activated = true;
+				}
+			});
+
+			hotkey = unlocker.addHotkey({
+				trigger: '-^a',
 				callback: function () {
 					activated = true;
 				}
@@ -665,7 +731,20 @@
 				expect(activated).toBe(false);
 			});
 
-			it('clears hotkeys');
+			it('clears hotkeys', function () {
+
+				press(97, ['ctrl']).end(pending, function () {
+					expect(activated).toBe(true);
+				}); // ctrl + a
+
+				unlocker.reset();
+				activated = false;
+
+				press(97, ['ctrl']).end(pending, function () {
+					expect(activated).toBe(false);
+				}); // ctrl + a
+
+			});
 		});
 
 	});

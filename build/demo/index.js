@@ -7,7 +7,7 @@
 		alert('Cheater!');
 	});
 
-	var hotKey = cheat.addHotkey('-^s', 'textarea', function () {
+	var hotKey = cheat.addHotkey('-^s', function () {
 		alert('Saved!');
 	});
 
