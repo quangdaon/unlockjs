@@ -71,10 +71,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		'>': 'enter'
 	};
 
-	function arraysMatch(arr1, arr2) {
-		if (arr1.length !== arr2.length) return false;
-		for (var i = 0, len = arr1.length; i < len; i++) {
-			if (arr1[i] !== arr2[i]) {
+	function arraysMatch(firstArr, secondArr) {
+		if (firstArr.length !== secondArr.length) return false;
+		for (var i = 0, len = firstArr.length; i < len; i++) {
+			if (firstArr[i] !== secondArr[i]) {
 				return false;
 			}
 		}
@@ -89,11 +89,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			};
 
 			if (!val.get && !val.set) {
-				if (typeof val === 'function' && !desc) {
-					descriptor.writable = false;
-				} else {
-					descriptor.writable = true;
-				}
+				descriptor.writable = typeof val !== 'function' || desc;
 				descriptor.value = val;
 			} else {
 				desc = val;
@@ -105,16 +101,17 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		};
 	};
 
-	function Cheat(data) {
+	function Cheat(_ref) {
 		var _this2 = this;
+
+		var name = _ref.name,
+		    callback = _ref.callback,
+		    code = _ref.code,
+		    enabled = _ref.enabled;
 
 		var def = defineNewProperty(this);
 
-		var callback = data.callback,
-		    code = data.code;
-
-
-		def('name', data.name, {
+		def('name', name, {
 			writable: false
 		});
 
@@ -151,7 +148,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			}
 		});
 
-		var enabled = typeof data.enabled !== 'undefined' ? data.enabled : true;
+		enabled = typeof enabled !== 'undefined' ? enabled : true;
 		var dead = false;
 
 		def('isEnabled', function () {
@@ -181,15 +178,15 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		};
 	}
 
-	function Hotkey(data) {
+	function Hotkey(_ref2) {
+		var trigger = _ref2.trigger,
+		    callback = _ref2.callback,
+		    selector = _ref2.selector,
+		    enabled = _ref2.enabled;
+
 		var def = defineNewProperty(this);
 
 		var triggerRegex = /^(-)?([\^+!#]*)([\w\d])$/;
-
-		var trigger = data.trigger,
-		    callback = data.callback,
-		    selector = data.selector;
-
 
 		var element = void 0;
 
@@ -249,7 +246,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 		this.selector = selector;
 
-		var enabled = typeof data.enabled !== 'undefined' ? data.enabled : true;
+		enabled = typeof enabled !== 'undefined' ? enabled : true;
 		var dead = false;
 
 		def('isEnabled', function () {
@@ -307,7 +304,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 					break;
 				}
 			}
-
 			if (held && keyCode === keyMap[stringKeyMap[keyEvents.trigger] || keyEvents.trigger]) {
 				if (keyEvents.default) event.preventDefault();
 				callback();

@@ -1,22 +1,8 @@
 'use strict';
 
-var _extends = Object.assign || function (target) {
-		for (var i = 1; i < arguments.length; i++) {
-			var source = arguments[i];
-			for (var key in source) {
-				if (Object.prototype.hasOwnProperty.call(source, key)) {
-					target[key] = source[key];
-				}
-			}
-		}
-		return target;
-	};
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-	                                                                                  return typeof obj;
-                                                                                  } : function (obj) {
-	                                                                                  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-                                                                                  };
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 (function (root, factory) {
 	if (typeof window === 'undefined') console.log('Please be aware that this library is intended for use in the browser.');
@@ -85,10 +71,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		'>': 'enter'
 	};
 
-	function arraysMatch(arr1, arr2) {
-		if (arr1.length !== arr2.length) return false;
-		for (var i = 0, len = arr1.length; i < len; i++) {
-			if (arr1[i] !== arr2[i]) {
+	function arraysMatch(firstArr, secondArr) {
+		if (firstArr.length !== secondArr.length) return false;
+		for (var i = 0, len = firstArr.length; i < len; i++) {
+			if (firstArr[i] !== secondArr[i]) {
 				return false;
 			}
 		}
@@ -103,11 +89,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			};
 
 			if (!val.get && !val.set) {
-				if (typeof val === 'function' && !desc) {
-					descriptor.writable = false;
-				} else {
-					descriptor.writable = true;
-				}
+				descriptor.writable = typeof val !== 'function' || desc;
 				descriptor.value = val;
 			} else {
 				desc = val;
@@ -119,15 +101,17 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		};
 	};
 
-	function Cheat(data) {
+	function Cheat(_ref) {
 		var _this2 = this;
+
+		var name = _ref.name,
+		    callback = _ref.callback,
+		    code = _ref.code,
+		    enabled = _ref.enabled;
 
 		var def = defineNewProperty(this);
 
-		var callback = data.callback,
-			code = data.code;
-
-		def('name', data.name, {
+		def('name', name, {
 			writable: false
 		});
 
@@ -164,7 +148,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			}
 		});
 
-		var enabled = typeof data.enabled !== 'undefined' ? data.enabled : true;
+		enabled = typeof enabled !== 'undefined' ? enabled : true;
 		var dead = false;
 
 		def('isEnabled', function () {
@@ -194,14 +178,15 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		};
 	}
 
-	function Hotkey(data) {
+	function Hotkey(_ref2) {
+		var trigger = _ref2.trigger,
+		    callback = _ref2.callback,
+		    selector = _ref2.selector,
+		    enabled = _ref2.enabled;
+
 		var def = defineNewProperty(this);
 
 		var triggerRegex = /^(-)?([\^+!#]*)([\w\d])$/;
-
-		var trigger = data.trigger,
-			callback = data.callback,
-			selector = data.selector;
 
 		var element = void 0;
 
@@ -261,7 +246,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 		this.selector = selector;
 
-		var enabled = typeof data.enabled !== 'undefined' ? data.enabled : true;
+		enabled = typeof enabled !== 'undefined' ? enabled : true;
 		var dead = false;
 
 		def('isEnabled', function () {
@@ -303,8 +288,9 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			var triggerArray = trigger.match(triggerRegex);
 
 			var override = triggerArray[1],
-				metaKeys = triggerArray[2],
-				triggerKey = triggerArray[3];
+			    metaKeys = triggerArray[2],
+			    triggerKey = triggerArray[3];
+
 
 			keyEvents.default = override === '-';
 			keyEvents.meta = metaKeys.split('');
@@ -394,15 +380,15 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			} else {
 				for (var i = 0; i < args.length; i++) {
 					switch (_typeof(args[i])) {
-					case 'string':
-						cheatCode.name = cheatCode.name || args[i];
-						break;
-					case 'object':
-						cheatCode.code = cheatCode.code || args[i];
-						break;
-					case 'function':
-						cheatCode.callback = cheatCode.callback || args[i];
-						break;
+						case 'string':
+							cheatCode.name = cheatCode.name || args[i];
+							break;
+						case 'object':
+							cheatCode.code = cheatCode.code || args[i];
+							break;
+						case 'function':
+							cheatCode.callback = cheatCode.callback || args[i];
+							break;
 					}
 				}
 			}
@@ -430,22 +416,22 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			};
 
 			switch (arguments.length) {
-			case 1:
-				if (_typeof(arguments.length <= 0 ? undefined : arguments[0]) !== 'object') {
-					throw new Error('Expected object, got ' + _typeof(arguments.length <= 0 ? undefined : arguments[0]));
-				} else {
-					_extends(hotkey, arguments.length <= 0 ? undefined : arguments[0]);
-				}
-				break;
-			case 2:
-				hotkey.trigger = arguments.length <= 0 ? undefined : arguments[0];
-				hotkey.callback = arguments.length <= 1 ? undefined : arguments[1];
-				break;
-			default:
-				hotkey.trigger = arguments.length <= 0 ? undefined : arguments[0];
-				hotkey.selector = arguments.length <= 1 ? undefined : arguments[1];
-				hotkey.callback = arguments.length <= 2 ? undefined : arguments[2];
-				break;
+				case 1:
+					if (_typeof(arguments.length <= 0 ? undefined : arguments[0]) !== 'object') {
+						throw new Error('Expected object, got ' + _typeof(arguments.length <= 0 ? undefined : arguments[0]));
+					} else {
+						_extends(hotkey, arguments.length <= 0 ? undefined : arguments[0]);
+					}
+					break;
+				case 2:
+					hotkey.trigger = arguments.length <= 0 ? undefined : arguments[0];
+					hotkey.callback = arguments.length <= 1 ? undefined : arguments[1];
+					break;
+				default:
+					hotkey.trigger = arguments.length <= 0 ? undefined : arguments[0];
+					hotkey.selector = arguments.length <= 1 ? undefined : arguments[1];
+					hotkey.callback = arguments.length <= 2 ? undefined : arguments[2];
+					break;
 			}
 
 			if (typeof hotkey.trigger !== 'string') {

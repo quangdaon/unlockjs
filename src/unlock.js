@@ -96,15 +96,15 @@
 	};
 
 	/*** Private single cheat factory ***/
-	function Cheat(data) {
+	function Cheat({
+		name,
+		callback,
+		code,
+		enabled
+	}) {
 		const def = defineNewProperty(this);
 
-		let {
-			callback,
-			code
-		} = data;
-
-		def('name', data.name, {
+		def('name', name, {
 			writable: false
 		});
 
@@ -139,7 +139,7 @@
 
 		// Object.defineProperty(this, '')
 
-		let enabled = (typeof data.enabled !== 'undefined') ? data.enabled : true;
+		enabled = (typeof enabled !== 'undefined') ? enabled : true;
 		let dead = false;
 
 		def('isEnabled', () => enabled);
@@ -160,16 +160,15 @@
 	}
 
 	/*** Private Hotkey ***/
-	function Hotkey(data) {
+	function Hotkey({
+		trigger,
+		callback,
+		selector,
+		enabled
+	}) {
 		const def = defineNewProperty(this);
 
 		const triggerRegex = /^(-)?([\^+!#]*)([\w\d])$/;
-
-		let {
-			trigger,
-			callback,
-			selector
-		} = data;
 
 		let element;
 
@@ -227,7 +226,7 @@
 
 		this.selector = selector;
 
-		let enabled = (typeof data.enabled !== 'undefined') ? data.enabled : true;
+		enabled = (typeof enabled !== 'undefined') ? enabled : true;
 		let dead = false;
 
 		def('isEnabled', () => enabled);
@@ -278,7 +277,7 @@
 					break;
 				}
 			}
-
+			// TODO - Add support for multiple trigger keys (i.e. Ctrl+A+F)
 			if (held && keyCode === keyMap[stringKeyMap[keyEvents.trigger] || keyEvents.trigger]) {
 				if (keyEvents.default) event.preventDefault();
 				callback();

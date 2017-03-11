@@ -1,4 +1,4 @@
-# T0D0
+# ToDo
 
 - [X] Add keyboard shortcuts.
 - [X] Make Cheat prototype readonly.
