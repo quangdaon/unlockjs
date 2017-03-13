@@ -1,17 +1,56 @@
-(function () {
-	var cheat = new Unlock({
-		delay: 1000
-	});
+function GameController( initial ) {
+	'use strict';
 
-	var cheatCode = cheat.addCheat('konami', ['up', 'up', 'down', 'down', 'left', 'right', 'left', 'right', 'b', 'a', 'enter'], function () {
-		alert('Cheater!');
-	});
+	var stats = {
+		playername: 'No Player',
+		lives: 0,
+		strength: 0,
+		defense: 0,
+		magic: 0,
+		speed: 0
+	};
 
-	var hotKey = cheat.addHotkey('-^s', function () {
-		alert('Saved!');
-	});
+	var currentlyUpdating = {};
 
-	hotKey.selector = document.querySelector('input');
+	for ( var stat in initial ) {
+		updateStat(stat, initial[stat]);
+	}
 
-	console.log(cheatCode);
-})();
+	function updateStat( id, to, override ) {
+		if ( currentlyUpdating[ id ] && !override ) return;
+		currentlyUpdating[ id ] = true;
+		if ( typeof to === 'string' ) {
+			document.getElementById(id).textContent = to;
+			return;
+		}
+		if ( stats[ id ] < to ) {
+			document.getElementById(id).textContent = ++stats[ id ];
+			setTimeout(function () {
+				updateStat(id, to, true);
+			}, 10);
+		} else {
+			currentlyUpdating[ id ] = false;
+		}
+	}
+
+	return {
+		set name( val ) {
+			updateStat('name', val);
+		},
+		set lives( val ) {
+			updateStat('lives', val);
+		},
+		set strength( val ) {
+			updateStat('strength', val);
+		},
+		set defense( val ) {
+			updateStat('defense', val);
+		},
+		set magic( val ) {
+			updateStat('magic', val);
+		},
+		set speed( val ) {
+			updateStat('speed', val);
+		}
+	};
+}

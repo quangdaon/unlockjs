@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="EslintConfiguration">
-    <extra-options value="{ &quot;globals&quot;: { &quot;describe&quot;: true, &quot;it&quot;: true, &quot;expect&quot;: true } }" />
-  </component>
-</project>
