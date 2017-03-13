@@ -186,7 +186,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 		var def = defineNewProperty(this);
 
-		var triggerRegex = /^(-)?([\^+!#]*)([\w\d])$/;
+		var triggerRegex = /^(-)?([\^+!#]*)(.)$/;
 
 		var element = void 0;
 
@@ -304,7 +304,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 					break;
 				}
 			}
-
 			if (held && keyCode === keyMap[stringKeyMap[keyEvents.trigger] || keyEvents.trigger]) {
 				if (keyEvents.default) event.preventDefault();
 				callback();
@@ -436,7 +435,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 			if (typeof hotkey.trigger !== 'string') {
 				throw new Error('Missing or invalid trigger');
-			} else if (!/^(-)?([\^+!#]*)([\w\d])$/.test(hotkey.trigger)) {
+			} else if (!/^(-)?([\^+!#]*)(.)$/.test(hotkey.trigger)) {
 				throw new Error('Invalid trigger. Please refer to docs');
 			} else if (hotkey.selector && typeof hotkey.selector !== 'string') {
 				throw new Error('Invalid selector');
