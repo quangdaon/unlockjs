@@ -304,7 +304,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 					break;
 				}
 			}
-
 			if (held && keyCode === keyMap[stringKeyMap[keyEvents.trigger] || keyEvents.trigger]) {
 				if (keyEvents.default) event.preventDefault();
 				callback();
