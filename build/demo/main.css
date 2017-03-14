@@ -1,0 +1,39 @@
+body {
+	font-family: 'Open Sans', sans-serif;
+	margin: 25px 100px;
+	font-size: 16px;
+	line-height: 1.5;
+}
+
+h1, h3 {
+	padding: 0;
+	margin: 5px 0;
+}
+
+:not(pre) > code {
+	background: #ffff00;
+	letter-spacing: 0.2em;
+}
+
+code.hljs {
+	padding: 20px;
+	pointer-events: none;
+	border-radius: 10px;
+	border: 1px solid #ddd;
+}
+
+#game {
+	border-collapse: collapse;
+	line-height: 1.1;
+	border: 1px solid #000;
+	padding: 20px;
+	position: fixed;
+	bottom: 0;
+	right: 0;
+	background: #ffffff;
+}
+
+tr > td:first-child {
+	padding-right: 20px;
+	font-weight: bold;
+}

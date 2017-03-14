@@ -7,22 +7,21 @@ const uglify = require('gulp-uglify');
 const eslint = require('gulp-eslint');
 
 const browserSync = require('browser-sync');
-const reload = browserSync.reload;
 
 const dist = require('yargs').argv.dist;
 
 gulp.task('build', done => {
 	let dest = 'build/js',
 		stripOpt = {
-			start_comment: "dist:",
-			end_comment: "end-dist"
+			start_comment: 'dist:',
+			end_comment: 'end-dist'
 		};
 
 	if (dist) {
 		dest = 'dist',
 			stripOpt = {
-				start_comment: "dev:",
-				end_comment: "end-dev"
+				start_comment: 'dev:',
+				end_comment: 'end-dev'
 			};
 	}
 
@@ -65,6 +64,7 @@ gulp.task('serve', ['build'], () => {
 
 	gulp.watch('src/unlock.js', ['build']);
 	gulp.watch('build/js/*.js', server.reload);
+	gulp.watch('build/demo/*.*', server.reload);
 });
 
 gulp.task('test', ['build'], () => {
@@ -85,6 +85,7 @@ gulp.task('test', ['build'], () => {
 	});
 
 	gulp.watch('build/js/*.js', server.reload);
+	gulp.watch('build/test/*.*', server.reload);
 });
 
 gulp.task('concurrent', ['serve', 'test']);
