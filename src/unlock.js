@@ -95,6 +95,7 @@
 		};
 	};
 
+	// TODO - Reinstate support for meta-keys
 	/*** Private single cheat factory ***/
 	function Cheat({
 		name,
@@ -159,6 +160,7 @@
 		};
 	}
 
+	// TODO - Fix issue with binding to selector
 	/*** Private Hotkey ***/
 	function Hotkey({
 		trigger,
@@ -304,6 +306,13 @@
 			delay: 500
 		}, userSettings);
 
+		/* TODO - transfer code handling to individual Cheat
+		 * - Add onTimeout
+		 *     - function that calls fallback when timer runs out before next keypress
+		 * - Add onError
+		 *     - function that calls fallback when cheat chain is broken by mismatched keypress
+		 *     - passes object containing last keycode, failed keycode
+		 */
 		function keyPress(event) { //Record Key Pressed
 			let keyCode;
 			if (window.event) { //Browser Compatibility Thingy

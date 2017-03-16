@@ -668,7 +668,7 @@
 				});
 
 				it('binds to element', function () {
-					pending('Manual test seems to work, so must be somthing wrong with press function.');
+					pending('Currently broken.');
 					var elem = document.createElement('input');
 
 					hotKey.selector = elem;
