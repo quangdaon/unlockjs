@@ -16,16 +16,4 @@ describe('Unlock', () => {
 		expect(Unlock).to.have.property('Shortcut');
 		expect(Unlock.Shortcut).to.equal(Shortcut);
 	});
-
-	describe('CheatCode', () => {
-		it('should be a class', () => {
-			expect(CheatCode).to.be.a('function');
-		});
-	});
-
-	describe('Shortcut', () => {
-		it('should be a class', () => {
-			expect(Shortcut).to.be.a('function');
-		});
-	});
 });
