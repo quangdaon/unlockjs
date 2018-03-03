@@ -14,18 +14,18 @@ describe('Unlock', () => {
 
 	it('should expose Shortcut as a static prop', () => {
 		expect(Unlock).to.have.property('Shortcut');
-		expect(Unlock.Shortcut).to.equal(CheatCode);
+		expect(Unlock.Shortcut).to.equal(Shortcut);
 	});
 
 	describe('CheatCode', () => {
 		it('should be a class', () => {
-			expect(Unlock.CheatCode).to.be.a('function');
+			expect(CheatCode).to.be.a('function');
 		});
 	});
 
 	describe('Shortcut', () => {
 		it('should be a class', () => {
-			expect(Unlock.Shortcut).to.be.a('function');
+			expect(Shortcut).to.be.a('function');
 		});
 	});
 });
