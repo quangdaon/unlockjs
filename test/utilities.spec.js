@@ -1,6 +1,6 @@
 import { keyMap } from '../src/utils/maps';
 
-describe('Utils', () => {
+describe('Utilities', () => {
 	describe('Key Map', () => {
 		it('should be an object', () => {
 			expect(keyMap).to.be.a('object');
