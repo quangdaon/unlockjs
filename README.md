@@ -1,8 +1,8 @@
 # UnlockJS
 
-UnlockJS is a JavaScript library to activate cheat codes and keyboard shortcuts in your project.
+**_Note: This project is undergoing a rewrite and will be changing greatly very soon. I warned you ;)_**
 
-_Note: This project is in an early stage of development. Usage and functionality may be changed without warning._
+UnlockJS is a JavaScript library to activate cheat codes and keyboard shortcuts in your project.
 
 ## Installation
 
