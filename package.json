@@ -5,8 +5,8 @@
   "main": "dist/unlock.js",
   "scripts": {
     "test": "karma start ./karma.conf.js --single-run",
-    "dev": "webpack-serve",
-    "build": "webpack --config webpack.prod.config.js --progress --hide-modules || true"
+    "dev": "webpack-serve --config ./config/webpack.dev.config.js",
+    "build": "webpack --config ./config/webpack.prod.config.js --progress --hide-modules || true"
   },
   "repository": {
     "type": "git",
