@@ -2,7 +2,8 @@ const path = require('path');
 
 module.exports = {
 	entry: {
-		unlock: ['./src/unlock.js']
+		unlock: ['./src/unlock.js'],
+		demo: ['./demo/index.js']
 	},
 	mode: 'development',
 	devtool: 'source-map',
@@ -12,6 +13,9 @@ module.exports = {
 		library: 'Unlock',
 		libraryTarget: 'umd',
 		umdNamedDefine: true
+	},
+	serve: {
+		content: './demo'
 	},
 	module: {
 		rules: [

@@ -4,9 +4,11 @@ import Shortcut from './shortcut';
 
 if (process.env.NODE_ENV === 'development') debug.enable('unlock:*');
 
+const log = debug('unlock:core');
+
 export default class Unlock {
 	constructor() {
-
+		log('Unlock created.');
 	}
 
 	static get CheatCode() {
