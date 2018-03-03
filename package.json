@@ -4,7 +4,7 @@
   "description": "Use keyboard keys to their fullest potential!",
   "main": "dist/unlock.js",
   "scripts": {
-    "test": "NODE_ENV=testing karma start",
+    "test": "karma start ./karma.conf.js --single-run",
     "dev": "webpack-serve",
     "build": "webpack --config webpack.prod.config.js --progress --hide-modules || true"
   },
