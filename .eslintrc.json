@@ -5,17 +5,19 @@
     },
     "globals": {
         "module": true,
-        "define": true
+        "process": true
     },
     "extends": "eslint:recommended",
+    "parserOptions": {
+        "sourceType": "module"
+    },
     "rules": {
         "indent": [
             "error",
             "tab"
         ],
         "linebreak-style": [
-            "error",
-            "windows"
+            "off"
         ],
         "quotes": [
             "error",
@@ -25,10 +27,7 @@
             "error",
             "always"
         ],
-        "no-console": "off",
-        "eqeqeq": ["error", "always"],
-	    "prefer-template": "error",
-	    "operator-assignment": ["error", "always"],
-	    "no-array-constructor": "error"
+        "no-inner-declarations": "off",
+        "no-constant-condition": "off"
     }
 }

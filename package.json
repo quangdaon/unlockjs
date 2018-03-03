@@ -4,10 +4,9 @@
   "description": "Use keyboard keys to their fullest potential!",
   "main": "dist/unlock.js",
   "scripts": {
-    "test": "gulp test",
-    "build": "gulp build --dist",
-    "demo": "gulp serve --dist",
-    "dev": "gulp concurrent"
+    "test": "NODE_ENV=testing karma start",
+    "dev": "webpack-serve --content \"./build\"",
+    "build": "webpack --config webpack.prod.config.js --progress --hide-modules || true"
   },
   "repository": {
     "type": "git",
@@ -30,9 +29,13 @@
   },
   "homepage": "https://github.com/quangdaon/unlockjs#readme",
   "devDependencies": {
+    "babel-loader": "^7.1.3",
     "babel-plugin-transform-object-assign": "^6.22.0",
+    "babel-preset-env": "^1.6.1",
     "babel-preset-es2015": "^6.22.0",
     "browser-sync": "^2.18.8",
+    "chai": "^4.1.2",
+    "eslint-loader": "^2.0.0",
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
     "gulp-eslint": "^3.0.1",
@@ -40,7 +43,18 @@
     "gulp-strip-code": "^0.1.4",
     "gulp-strip-comments": "^2.4.5",
     "gulp-uglify": "^2.0.1",
+    "karma": "^2.0.0",
+    "karma-chai": "^0.1.0",
+    "karma-mocha": "^1.3.0",
+    "karma-phantomjs-launcher": "^1.0.4",
+    "karma-webpack": "^2.0.13",
+    "mocha": "^5.0.1",
+    "webpack": "^4.0.1",
+    "webpack-cli": "^2.0.10",
+    "webpack-serve": "^0.1.5",
     "yargs": "^6.6.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "debug": "latest"
+  }
 }
