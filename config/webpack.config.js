@@ -22,7 +22,11 @@ module.exports = {
 					{
 						loader: 'babel-loader',
 						options: {
-							presets: ['env']
+							presets: ['env', 'stage-3', 'stage-2'],
+							plugins: [
+								'babel-plugin-transform-private-properties',
+								'transform-decorators-legacy'
+							]
 						}
 					},
 					{

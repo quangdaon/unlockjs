@@ -5,8 +5,10 @@
     },
     "globals": {
         "module": true,
-        "process": true
+        "process": true,
+        "Private": true
     },
+    "parser": "babel-eslint",
     "extends": "eslint:recommended",
     "parserOptions": {
         "sourceType": "module"
