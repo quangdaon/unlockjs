@@ -25,6 +25,7 @@ export const keyMap = (function () {
 
 	for (let i = 0; i < alph.length; i++) {
 		keys[alph[i]] = i + 97;
+		keys[alph[i].toUpperCase()] = i + 65;
 	}
 
 	for (let j = 0; j <= 9; j++) {

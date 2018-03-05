@@ -1,18 +1,16 @@
-import CheatCode from '../src/cheatcode';
-
 import debug from 'debug';
+import Unlock from '../src/unlock';
 
 if (process.env.NODE_ENV === 'development') debug.enable('unlock:*');
 
 const log = debug('unlock:demo');
 
-const c = new CheatCode({
+const unlock = new Unlock({ resetOnMatch: true });
+
+unlock.addCheat({
 	name: 'name',
 	code: 'code',
 	callback: () => {
+		log('Success!');
 	}
 });
-
-log(c);
-
-c.callback = () => {};

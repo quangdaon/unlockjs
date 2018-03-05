@@ -6,7 +6,7 @@ describe('Test Utilities', () => {
 		let keypressCallback = sinon.stub();
 
 		before(() => {
-			document.addEventListener('keypress', keypressCallback);
+			document.addEventListener('keydown', keypressCallback);
 		});
 
 		afterEach(() => {
@@ -41,7 +41,7 @@ describe('Test Utilities', () => {
 			const input = document.createElement('input');
 			const specificKeypressCallback = sinon.stub();
 
-			input.addEventListener('keypress', specificKeypressCallback);
+			input.addEventListener('keydown', specificKeypressCallback);
 
 			press(97, null, input);
 
@@ -50,13 +50,12 @@ describe('Test Utilities', () => {
 
 		it('should bubble up to the document', () => {
 			const input = document.createElement('input');
-			const specificKeypressCallback = sinon.stub();
 
 			document.body.appendChild(input);
 
 			press(97, null, input);
 
-			assert(keypressCallback.called);
+			assert(keypressCallback.calledWith(sinon.match({ target: input })));
 		});
 	});
 });

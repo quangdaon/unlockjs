@@ -8,11 +8,12 @@ export function press(code, keys, element) {
 
 	const delegate = element || document;
 
-	const evt = new KeyboardEvent('keypress', {
+	const evt = new KeyboardEvent('keydown', {
 		bubbles: true,
 		composed: true,
 		charCode: code,
 		keyCode: code,
+		which: code,
 		key: String.fromCharCode(code),
 		shiftKey: specialKeys.shift,
 		ctrlKey: specialKeys.ctrl,

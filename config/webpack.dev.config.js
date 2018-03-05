@@ -6,8 +6,4 @@ config.entry = {
 	demo: ['./demo/index.js']
 };
 
-config.serve = {
-	content: './demo'
-};
-
 module.exports = config;
