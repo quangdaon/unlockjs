@@ -1,5 +1,5 @@
-import { keyMap } from '../src/utils/maps';
-import { arraysMatch } from '../src/utils/helpers';
+import { keyMap } from '../../src/utils/maps';
+import { arraysMatch } from '../../src/utils/helpers';
 
 describe('Utilities', () => {
 	describe('Key Map', () => {

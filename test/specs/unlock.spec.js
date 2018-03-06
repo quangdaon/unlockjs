@@ -1,7 +1,7 @@
-import Unlock from '../src/unlock';
-import CheatCode from '../src/cheatcode';
-import Shortcut from '../src/shortcut';
-import { press } from './utils/helpers';
+import Unlock from '../../src/unlock';
+import CheatCode from '../../src/cheatcode';
+import Shortcut from '../../src/shortcut';
+import { press } from '../utils/helpers';
 
 describe('Unlock', () => {
 	it('should be a class', () => {
@@ -36,14 +36,53 @@ describe('Unlock', () => {
 			expect(cheatcode).to.be.instanceOf(CheatCode);
 		});
 
+		it('should return number of cheats', () => {
+			expect(unlock.length).to.equal(1);
+
+			unlock.addCheat('konami', 'UUDDLRLRba>', () => {
+			});
+
+			expect(unlock.length).to.equal(2);
+		});
+
 		it('should bind event listener automatically', () => {
 			press(65);
 			press(66);
 			press(67);
 
-			console.log(unlock.keyslist);
-
 			assert(callback.called);
+		});
+
+		it('should error when adding a cheat with a name that exists', () => {
+			expect(() => {
+				unlock.addCheat('cheat', 'code', callback);
+			}).to.throw();
+		});
+
+		it('should allow for automatically resetting on cheat success', () => {
+			unlock.resetOnMatch = true;
+			press(65);
+			press(66);
+			press(67);
+
+			press(65);
+			press(66);
+			press(67);
+
+			assert(callback.calledTwice);
+
+			callback.reset();
+
+			unlock.resetOnMatch = false;
+			press(65);
+			press(66);
+			press(67);
+
+			press(65);
+			press(66);
+			press(67);
+
+			assert(callback.calledOnce);
 		});
 	});
 });

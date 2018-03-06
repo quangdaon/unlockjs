@@ -10,7 +10,7 @@ export default class Unlock {
 	@Private
 	cheats = [];
 
-	//@Private
+	@Private
 	keyslist = [];
 
 	constructor(options = {}) {
@@ -28,8 +28,6 @@ export default class Unlock {
 			resetOnMatch
 		});
 
-		log(this.timeout);
-
 		this.bindListener();
 	}
 
@@ -39,7 +37,6 @@ export default class Unlock {
 
 		document.addEventListener('keydown', e => {
 			this.keyslist.push(e.which);
-			log(e.key);
 
 			clearTimeout(keyTimer);
 			keyTimer = setTimeout(() => {
@@ -63,8 +60,6 @@ export default class Unlock {
 
 		const cheatCode = new CheatCode(...args);
 		this.cheats.push(cheatCode);
-
-		log(cheatCode.code);
 
 		return cheatCode;
 	}

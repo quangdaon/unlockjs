@@ -1,4 +1,4 @@
-import { press } from './utils/helpers';
+import { press } from '../utils/helpers';
 
 // Testing the test utilities. So meta.
 describe('Test Utilities', () => {

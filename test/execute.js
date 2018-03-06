@@ -1,5 +1,5 @@
-import './testutils.spec';
-import './utilities.spec';
-import './cheatcode.spec';
-import './shortcut.spec';
-import './unlock.spec';
+import './specs/testutils.spec';
+import './specs/utilities.spec';
+import './specs/cheatcode.spec';
+import './specs/shortcut.spec';
+import './specs/unlock.spec';

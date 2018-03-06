@@ -25,7 +25,8 @@ module.exports = {
 							presets: ['env', 'stage-3', 'stage-2'],
 							plugins: [
 								'babel-plugin-transform-private-properties',
-								'transform-decorators-legacy'
+								'transform-decorators-legacy',
+								'istanbul'
 							]
 						}
 					},

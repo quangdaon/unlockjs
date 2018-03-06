@@ -1,5 +1,5 @@
-import CheatCode from '../src/cheatcode';
-import { press } from './utils/helpers';
+import CheatCode from '../../src/cheatcode';
+import { press } from '../utils/helpers';
 
 describe('CheatCode', () => {
 	it('should be a class', () => {
@@ -18,6 +18,14 @@ describe('CheatCode', () => {
 			expect(() => new CheatCode({
 				name: 'name',
 				code: 'code',
+				callback: {}
+			})).to.throw();
+		});
+
+		it('should error with invalid input', () => {
+			expect(() => new CheatCode({
+				name: 'name',
+				code: ['a', 'b', 'farf'],
 				callback: {}
 			})).to.throw();
 		});
@@ -106,6 +114,33 @@ describe('CheatCode', () => {
 				assert(callback.notCalled);
 				done();
 			}, 600);
+		});
+
+		describe('Native Behavior', () => {
+			it('should return name and code on JSON.stringify', () => {
+				expect(JSON.stringify(cheatcode)).to.equal(JSON.stringify({ name: 'cheat', code: [65, 66, 67] }));
+			});
+
+			it('should return name when called as a string', () => {
+				expect(cheatcode.toString()).to.equal('cheat');
+				expect(cheatcode.toString() + 'abcd').to.equal('cheatabcd');
+			});
+		});
+	});
+
+	describe('static helpers', () => {
+		describe('.compile', () => {
+			it('should convert a string into a numeric array', () => {
+				expect(CheatCode.compile('abcd')).to.eql([65, 66, 67, 68]);
+			});
+
+			it('should convert a string array into a numeric array', () => {
+				expect(CheatCode.compile(['a', 'b', 'd'])).to.eql([65, 66, 68]);
+			});
+
+			it('should error with invalid input', () => {
+				expect(() => CheatCode.compile(['a', 'b', 'farf'])).to.throw();
+			});
 		});
 	});
 

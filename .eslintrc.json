@@ -6,7 +6,9 @@
     "globals": {
         "module": true,
         "process": true,
-        "Private": true
+        "Private": true,
+        "__dirname": true,
+        "require": true
     },
     "parser": "babel-eslint",
     "extends": "eslint:recommended",

@@ -103,12 +103,4 @@ export default class CheatCode {
 	toString() {
 		return this.name;
 	}
-
-	valueOf() {
-		return {
-			name: this.name,
-			callback: this.callback,
-			code: this.code
-		};
-	}
 }
