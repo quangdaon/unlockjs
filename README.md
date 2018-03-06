@@ -1,5 +1,7 @@
 # UnlockJS
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/614f12770f714d18a20ee599aebedc7f)](https://app.codacy.com/app/quangdaon/unlockjs?utm_source=github.com&utm_medium=referral&utm_content=quangdaon/unlockjs&utm_campaign=badger)
+
 **_Note: This project is undergoing a rewrite and will be changing greatly very soon. I warned you ;)_**
 
 UnlockJS is a JavaScript library to activate cheat codes and keyboard shortcuts in your project.
