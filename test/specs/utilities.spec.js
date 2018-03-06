@@ -1,5 +1,5 @@
 import { keyMap } from '../../src/utils/maps';
-import { arraysMatch, objectFulfills } from '../../src/utils/helpers';
+import { arraysMatch, objectSearch } from '../../src/utils/helpers';
 
 describe('Utilities', () => {
 	describe('Key Map', () => {
@@ -59,29 +59,41 @@ describe('Utilities', () => {
 		});
 	});
 
-	describe('objectFulfills', () => {
+	describe('objectSearch', () => {
 		it('should match empty objects', () => {
-			expect(objectFulfills({}, {})).to.equal(true);
+			expect(objectSearch({}, {})).to.equal(true);
 		});
 
 		it('should match empty object with anything', () => {
-			expect(objectFulfills({ prop: 1 }, {})).to.equal(true);
+			expect(objectSearch({ prop: 1 }, {})).to.equal(true);
 		});
 
 		it('should not match object with empty object', () => {
-			expect(objectFulfills({}, { prop: 1 })).to.equal(false);
+			expect(objectSearch({}, { prop: 1 })).to.equal(false);
 		});
 
 		it('should match equivalent objects', () => {
-			expect(objectFulfills({ prop: 1 }, { prop: 1 })).to.equal(true);
+			expect(objectSearch({ prop: 1 }, { prop: 1 })).to.equal(true);
 		});
 
 		it('should return true for partial matches', () => {
-			expect(objectFulfills({ prop: 1, id: 2 }, { prop: 1 })).to.equal(true);
+			expect(objectSearch({ prop: 1, id: 2 }, { prop: 1 })).to.equal(true);
 		});
 
 		it('should only match if values are equal', () => {
-			expect(objectFulfills({ prop: 1, id: 2 }, { prop: 2 })).to.equal(false);
+			expect(objectSearch({ prop: 1, id: 2 }, { prop: 2 })).to.equal(false);
+		});
+
+		it('should only match if first object contains all values of second object', () => {
+			expect(objectSearch({ prop: 1, id: 2, key: 5 }, { prop: 1, key: 5 })).to.equal(true);
+		});
+
+		it('should not match if any key doesn\'t match', () => {
+			expect(objectSearch({ prop: 1, id: 2, key: 5 }, { prop: 1, car: 5 })).to.equal(false);
+		});
+
+		it('should not match if any value doesn\'t match', () => {
+			expect(objectSearch({ prop: 1, id: 2, key: 5 }, { prop: 1, key: 6 })).to.equal(false);
 		});
 	});
 });
