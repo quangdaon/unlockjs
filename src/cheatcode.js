@@ -47,6 +47,7 @@ export default class CheatCode {
 	}
 
 	set code(v) {
+		Require(v, 'CheatCode#code').toBe(['string', Array]);
 		this._code = compileCode(v);
 	}
 

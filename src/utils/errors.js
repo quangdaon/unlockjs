@@ -3,7 +3,9 @@ export function Require(variable, descriptor) {
 
 	return {
 		toBe(type) {
-			if (!type.find(e => e === typeof variable)) throw new TypeError(`Expected ${descriptor} to be (${type.join('|')}); got ${typeof variable}`);
+			if (!type.find(e => typeof e === 'string' ? e === typeof variable : variable instanceof e)) {
+				throw new TypeError(`Expected ${descriptor} to be (${type.map(e => e.name || e).join('|')}); got ${typeof variable}`);
+			}
 		}
 	};
 }

@@ -17,8 +17,8 @@ describe('CheatCode', () => {
 		it('should be a string or array', () => {
 			expect(() => new CheatCode({
 				name: 'name',
-				code: 'code',
-				callback: {}
+				code: {},
+				callback: () => {}
 			})).to.throw();
 		});
 
