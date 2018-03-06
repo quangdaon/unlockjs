@@ -1,61 +1,62 @@
 {
-  "name": "unlockjs",
-  "version": "0.0.2-alpha.1",
-  "description": "Use keyboard keys to their fullest potential!",
-  "main": "dist/unlock.js",
-  "scripts": {
-    "test": "karma start ./karma.conf.js --single-run && cat ./coverage/report-lcov/lcov.info | codacy-coverage",
-    "dev": "webpack-serve --config ./config/webpack.dev.config.js --content ./demo --log-level warn",
-    "build": "webpack --config ./config/webpack.prod.config.js --progress --hide-modules || true"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/quangdaon/unlockjs.git"
-  },
-  "keywords": [
-    "unlock",
-    "cheats",
-    "cheater",
-    "cheat",
-    "codes",
-    "keyboard",
-    "shortcuts",
-    "hotkeys"
-  ],
-  "author": "Quangdao Nguyen",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/quangdaon/unlockjs/issues"
-  },
-  "homepage": "https://github.com/quangdaon/unlockjs#readme",
-  "devDependencies": {
-    "babel-eslint": "^8.2.2",
-    "babel-loader": "^7.1.3",
-    "babel-plugin-istanbul": "^4.1.5",
-    "babel-plugin-transform-decorators-legacy": "^1.3.4",
-    "babel-plugin-transform-private-properties": "^1.0.2",
-    "babel-preset-env": "^1.6.1",
-    "babel-preset-stage-2": "^6.24.1",
-    "chai": "^4.1.2",
-    "codacy-coverage": "^2.1.0",
-    "eslint": "^4.18.2",
-    "eslint-loader": "^2.0.0",
-    "karma": "^2.0.0",
-    "karma-chai": "^0.1.0",
-    "karma-coverage": "^1.1.1",
-    "karma-coveralls": "^1.1.2",
-    "karma-firefox-launcher": "^1.1.0",
-    "karma-mocha": "^1.3.0",
-    "karma-sinon": "^1.0.5",
-    "karma-webpack": "^2.0.13",
-    "mocha": "^5.0.1",
-    "sinon": "^4.4.2",
-    "webpack": "^4.0.1",
-    "webpack-cli": "^2.0.10",
-    "webpack-serve": "^0.1.5",
-    "yargs": "^6.6.0"
-  },
-  "dependencies": {
-    "debug": "latest"
-  }
+	"name": "unlockjs",
+	"version": "0.0.2-alpha.1",
+	"description": "Use keyboard keys to their fullest potential!",
+	"main": "dist/unlock.js",
+	"scripts": {
+		"test": "karma start ./karma.conf.js --single-run",
+		"codacy": "cat ./coverage/report-lcov/lcov.info | codacy-coverage",
+		"dev": "webpack-serve --config ./config/webpack.dev.config.js --content ./demo --log-level warn",
+		"build": "webpack --config ./config/webpack.prod.config.js --progress --hide-modules || true"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/quangdaon/unlockjs.git"
+	},
+	"keywords": [
+		"unlock",
+		"cheats",
+		"cheater",
+		"cheat",
+		"codes",
+		"keyboard",
+		"shortcuts",
+		"hotkeys"
+	],
+	"author": "Quangdao Nguyen",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/quangdaon/unlockjs/issues"
+	},
+	"homepage": "https://github.com/quangdaon/unlockjs#readme",
+	"devDependencies": {
+		"babel-eslint": "^8.2.2",
+		"babel-loader": "^7.1.3",
+		"babel-plugin-istanbul": "^4.1.5",
+		"babel-plugin-transform-decorators-legacy": "^1.3.4",
+		"babel-plugin-transform-private-properties": "^1.0.2",
+		"babel-preset-env": "^1.6.1",
+		"babel-preset-stage-2": "^6.24.1",
+		"chai": "^4.1.2",
+		"codacy-coverage": "^2.1.0",
+		"eslint": "^4.18.2",
+		"eslint-loader": "^2.0.0",
+		"karma": "^2.0.0",
+		"karma-chai": "^0.1.0",
+		"karma-coverage": "^1.1.1",
+		"karma-coveralls": "^1.1.2",
+		"karma-firefox-launcher": "^1.1.0",
+		"karma-mocha": "^1.3.0",
+		"karma-sinon": "^1.0.5",
+		"karma-webpack": "^2.0.13",
+		"mocha": "^5.0.1",
+		"sinon": "^4.4.2",
+		"webpack": "^4.0.1",
+		"webpack-cli": "^2.0.10",
+		"webpack-serve": "^0.1.5",
+		"yargs": "^6.6.0"
+	},
+	"dependencies": {
+		"debug": "latest"
+	}
 }

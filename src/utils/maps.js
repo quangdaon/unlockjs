@@ -53,3 +53,10 @@ export const stringKeyMap = {
 	'<': 'backspace',
 	'>': 'enter'
 };
+
+export const metaMap = {
+	'^': 'ctrlKey',
+	'+': 'shiftKey',
+	'!': 'altKey',
+	'#': 'metaKey'
+};
