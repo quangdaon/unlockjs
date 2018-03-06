@@ -7,3 +7,14 @@ export function arraysMatch(firstArr, secondArr) { //Checks if Array Match - Not
 	}
 	return true; //If Nothing Doesn't Match, Everything Matches; Therefore, Arrays Match
 }
+
+export function objectFulfills(haystack, needle) {
+	let match = true;
+	Object.keys(needle).forEach(key => {
+		if (!haystack[key] || haystack[key] !== needle[key]) {
+			match = false;
+		}
+	});
+
+	return match;
+}

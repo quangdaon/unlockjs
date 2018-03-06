@@ -1,5 +1,5 @@
 import { keyMap } from '../../src/utils/maps';
-import { arraysMatch } from '../../src/utils/helpers';
+import { arraysMatch, objectFulfills } from '../../src/utils/helpers';
 
 describe('Utilities', () => {
 	describe('Key Map', () => {
@@ -32,30 +32,56 @@ describe('Utilities', () => {
 		});
 	});
 
-	describe('arraysMatch Function', function () {
-		it('should match empty arrays', function () {
+	describe('arraysMatch Function', () => {
+		it('should match empty arrays', () => {
 			expect(arraysMatch([], [])).to.equal(true);
 		});
 
-		it('should match the same array', function () {
+		it('should match the same array', () => {
 			const array = [1, 2, 3, 4];
-			expect(arraysMatch(array, array)).to.be.equal(true);
+			expect(arraysMatch(array, array)).to.equal(true);
 		});
 
-		it('should match equal but separate arrays', function () {
-			expect(arraysMatch([1, 2, 3], [1, 2, 3])).to.be.equal(true);
+		it('should match equal but separate arrays', () => {
+			expect(arraysMatch([1, 2, 3], [1, 2, 3])).to.equal(true);
 		});
 
-		it('should not match different arrays with the same lengths', function () {
-			expect(arraysMatch([1, 2, 3], [1, 2, 4])).to.be.equal(false);
+		it('should not match different arrays with the same lengths', () => {
+			expect(arraysMatch([1, 2, 3], [1, 2, 4])).to.equal(false);
 		});
 
-		it('should not match arrays of different lengths', function () {
-			expect(arraysMatch([1, 2, 3], [1, 2])).to.be.equal(false);
+		it('should not match arrays of different lengths', () => {
+			expect(arraysMatch([1, 2, 3], [1, 2])).to.equal(false);
 		});
 
-		it('should not match similar arrays that are in different orders', function () {
-			expect(arraysMatch([1, 2, 3], [1, 3, 2])).to.be.equal(false);
+		it('should not match similar arrays that are in different orders', () => {
+			expect(arraysMatch([1, 2, 3], [1, 3, 2])).to.equal(false);
+		});
+	});
+
+	describe('objectFulfills', () => {
+		it('should match empty objects', () => {
+			expect(objectFulfills({}, {})).to.equal(true);
+		});
+
+		it('should match empty object with anything', () => {
+			expect(objectFulfills({ prop: 1 }, {})).to.equal(true);
+		});
+
+		it('should not match object with empty object', () => {
+			expect(objectFulfills({}, { prop: 1 })).to.equal(false);
+		});
+
+		it('should match equivalent objects', () => {
+			expect(objectFulfills({ prop: 1 }, { prop: 1 })).to.equal(true);
+		});
+
+		it('should return true for partial matches', () => {
+			expect(objectFulfills({ prop: 1, id: 2 }, { prop: 1 })).to.equal(true);
+		});
+
+		it('should only match if values are equal', () => {
+			expect(objectFulfills({ prop: 1, id: 2 }, { prop: 2 })).to.equal(false);
 		});
 	});
 });
