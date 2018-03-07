@@ -1,4 +1,5 @@
 import Shortcut from '../../src/shortcut';
+import CheatCode from '../../src/cheatcode';
 
 describe('Shortcut', () => {
 	it('should be a class', () => {
@@ -18,16 +19,16 @@ describe('Shortcut', () => {
 			expect(Shortcut.parse('a')).to.have.property('preventDefault');
 		});
 
-		it('should throw error on invalid key', () => {
-			expect(() => Shortcut.parse('}')).to.throw();
-		});
-
 		it('should throw error on multiple keys', () => {
-			expect(() => Shortcut.parse('abc')).to.throw();
+			expect(() => Shortcut.parse('abc')).to.throw(Error, 'Invalid Hotkey');
 		});
 
 		it('should throw error on invalid hotkey', () => {
-			expect(() => Shortcut.parse('a*')).to.throw();
+			expect(() => Shortcut.parse('a*')).to.throw(Error, 'Invalid Hotkey');
+		});
+
+		it('should throw error on invalid key', () => {
+			expect(() => Shortcut.parse('}')).to.throw(Error, 'Invalid Key');
 		});
 
 		describe('.keyEvent', () => {
@@ -87,5 +88,70 @@ describe('Shortcut', () => {
 			});
 		});
 
+	});
+
+	describe('Instantiation', () => {
+		let options;
+
+		function newInstance() {
+			return new Shortcut(options);
+		}
+
+		beforeEach(() => {
+			options = {
+				trigger: 'a',
+				callback: () => null
+			};
+		});
+
+		describe('.trigger', () => {
+			it('should be required', () => {
+				delete options.trigger;
+				expect(newInstance).to.throw(Error, 'required');
+			});
+
+			it('should be string', () => {
+				options.trigger = [];
+				expect(newInstance).to.throw(Error, 'Type Mismatch');
+			});
+		});
+	});
+
+	describe('Instance', () => {
+		const callback = sinon.stub();
+		let shortcut;
+
+		beforeEach(() => {
+			callback.reset();
+			shortcut = new Shortcut('a', callback);
+		});
+
+		it('should be created', () => {
+			expect(shortcut).to.be.instanceOf(Shortcut);
+		});
+
+		describe('.trigger', () => {
+			it('should return trigger', () => {
+				expect(shortcut.trigger).to.equal('a');
+			});
+
+			it('should parse trigger', () => {
+				expect(shortcut.data).to.containSubset({ keyEvent: { keyCode: 65 } });
+			});
+
+			it('should writable', () => {
+				shortcut.trigger = '^b';
+				expect(shortcut.trigger).to.equal('^b');
+			});
+
+			it('should parse data on write', () => {
+				shortcut.trigger = '^b';
+				expect(shortcut.data).to.containSubset({ keyEvent: { keyCode: 66, ctrlKey: true } });
+			});
+		});
+
+		describe('.callback', () => {
+
+		});
 	});
 });

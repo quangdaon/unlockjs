@@ -1,4 +1,5 @@
 import { keyMap, metaMap, stringKeyMap } from './utils/maps';
+import { validate } from './utils/errors';
 
 const triggerRegex = /^(-)?([\^+!#]*)(.)$/;
 
@@ -25,5 +26,33 @@ function parseHotkey(v) {
 }
 
 export default class Shortcut {
+	data = {};
+
+	@Private
+	_trigger = '';
+
+	constructor(xtrigger, callback) {
+		if (typeof xtrigger === 'object') {
+			const { trigger, callback } = xtrigger;
+			Object.assign(this, { trigger, callback });
+		} else {
+			Object.assign(this, { trigger: xtrigger, callback });
+		}
+	}
+
+	get trigger() {
+		return this._trigger;
+	}
+
+	set trigger(v) {
+		validate(v)
+			.as('Shortcut.trigger')
+			.required()
+			.type('string');
+
+		this.data = parseHotkey(v);
+		this._trigger = v;
+	}
+
 	static parse = parseHotkey;
 }
