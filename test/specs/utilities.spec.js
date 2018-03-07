@@ -2,7 +2,7 @@ import { keyMap } from '../../src/utils/maps';
 import { arraysMatch, objectSearch } from '../../src/utils/helpers';
 
 describe('Utilities', () => {
-	describe('Key Map', () => {
+	describe('keyMap', () => {
 		it('should be an object', () => {
 			expect(keyMap).to.be.a('object');
 		});
@@ -32,7 +32,7 @@ describe('Utilities', () => {
 		});
 	});
 
-	describe('arraysMatch Function', () => {
+	describe('arraysMatch()', () => {
 		it('should match empty arrays', () => {
 			expect(arraysMatch([], [])).to.equal(true);
 		});
@@ -59,7 +59,7 @@ describe('Utilities', () => {
 		});
 	});
 
-	describe('objectSearch', () => {
+	describe('objectSearch()', () => {
 		it('should match empty objects', () => {
 			expect(objectSearch({}, {})).to.equal(true);
 		});

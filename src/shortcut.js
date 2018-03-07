@@ -16,11 +16,6 @@ function parseHotkey(v) {
 
 	if (!keyEvent.keyCode) throw new Error('Invalid Key: ' + key);
 
-	//meta.split('').forEach(m => {
-	//	const metaKey = metaMap[m];
-	//	keyEvent[metaKey] = true;
-	//});
-
 	Object.keys(metaMap).forEach(metaName => {
 		const metaKey = metaMap[metaName];
 		keyEvent[metaName] = meta.indexOf(metaKey) > -1;

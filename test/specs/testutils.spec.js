@@ -2,7 +2,7 @@ import { press } from '../utils/helpers';
 
 // Testing the test utilities. So meta.
 describe('Test Utilities', () => {
-	describe('keypress function', () => {
+	describe('press()', () => {
 		let keypressCallback = sinon.stub();
 
 		before(() => {

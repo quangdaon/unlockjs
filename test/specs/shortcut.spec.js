@@ -10,11 +10,11 @@ describe('Shortcut', () => {
 			expect(Shortcut.parse('a')).to.be.an('object');
 		});
 
-		it('should return keyEvent', () => {
+		it('should contain keyEvent', () => {
 			expect(Shortcut.parse('a')).to.have.property('keyEvent');
 		});
 
-		it('should return preventDefault', () => {
+		it('should contain preventDefault', () => {
 			expect(Shortcut.parse('a')).to.have.property('preventDefault');
 		});
 
@@ -68,5 +68,24 @@ describe('Shortcut', () => {
 				});
 			});
 		});
+
+		describe('.preventDefault', () => {
+			it('should be false if trigger does not contain "-"', () => {
+				expect(Shortcut.parse('a').preventDefault).to.equal(false);
+			});
+
+			it('should be false if meta keys are present without "-"', () => {
+				expect(Shortcut.parse('^a').preventDefault).to.equal(false);
+			});
+
+			it('should be true if trigger contains "-"', () => {
+				expect(Shortcut.parse('-a').preventDefault).to.equal(true);
+			});
+
+			it('should be true if meta keys are present with "-"', () => {
+				expect(Shortcut.parse('-^a').preventDefault).to.equal(true);
+			});
+		});
+
 	});
 });
