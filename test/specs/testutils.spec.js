@@ -3,14 +3,20 @@ import { press } from '../utils/helpers';
 // Testing the test utilities. So meta.
 describe('Test Utilities', () => {
 	describe('press()', () => {
-		let keypressCallback = sinon.stub();
+		const keypressCallback = sinon.stub();
+		const input = document.createElement('input');
 
 		before(() => {
 			document.addEventListener('keydown', keypressCallback);
 		});
 
+		beforeEach(() => {
+			document.body.appendChild(input);
+		});
+
 		afterEach(() => {
 			keypressCallback.reset();
+			input.remove();
 		});
 
 		it('should trigger a keypress event', () => {
@@ -38,7 +44,6 @@ describe('Test Utilities', () => {
 		});
 
 		it('should allow delegation to a specific element', () => {
-			const input = document.createElement('input');
 			const specificKeypressCallback = sinon.stub();
 
 			input.addEventListener('keydown', specificKeypressCallback);
@@ -49,10 +54,6 @@ describe('Test Utilities', () => {
 		});
 
 		it('should bubble up to the document', () => {
-			const input = document.createElement('input');
-
-			document.body.appendChild(input);
-
 			press(97, null, input);
 
 			assert(keypressCallback.calledWith(sinon.match({ target: input })));
