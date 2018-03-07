@@ -55,8 +55,8 @@ export const stringKeyMap = {
 };
 
 export const metaMap = {
-	'^': 'ctrlKey',
-	'+': 'shiftKey',
-	'!': 'altKey',
-	'#': 'metaKey'
+	'ctrlKey': '^',
+	'shiftKey': '+',
+	'altKey': '!',
+	'metaKey': '#'
 };
