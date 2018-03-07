@@ -6,50 +6,6 @@ describe('CheatCode', () => {
 		expect(CheatCode).to.be.a('function');
 	});
 
-	describe('.code', () => {
-		it('should be required', () => {
-			expect(() => new CheatCode({
-				name: 'name',
-				callback: () => {
-				}
-			})).to.throw();
-		});
-
-		it('should be a string or array', () => {
-			expect(() => new CheatCode({
-				name: 'name',
-				code: {},
-				callback: () => {
-				}
-			})).to.throw();
-		});
-
-		it('should error with invalid input', () => {
-			expect(() => new CheatCode({
-				name: 'name',
-				code: ['a', 'b', 'farf'],
-				callback: {}
-			})).to.throw();
-		});
-	});
-
-	describe('.callback', () => {
-		it('should be required', () => {
-			expect(() => new CheatCode({
-				name: 'name',
-				code: 'code'
-			})).to.throw();
-		});
-
-		it('should be a function', () => {
-			expect(() => new CheatCode({
-				name: 'name',
-				code: 'code',
-				callback: 'string'
-			})).to.throw();
-		});
-	});
-
 	describe('.compile', () => {
 		it('should convert a string into a numeric array', () => {
 			expect(CheatCode.compile('abcd')).to.eql([65, 66, 67, 68]);
@@ -64,14 +20,64 @@ describe('CheatCode', () => {
 		});
 	});
 
-	describe('CheatCode instance', () => {
-		const callback = sinon.stub();
-		const cheatcode = new CheatCode('cheat', 'abc', callback);
+	describe('Instantiation', () => {
+		let options;
+
+		function newInstance() {
+			return new CheatCode(options);
+		}
 
 		beforeEach(() => {
+			options = {
+				name: 'name',
+				code: 'code',
+				callback: () => {
+				}
+			};
+		});
+
+		describe('.code', () => {
+			it('should be required', () => {
+				delete options.code;
+				expect(newInstance).to.throw(Error, 'required');
+			});
+
+			it('should be a string or array', () => {
+				options.code = {};
+				expect(newInstance).to.throw(TypeError, 'Type Mismatch');
+			});
+
+			it('should error with invalid input', () => {
+				options.code = ['a', 'b', 'farf'];
+				expect(newInstance).to.throw(Error, 'Unrecognized key');
+			});
+		});
+
+		describe('.callback', () => {
+			it('should be required', () => {
+				delete options.callback;
+				expect(newInstance).to.throw(Error, 'required');
+			});
+
+			it('should be a function', () => {
+				options.callback = 'string';
+				expect(newInstance).to.throw(TypeError, 'Type Mismatch');
+			});
+		});
+	});
+
+	describe('Instance', () => {
+		const callback = sinon.stub();
+		let cheatcode;
+
+		beforeEach(() => {
+			cheatcode = new CheatCode('cheat', 'abc', callback);
+			callback.reset();
+		});
+
+		afterEach(() => {
 			cheatcode.reset();
 			cheatcode.unbind();
-			callback.reset();
 		});
 
 		it('should be created', () => {
