@@ -72,11 +72,7 @@ export default class Unlock {
 		return this.cheats.length;
 	}
 
-	static get CheatCode() {
-		return CheatCode;
-	}
+	static CheatCode = CheatCode;
 
-	static get Shortcut() {
-		return Shortcut;
-	}
+	static Shortcut = Shortcut;
 }

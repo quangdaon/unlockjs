@@ -90,9 +90,7 @@ export default class CheatCode {
 		this.keyslist.length = 0;
 	}
 
-	static compile(v) {
-		return compileCode(v);
-	}
+	static compile = compileCode;
 
 	toJSON() {
 		return {

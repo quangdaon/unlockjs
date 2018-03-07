@@ -25,7 +25,5 @@ function parseHotkey(v) {
 }
 
 export default class Shortcut {
-	static parse(v) {
-		return parseHotkey(v);
-	}
+	static parse = parseHotkey;
 }
