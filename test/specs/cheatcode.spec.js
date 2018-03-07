@@ -7,10 +7,11 @@ describe('CheatCode', () => {
 	});
 
 	describe('.code', () => {
-		it('should be passed', () => {
+		it('should be required', () => {
 			expect(() => new CheatCode({
 				name: 'name',
-				code: 'code'
+				callback: () => {
+				}
 			})).to.throw();
 		});
 
@@ -33,7 +34,7 @@ describe('CheatCode', () => {
 	});
 
 	describe('.callback', () => {
-		it('should be passed', () => {
+		it('should be required', () => {
 			expect(() => new CheatCode({
 				name: 'name',
 				code: 'code'

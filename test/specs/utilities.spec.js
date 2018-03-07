@@ -1,5 +1,6 @@
 import { keyMap } from '../../src/utils/maps';
 import { arraysMatch, objectSearch } from '../../src/utils/helpers';
+import { validate } from '../../src/utils/errors';
 
 describe('Utilities', () => {
 	describe('keyMap', () => {
@@ -94,6 +95,76 @@ describe('Utilities', () => {
 
 		it('should not match if any value doesn\'t match', () => {
 			expect(objectSearch({ prop: 1, id: 2, key: 5 }, { prop: 1, key: 6 })).to.equal(false);
+		});
+	});
+
+	describe('validate()', function () {
+		it('should return an object', () => {
+			expect(validate('a')).to.be.an('object');
+		});
+
+		describe('.required()', () => {
+			it('should pass through if variable is present', () => {
+				expect(() => validate(1).required()).to.not.throw();
+			});
+
+			it('should throw error if variable is null', () => {
+				expect(() => validate().required()).to.throw();
+			});
+
+			it('should not throw error error is falsy', () => {
+				expect(() => validate(false).required()).to.not.throw();
+			});
+		});
+
+		describe('.type()', function () {
+			it('should be optional', () => {
+				expect(() => validate().type('number')).to.not.throw();
+			});
+
+			it('should match number', () => {
+				expect(() => validate(0).type('number')).to.not.throw();
+			});
+
+			it('should match string', () => {
+				expect(() => validate('0').type('string')).to.not.throw();
+			});
+
+			it('should match function', () => {
+				expect(() => validate(() => {
+				}).type('function')).to.not.throw();
+			});
+
+			it('should match by instanceof', () => {
+				expect(() => validate(() => {
+				}).type(Function)).to.not.throw();
+			});
+
+			it('should match multiple', () => {
+				expect(() => validate([1, 2]).type([Function, Array])).to.not.throw();
+			});
+
+			it('should throw TypeError on typeof fail', () => {
+				expect(() => validate([1, 2]).type('string')).to.throw(TypeError, 'Expected (string)');
+			});
+
+			it('should throw TypeError on instance fail', () => {
+				expect(() => validate('a').type(Array)).to.throw(TypeError, 'Expected (Array)');
+			});
+		});
+
+		describe('.as()', () => {
+			it('should set descriptor', () => {
+				const validator = validate().as('my string');
+
+				expect(() => validator.required()).to.throw(Error, 'my string is required.');
+			});
+		});
+
+		it('should be chainable', () => {
+			expect(() => validate('a').required().type('string')).to.not.throw();
+			expect(() => validate('a').required().type('number')).to.throw();
+			expect(() => validate().required().type('string')).to.throw();
 		});
 	});
 });
