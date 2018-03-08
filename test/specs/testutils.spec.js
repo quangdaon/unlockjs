@@ -21,26 +21,26 @@ describe('Test Utilities', () => {
 
 		it('should trigger a keypress event', () => {
 			press(97);
-			assert(keypressCallback.called);
+			expect(keypressCallback).to.have.been.called;
 		});
 
 		it('should trigger the correct key event', () => {
 			press(97);
-			assert(keypressCallback.calledWith(sinon.match({ keyCode: 97 })));
+			expect(keypressCallback).to.have.been.calledWith(sinon.match({ keyCode: 97 }));
 		});
 
 		it('should accept meta keys', () => {
 			press(97, ['meta']);
-			assert(keypressCallback.calledWith(sinon.match({ keyCode: 97, metaKey: true })));
+			expect(keypressCallback).to.have.been.calledWith(sinon.match({ keyCode: 97, metaKey: true }));
 
 			press(97, ['shift']);
-			assert(keypressCallback.calledWith(sinon.match({ keyCode: 97, shiftKey: true })));
+			expect(keypressCallback).to.have.been.calledWith(sinon.match({ keyCode: 97, shiftKey: true }));
 
 			press(97, ['ctrl']);
-			assert(keypressCallback.calledWith(sinon.match({ keyCode: 97, ctrlKey: true })));
+			expect(keypressCallback).to.have.been.calledWith(sinon.match({ keyCode: 97, ctrlKey: true }));
 
 			press(97, ['alt']);
-			assert(keypressCallback.calledWith(sinon.match({ keyCode: 97, altKey: true })));
+			expect(keypressCallback).to.have.been.calledWith(sinon.match({ keyCode: 97, altKey: true }));
 		});
 
 		it('should allow delegation to a specific element', () => {
@@ -50,13 +50,13 @@ describe('Test Utilities', () => {
 
 			press(97, null, input);
 
-			assert(specificKeypressCallback.called);
+			expect(specificKeypressCallback).to.have.been.called;
 		});
 
 		it('should bubble up to the document', () => {
 			press(97, null, input);
 
-			assert(keypressCallback.calledWith(sinon.match({ target: input })));
+			expect(keypressCallback).to.have.been.calledWith(sinon.match({ target: input }));
 		});
 	});
 });

@@ -96,6 +96,14 @@ describe('Utilities', () => {
 		it('should not match if any value doesn\'t match', () => {
 			expect(objectSearch({ prop: 1, id: 2, key: 5 }, { prop: 1, key: 6 })).to.equal(false);
 		});
+
+		it('should match falsy values', () => {
+			expect(objectSearch({ prop: false, id: 2, key: 5 }, { prop: false })).to.equal(true);
+		});
+
+		it('should not match unequal falsy values', () => {
+			expect(objectSearch({ prop: false }, { prop: 0 })).to.equal(false);
+		});
 	});
 
 	describe('validate()', function () {

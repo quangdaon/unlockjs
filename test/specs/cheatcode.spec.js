@@ -89,14 +89,14 @@ describe('CheatCode', () => {
 		});
 
 		it('should not trigger callback automatically', function () {
-			assert(callback.notCalled);
+			expect(callback).to.have.not.been.called;
 		});
 
 		it('should not trigger callback on key pressed', () => {
 			press(65);
 			press(66);
 			press(67);
-			assert(callback.notCalled);
+			expect(callback).to.have.not.been.called;
 		});
 
 		it('should trigger callback on key pressed if bound', () => {
@@ -104,38 +104,7 @@ describe('CheatCode', () => {
 			press(65);
 			press(66);
 			press(67);
-			assert(callback.called);
-		});
-
-		it('should be unbindable', done => {
-			cheatcode.bind();
-			press(65);
-			press(66);
-			press(67);
-			assert(callback.called);
-
-			callback.reset();
-
-			setTimeout(() => {
-				cheatcode.unbind();
-				press(65);
-				press(66);
-				press(67);
-				assert(callback.notCalled);
-				done();
-			}, 600);
-		});
-
-		it('should reset on timeout', done => {
-			cheatcode.bind();
-			press(65);
-			press(66);
-
-			setTimeout(() => {
-				press(67);
-				assert(callback.notCalled);
-				done();
-			}, 600);
+			expect(callback).to.have.been.called;
 		});
 
 		it('should return name and code on JSON.stringify', () => {
@@ -146,6 +115,31 @@ describe('CheatCode', () => {
 			expect(cheatcode.toString()).to.equal('cheat');
 			expect(cheatcode + 'abcd').to.equal('cheatabcd');
 		});
-	});
 
+		describe('after bound', () => {
+			beforeEach(() => {
+				cheatcode.bind();
+			});
+
+			it('should be unbindable', done => {
+				cheatcode.unbind();
+				press(65);
+				press(66);
+				press(67);
+				expect(callback).to.have.not.been.called;
+				done();
+			});
+
+			it('should reset on timeout', done => {
+				press(65);
+				press(66);
+
+				setTimeout(() => {
+					press(67);
+					expect(callback).to.have.not.been.called;
+					done();
+				}, 600);
+			});
+		});
+	});
 });

@@ -1,5 +1,5 @@
 import Shortcut from '../../src/shortcut';
-import CheatCode from '../../src/cheatcode';
+import { press } from '../utils/helpers';
 
 describe('Shortcut', () => {
 	it('should be a class', () => {
@@ -122,8 +122,13 @@ describe('Shortcut', () => {
 		let shortcut;
 
 		beforeEach(() => {
-			callback.reset();
 			shortcut = new Shortcut('a', callback);
+			callback.reset();
+		});
+
+		afterEach(() => {
+			//shortcut.reset();
+			shortcut.unbind();
 		});
 
 		it('should be created', () => {
@@ -139,7 +144,7 @@ describe('Shortcut', () => {
 				expect(shortcut.data).to.containSubset({ keyEvent: { keyCode: 65 } });
 			});
 
-			it('should writable', () => {
+			it('should be writable', () => {
 				shortcut.trigger = '^b';
 				expect(shortcut.trigger).to.equal('^b');
 			});
@@ -151,7 +156,54 @@ describe('Shortcut', () => {
 		});
 
 		describe('.callback', () => {
+			it('should not be called automatically', () => {
+				expect(callback).to.have.not.been.called;
+			});
 
+		});
+
+		describe('Key Press Handler', () => {
+			it('should not run on key pressed', () => {
+				press(65);
+				expect(callback).to.have.not.been.called;
+			});
+
+			it('should run on key pressed if bound', () => {
+				shortcut.bind();
+				press(65);
+				expect(callback).to.have.been.called;
+			});
+
+			describe('after bound', () => {
+				beforeEach(() => {
+					shortcut.bind();
+				});
+
+				it('should be unbindable', () => {
+					shortcut.unbind();
+					press(65);
+
+					expect(callback).to.have.not.been.called;
+				});
+
+				it('should not match random key press', () => {
+					press(95);
+					expect(callback).to.have.not.been.called;
+				});
+
+				it('should match ctrl key', () => {
+					press(65, ['ctrl']);
+					expect(callback).to.have.not.been.called;
+
+					shortcut.trigger = '^a';
+					press(65);
+					expect(callback).to.have.not.been.called;
+
+					shortcut.trigger = '^a';
+					press(65, ['ctrl']);
+					expect(callback).to.have.been.called;
+				});
+			});
 		});
 	});
 });

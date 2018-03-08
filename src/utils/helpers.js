@@ -11,7 +11,7 @@ export function arraysMatch(firstArr, secondArr) { //Checks if Array Match - Not
 export function objectSearch(haystack, needle) {
 	let match = true;
 	Object.keys(needle).forEach(key => {
-		if (!haystack[key] || haystack[key] !== needle[key]) {
+		if (!(key in haystack) || haystack[key] !== needle[key]) {
 			match = false;
 		}
 	});

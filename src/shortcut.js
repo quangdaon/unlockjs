@@ -1,5 +1,6 @@
 import { keyMap, metaMap, stringKeyMap } from './utils/maps';
 import { validate } from './utils/errors';
+import { objectSearch } from './utils/helpers';
 
 const triggerRegex = /^(-)?([\^+!#]*)(.)$/;
 
@@ -38,6 +39,8 @@ export default class Shortcut {
 		} else {
 			Object.assign(this, { trigger: xtrigger, callback });
 		}
+
+		this.handleKeyPress = this.handleKeyPress.bind(this);
 	}
 
 	get trigger() {
@@ -52,6 +55,24 @@ export default class Shortcut {
 
 		this.data = parseHotkey(v);
 		this._trigger = v;
+	}
+
+	handleKeyPress(e) {
+		this.check(e);
+	}
+
+	check(data) {
+		if (objectSearch(data, this.data.keyEvent)) {
+			this.callback();
+		}
+	}
+
+	bind() {
+		document.addEventListener('keydown', this.handleKeyPress);
+	}
+
+	unbind() {
+		document.removeEventListener('keydown', this.handleKeyPress);
 	}
 
 	static parse = parseHotkey;

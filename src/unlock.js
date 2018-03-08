@@ -1,7 +1,6 @@
 import debug from 'debug';
 import CheatCode from './cheatcode';
 import Shortcut from './shortcut';
-import { arraysMatch } from './utils/helpers';
 
 const log = debug('unlock:core');
 
@@ -44,10 +43,8 @@ export default class Unlock {
 			}, this.timeout);
 
 			this.cheats.forEach(cheat => {
-				if (arraysMatch(cheat.code, this.keyslist)) {
-					cheat.callback();
-					if (this.resetOnMatch) this.reset();
-				}
+				const matched = cheat.check(this.keyslist);
+				if (matched && this.resetOnMatch) this.reset();
 			});
 		});
 	}

@@ -81,9 +81,15 @@ export default class CheatCode {
 			this.reset();
 		}, this.timeout);
 
-		if (arraysMatch(this.code, this.keyslist)) {
+		this.check(this.keyslist);
+	}
+
+	check(keys) {
+		if (arraysMatch(this.code, keys)) {
 			this.callback();
+			return true;
 		}
+		return false;
 	}
 
 	bind() {
