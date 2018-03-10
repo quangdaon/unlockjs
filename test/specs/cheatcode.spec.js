@@ -36,33 +36,23 @@ describe('CheatCode', () => {
 			};
 		});
 
+		it('should accept options object', () => {
+			expect(newInstance()).to.be.instanceOf(CheatCode);
+		});
+
+		it('should accept signature of (string, string, function)', () => {
+			expect(new CheatCode('name', 'code', () => {
+			})).to.be.instanceOf(CheatCode);
+		});
+
 		describe('.code', () => {
-			it('should be required', () => {
-				delete options.code;
-				expect(newInstance).to.throw(Error, 'required');
-			});
-
-			it('should be a string or array', () => {
-				options.code = {};
-				expect(newInstance).to.throw(TypeError, 'Type Mismatch');
-			});
-
 			it('should error with invalid input', () => {
 				options.code = ['a', 'b', 'farf'];
 				expect(newInstance).to.throw(Error, 'Unrecognized key');
 			});
 		});
 
-		describe('.callback', () => {
-			it('should be required', () => {
-				delete options.callback;
-				expect(newInstance).to.throw(Error, 'required');
-			});
-
-			it('should be a function', () => {
-				options.callback = 'string';
-				expect(newInstance).to.throw(TypeError, 'Type Mismatch');
-			});
+		xdescribe('.callback', () => {
 		});
 	});
 
@@ -78,10 +68,6 @@ describe('CheatCode', () => {
 		afterEach(() => {
 			cheatcode.reset();
 			cheatcode.unbind();
-		});
-
-		it('should be created', () => {
-			expect(cheatcode).to.be.instanceOf(CheatCode);
 		});
 
 		it('should parse code automatically', () => {
@@ -117,8 +103,14 @@ describe('CheatCode', () => {
 		});
 
 		describe('after bound', () => {
+			const clock = sinon.useFakeTimers();
+
 			beforeEach(() => {
 				cheatcode.bind();
+			});
+
+			after(() => {
+				clock.restore();
 			});
 
 			it('should be unbindable', done => {
@@ -134,11 +126,11 @@ describe('CheatCode', () => {
 				press(65);
 				press(66);
 
-				setTimeout(() => {
-					press(67);
-					expect(callback).to.have.not.been.called;
-					done();
-				}, 600);
+				clock.tick(510);
+
+				press(67);
+				expect(callback).to.have.not.been.called;
+				done();
 			});
 		});
 	});

@@ -104,16 +104,13 @@ describe('Shortcut', () => {
 			};
 		});
 
-		describe('.trigger', () => {
-			it('should be required', () => {
-				delete options.trigger;
-				expect(newInstance).to.throw(Error, 'required');
-			});
+		it('should accept options object', () => {
+			expect(newInstance()).to.be.instanceOf(Shortcut);
+		});
 
-			it('should be string', () => {
-				options.trigger = [];
-				expect(newInstance).to.throw(Error, 'Type Mismatch');
-			});
+		it('should accept signature of (string, function)', () => {
+			expect(new Shortcut('a', () => {
+			})).to.be.instanceOf(Shortcut);
 		});
 	});
 
@@ -129,10 +126,6 @@ describe('Shortcut', () => {
 		afterEach(() => {
 			//shortcut.reset();
 			shortcut.unbind();
-		});
-
-		it('should be created', () => {
-			expect(shortcut).to.be.instanceOf(Shortcut);
 		});
 
 		describe('.trigger', () => {
@@ -159,7 +152,6 @@ describe('Shortcut', () => {
 			it('should not be called automatically', () => {
 				expect(callback).to.have.not.been.called;
 			});
-
 		});
 
 		describe('Key Press Handler', () => {
@@ -175,6 +167,7 @@ describe('Shortcut', () => {
 			});
 
 			describe('after bound', () => {
+
 				beforeEach(() => {
 					shortcut.bind();
 				});
@@ -199,7 +192,6 @@ describe('Shortcut', () => {
 					press(65);
 					expect(callback).to.have.not.been.called;
 
-					shortcut.trigger = '^a';
 					press(65, ['ctrl']);
 					expect(callback).to.have.been.called;
 				});
