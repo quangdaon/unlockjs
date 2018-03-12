@@ -23,7 +23,7 @@ describe('Unlock', () => {
 		const callback = sinon.stub();
 		let cheatcode = unlock.addCheat({
 			name: 'cheat',
-			code: 'abc',
+			code: 'bcd',
 			callback
 		});
 
@@ -46,9 +46,9 @@ describe('Unlock', () => {
 		});
 
 		it('should bind event listener automatically', () => {
-			press(65);
 			press(66);
 			press(67);
+			press(68);
 
 			assert(callback.called);
 		});
@@ -61,28 +61,100 @@ describe('Unlock', () => {
 
 		it('should allow for automatically resetting on cheat success', () => {
 			unlock.resetOnMatch = true;
-			press(65);
 			press(66);
 			press(67);
+			press(68);
 
-			press(65);
 			press(66);
 			press(67);
+			press(68);
 
 			assert(callback.calledTwice);
 
 			callback.reset();
 
 			unlock.resetOnMatch = false;
-			press(65);
 			press(66);
 			press(67);
+			press(68);
 
-			press(65);
 			press(66);
 			press(67);
+			press(68);
 
 			assert(callback.calledOnce);
+		});
+
+		describe('Instance', function () {
+			describe('.enabled', function () {
+				const unlock = new Unlock();
+				before(() => {
+				});
+
+				after(() => {
+				});
+
+				it('should be true by default', () => {
+					expect(unlock.enabled).to.equal(true);
+				});
+
+				it('should prevent cheatcode callback from triggering when false', function () {
+					unlock.disable();
+					const callback = sinon.stub();
+
+					unlock.addCheat({
+						name: 'cheat',
+						code: 'abc',
+						callback
+					});
+
+					press(65);
+					press(66);
+					press(67);
+
+					expect(callback).to.have.not.been.called;
+				});
+			});
+
+			describe('.toggle()', function () {
+				it('should toggle .enabled', () => {
+					unlock.toggle();
+					expect(unlock.enabled).to.equal(false);
+					unlock.toggle();
+					expect(unlock.enabled).to.equal(true);
+				});
+
+				it('should accept a condition parameter', () => {
+					unlock.toggle(false);
+					expect(unlock.enabled).to.equal(false);
+
+					unlock.toggle(true);
+					expect(unlock.enabled).to.equal(true);
+
+					unlock.toggle(true);
+					expect(unlock.enabled).to.equal(true);
+				});
+			});
+
+			describe('.enable()', function () {
+				it('should only set .enabled to true', () => {
+					unlock.enable();
+					expect(unlock.enabled).to.equal(true);
+
+					unlock.enable();
+					expect(unlock.enabled).to.equal(true);
+				});
+			});
+
+			describe('.disable()', function () {
+				it('should only set .enabled to true', () => {
+					unlock.disable();
+					expect(unlock.enabled).to.equal(false);
+
+					unlock.disable();
+					expect(unlock.enabled).to.equal(false);
+				});
+			});
 		});
 	});
 });

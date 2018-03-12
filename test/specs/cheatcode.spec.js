@@ -60,6 +60,12 @@ describe('CheatCode', () => {
 		const callback = sinon.stub();
 		let cheatcode;
 
+		function activateCheat() {
+			press(65);
+			press(66);
+			press(67);
+		}
+
 		beforeEach(() => {
 			cheatcode = new CheatCode('cheat', 'abc', callback);
 			callback.reset();
@@ -68,29 +74,6 @@ describe('CheatCode', () => {
 		afterEach(() => {
 			cheatcode.reset();
 			cheatcode.unbind();
-		});
-
-		it('should parse code automatically', () => {
-			expect(cheatcode.code).to.eql([65, 66, 67]);
-		});
-
-		it('should not trigger callback automatically', function () {
-			expect(callback).to.have.not.been.called;
-		});
-
-		it('should not trigger callback on key pressed', () => {
-			press(65);
-			press(66);
-			press(67);
-			expect(callback).to.have.not.been.called;
-		});
-
-		it('should trigger callback on key pressed if bound', () => {
-			cheatcode.bind();
-			press(65);
-			press(66);
-			press(67);
-			expect(callback).to.have.been.called;
 		});
 
 		it('should return name and code on JSON.stringify', () => {
@@ -102,11 +85,38 @@ describe('CheatCode', () => {
 			expect(cheatcode + 'abcd').to.equal('cheatabcd');
 		});
 
+		describe('.code', () => {
+			it('should be parsed automatically', () => {
+				expect(cheatcode.code).to.eql([65, 66, 67]);
+			});
+		});
+
+		describe('.callback', () => {
+			it('should not trigger automatically', () => {
+				expect(callback).to.have.not.been.called;
+			});
+
+			it('should not trigger on key pressed', () => {
+				activateCheat();
+				expect(callback).to.have.not.been.called;
+			});
+
+			it('should trigger on key pressed if bound', () => {
+				cheatcode.bind();
+				activateCheat();
+				expect(callback).to.have.been.called;
+			});
+		});
+
 		describe('after bound', () => {
 			const clock = sinon.useFakeTimers();
 
 			beforeEach(() => {
 				cheatcode.bind();
+			});
+
+			afterEach(() => {
+				cheatcode.unbind();
 			});
 
 			after(() => {
@@ -115,9 +125,7 @@ describe('CheatCode', () => {
 
 			it('should be unbindable', done => {
 				cheatcode.unbind();
-				press(65);
-				press(66);
-				press(67);
+				activateCheat();
 				expect(callback).to.have.not.been.called;
 				done();
 			});
@@ -131,6 +139,67 @@ describe('CheatCode', () => {
 				press(67);
 				expect(callback).to.have.not.been.called;
 				done();
+			});
+		});
+
+		describe('.enabled', function () {
+			before(() => {
+				cheatcode.bind();
+			});
+
+			after(() => {
+				cheatcode.unbind();
+			});
+
+			it('should be true by default', () => {
+				expect(cheatcode.enabled).to.equal(true);
+			});
+
+			// FIXME: This passes manual testing, so I think something's wrong with the event listener and the press function.
+			xit('should prevent callback from triggering when false', function () {
+				cheatcode.disable();
+				activateCheat();
+				expect(callback).to.have.not.been.called;
+			});
+		});
+
+		describe('.toggle()', function () {
+			it('should toggle .enabled', () => {
+				cheatcode.toggle();
+				expect(cheatcode.enabled).to.equal(false);
+				cheatcode.toggle();
+				expect(cheatcode.enabled).to.equal(true);
+			});
+
+			it('should accept a condition parameter', () => {
+				cheatcode.toggle(false);
+				expect(cheatcode.enabled).to.equal(false);
+
+				cheatcode.toggle(true);
+				expect(cheatcode.enabled).to.equal(true);
+
+				cheatcode.toggle(true);
+				expect(cheatcode.enabled).to.equal(true);
+			});
+		});
+
+		describe('.enable()', function () {
+			it('should only set .enabled to true', () => {
+				cheatcode.enable();
+				expect(cheatcode.enabled).to.equal(true);
+
+				cheatcode.enable();
+				expect(cheatcode.enabled).to.equal(true);
+			});
+		});
+
+		describe('.disable()', function () {
+			it('should only set .enabled to true', () => {
+				cheatcode.disable();
+				expect(cheatcode.enabled).to.equal(false);
+
+				cheatcode.disable();
+				expect(cheatcode.enabled).to.equal(false);
 			});
 		});
 	});

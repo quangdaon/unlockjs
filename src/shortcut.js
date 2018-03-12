@@ -32,6 +32,9 @@ export default class Shortcut {
 	@Private
 	_trigger = '';
 
+	@Private
+	_enabled = true;
+
 	constructor(xtrigger, callback) {
 		if (typeof xtrigger === 'object') {
 			const { trigger, callback } = xtrigger;
@@ -57,12 +60,28 @@ export default class Shortcut {
 		this._trigger = v;
 	}
 
+	get enabled() {
+		return this._enabled;
+	}
+
+	toggle(condition) {
+		this._enabled = typeof condition !== 'undefined' ? condition : !this._enabled;
+	}
+
+	enable() {
+		this.toggle(true);
+	}
+
+	disable() {
+		this.toggle(false);
+	}
+
 	handleKeyPress(e) {
 		this.check(e);
 	}
 
 	check(data) {
-		if (objectSearch(data, this.data.keyEvent)) {
+		if (this.enabled && objectSearch(data, this.data.keyEvent)) {
 			this.callback();
 		}
 	}

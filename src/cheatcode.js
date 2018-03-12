@@ -27,13 +27,16 @@ export default class CheatCode {
 	@Private
 	_code = [];
 
-	timeout = 500;
-
 	@Private
 	keyslist = [];
 
 	@Private
 	keyTimer = null;
+
+	@Private
+	_enabled = true;
+
+	timeout = 500;
 
 	constructor(xname, code, callback) {
 		if (typeof xname === 'object') {
@@ -44,6 +47,8 @@ export default class CheatCode {
 		}
 
 		log('CheatCode created: %s', this.name);
+
+		this.handleKeyPress = this.handleKeyPress.bind(this);
 	}
 
 	set code(v) {
@@ -72,24 +77,28 @@ export default class CheatCode {
 		return this._callback;
 	}
 
-	@Private
+	get enabled() {
+		return this._enabled;
+	}
+
+	check(keys) {
+		if (this.enabled && arraysMatch(this.code, keys)) {
+			this.callback();
+			return true;
+		}
+		return false;
+	}
+
 	handleKeyPress(e) {
+		//console.log(this);
 		this.keyslist.push(e.keyCode);
+
+		this.check(this.keyslist);
 
 		clearTimeout(this.keyTimer);
 		this.keyTimer = setTimeout(() => {
 			this.reset();
 		}, this.timeout);
-
-		this.check(this.keyslist);
-	}
-
-	check(keys) {
-		if (arraysMatch(this.code, keys)) {
-			this.callback();
-			return true;
-		}
-		return false;
 	}
 
 	bind() {
@@ -102,6 +111,18 @@ export default class CheatCode {
 
 	reset() {
 		this.keyslist.length = 0;
+	}
+
+	toggle(condition) {
+		this._enabled = typeof condition !== 'undefined' ? condition : !this._enabled;
+	}
+
+	enable() {
+		this.toggle(true);
+	}
+
+	disable() {
+		this.toggle(false);
 	}
 
 	static compile = compileCode;

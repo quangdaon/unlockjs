@@ -197,5 +197,65 @@ describe('Shortcut', () => {
 				});
 			});
 		});
+
+		describe('.enabled', function () {
+			before(() => {
+				shortcut.bind();
+			});
+
+			after(() => {
+				shortcut.unbind();
+			});
+
+			it('should be true by default', () => {
+				expect(shortcut.enabled).to.equal(true);
+			});
+
+			it('should prevent callback from triggering when false', function () {
+				shortcut.disable();
+				press(65);
+				expect(callback).to.have.not.been.called;
+			});
+		});
+
+		describe('.toggle()', function () {
+			it('should toggle .enabled', () => {
+				shortcut.toggle();
+				expect(shortcut.enabled).to.equal(false);
+				shortcut.toggle();
+				expect(shortcut.enabled).to.equal(true);
+			});
+
+			it('should accept a condition parameter', () => {
+				shortcut.toggle(false);
+				expect(shortcut.enabled).to.equal(false);
+
+				shortcut.toggle(true);
+				expect(shortcut.enabled).to.equal(true);
+
+				shortcut.toggle(true);
+				expect(shortcut.enabled).to.equal(true);
+			});
+		});
+
+		describe('.enable()', function () {
+			it('should only set .enabled to true', () => {
+				shortcut.enable();
+				expect(shortcut.enabled).to.equal(true);
+
+				shortcut.enable();
+				expect(shortcut.enabled).to.equal(true);
+			});
+		});
+
+		describe('.disable()', function () {
+			it('should only set .enabled to true', () => {
+				shortcut.disable();
+				expect(shortcut.enabled).to.equal(false);
+
+				shortcut.disable();
+				expect(shortcut.enabled).to.equal(false);
+			});
+		});
 	});
 });
