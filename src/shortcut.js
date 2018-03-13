@@ -77,6 +77,7 @@ export default class Shortcut {
 	}
 
 	handleKeyPress(e) {
+		if(this.data.preventDefault) e.preventDefault();
 		this.check(e);
 	}
 

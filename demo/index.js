@@ -1,5 +1,6 @@
 import debug from 'debug';
 import CheatCode from '../src/cheatcode';
+import Shortcut from '../src/shortcut';
 
 if (process.env.NODE_ENV === 'development') debug.enable('unlock:*');
 
@@ -19,3 +20,7 @@ cheat.bind();
 cheat.disable();
 
 log(cheat.code);
+
+new Shortcut('-^b', function () {
+	log('B pressed.');
+}).bind();

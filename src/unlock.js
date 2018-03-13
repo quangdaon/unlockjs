@@ -68,10 +68,6 @@ export default class Unlock {
 		this.keyslist.length = 0;
 	}
 
-	//toggle(condition) {
-	//	this.enabled = typeof condition !== 'undefined' ? condition : !this.enabled;
-	//}
-
 	get length() {
 		return this.cheats.length;
 	}

@@ -155,6 +155,25 @@ describe('Shortcut', () => {
 		});
 
 		describe('Key Press Handler', () => {
+			const preventDefaultCalled = sinon.stub();
+
+			// TODO: Look into a better way of doing this.
+			function preventDefaultChecker(e) {
+				e.preventDefault = preventDefaultCalled;
+			}
+
+			beforeEach(() => {
+				preventDefaultCalled.reset();
+			});
+
+			before(() => {
+				document.addEventListener('keydown', preventDefaultChecker);
+			});
+
+			after(() => {
+				document.removeEventListener('keydown', preventDefaultChecker);
+			});
+
 			it('should not run on key pressed', () => {
 				press(65);
 				expect(callback).to.have.not.been.called;
@@ -164,6 +183,13 @@ describe('Shortcut', () => {
 				shortcut.bind();
 				press(65);
 				expect(callback).to.have.been.called;
+			});
+
+			it('should prevent default if trigger starts with "-"', () => {
+				shortcut.trigger = '-a';
+				shortcut.bind();
+				press(65);
+				expect(preventDefaultCalled).to.have.been.called;
 			});
 
 			describe('after bound', () => {
