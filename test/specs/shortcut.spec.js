@@ -71,7 +71,7 @@ describe('Shortcut', () => {
 		});
 
 		describe('.preventDefault', () => {
-			it('should be false if trigger does not contain "-"', () => {
+			it('should be false if hotkey does not contain "-"', () => {
 				expect(Shortcut.parse('a').preventDefault).to.equal(false);
 			});
 
@@ -79,7 +79,7 @@ describe('Shortcut', () => {
 				expect(Shortcut.parse('^a').preventDefault).to.equal(false);
 			});
 
-			it('should be true if trigger contains "-"', () => {
+			it('should be true if hotkey contains "-"', () => {
 				expect(Shortcut.parse('-a').preventDefault).to.equal(true);
 			});
 
@@ -99,7 +99,7 @@ describe('Shortcut', () => {
 
 		beforeEach(() => {
 			options = {
-				trigger: 'a',
+				hotkey: 'a',
 				callback: () => null
 			};
 		});
@@ -128,22 +128,22 @@ describe('Shortcut', () => {
 			shortcut.unbind();
 		});
 
-		describe('.trigger', () => {
-			it('should return trigger', () => {
-				expect(shortcut.trigger).to.equal('a');
+		describe('.hotkey', () => {
+			it('should return hotkey', () => {
+				expect(shortcut.hotkey).to.equal('a');
 			});
 
-			it('should parse trigger', () => {
+			it('should parse hotkey', () => {
 				expect(shortcut.data).to.containSubset({ keyEvent: { keyCode: 65 } });
 			});
 
 			it('should be writable', () => {
-				shortcut.trigger = '^b';
-				expect(shortcut.trigger).to.equal('^b');
+				shortcut.hotkey = '^b';
+				expect(shortcut.hotkey).to.equal('^b');
 			});
 
 			it('should parse data on write', () => {
-				shortcut.trigger = '^b';
+				shortcut.hotkey = '^b';
 				expect(shortcut.data).to.containSubset({ keyEvent: { keyCode: 66, ctrlKey: true } });
 			});
 		});
@@ -185,8 +185,8 @@ describe('Shortcut', () => {
 				expect(callback).to.have.been.called;
 			});
 
-			it('should prevent default if trigger starts with "-"', () => {
-				shortcut.trigger = '-a';
+			it('should prevent default if hotkey starts with "-"', () => {
+				shortcut.hotkey = '-a';
 				shortcut.bind();
 				press(65);
 				expect(preventDefaultCalled).to.have.been.called;
@@ -214,7 +214,7 @@ describe('Shortcut', () => {
 					press(65, ['ctrl']);
 					expect(callback).to.have.not.been.called;
 
-					shortcut.trigger = '^a';
+					shortcut.hotkey = '^a';
 					press(65);
 					expect(callback).to.have.not.been.called;
 

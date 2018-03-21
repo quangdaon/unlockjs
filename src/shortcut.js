@@ -30,34 +30,34 @@ export default class Shortcut {
 	data = {};
 
 	@Private
-	_trigger = '';
+	_hotkey = '';
 
 	@Private
 	_enabled = true;
 
-	constructor(xtrigger, callback) {
-		if (typeof xtrigger === 'object') {
-			const { trigger, callback } = xtrigger;
-			Object.assign(this, { trigger, callback });
+	constructor(xhotkey, callback) {
+		if (typeof xhotkey === 'object') {
+			const { hotkey, callback } = xhotkey;
+			Object.assign(this, { hotkey, callback });
 		} else {
-			Object.assign(this, { trigger: xtrigger, callback });
+			Object.assign(this, { hotkey: xhotkey, callback });
 		}
 
 		this.handleKeyPress = this.handleKeyPress.bind(this);
 	}
 
-	get trigger() {
-		return this._trigger;
+	get hotkey() {
+		return this._hotkey;
 	}
 
-	set trigger(v) {
+	set hotkey(v) {
 		validate(v)
-			.as('Shortcut.trigger')
+			.as('Shortcut.hotkey')
 			.required()
 			.type('string');
 
 		this.data = parseHotkey(v);
-		this._trigger = v;
+		this._hotkey = v;
 	}
 
 	get enabled() {
