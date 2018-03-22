@@ -10,6 +10,9 @@ export default class Unlock {
 	cheats = [];
 
 	@Private
+	shortcuts = [];
+
+	@Private
 	keyslist = [];
 
 	@Private
@@ -38,6 +41,7 @@ export default class Unlock {
 		let keyTimer;
 
 		document.addEventListener('keydown', e => {
+			if (!this.enabled) return false;
 			this.keyslist.push(e.which);
 
 			clearTimeout(keyTimer);
@@ -48,6 +52,10 @@ export default class Unlock {
 			this.cheats.forEach(cheat => {
 				const matched = cheat.check(this.keyslist);
 				if (matched && this.resetOnMatch) this.reset();
+			});
+
+			this.shortcuts.forEach(shortcut => {
+				shortcut.check(e);
 			});
 		});
 	}
@@ -65,16 +73,19 @@ export default class Unlock {
 		return cheatCode;
 	}
 
+	addShortcut(...args) {
+		const shortcut = new Shortcut(...args);
+		this.shortcuts.push(shortcut);
+
+		return shortcut;
+	}
+
 	find(name) {
-		return this.cheats.find(e => e.name === name)
+		return this.cheats.find(e => e.name === name);
 	}
 
 	reset() {
 		this.keyslist.length = 0;
-	}
-
-	get length() {
-		return this.cheats.length;
 	}
 
 	get enabled() {
