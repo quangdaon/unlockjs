@@ -53,7 +53,8 @@ export default class Unlock {
 	}
 
 	addCheat(...args) {
-		const foundCheat = this.cheats.find(e => e.name === args[0] || e.name === args.name);
+		const name = typeof args[0] === 'string' ? args[0] : args.name;
+		const foundCheat = this.find(name);
 		if (foundCheat) {
 			throw Error('A cheat has already been created with the name ' + foundCheat.name);
 		}
@@ -62,6 +63,10 @@ export default class Unlock {
 		this.cheats.push(cheatCode);
 
 		return cheatCode;
+	}
+
+	find(name) {
+		return this.cheats.find(e => e.name === name)
 	}
 
 	reset() {

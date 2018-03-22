@@ -85,6 +85,12 @@ describe('Unlock', () => {
 			assert(callback.calledOnce);
 		});
 
+		describe('.find()', function () {
+			it('should return cheat', function () {
+				expect(unlock.find('cheat')).to.equal(cheatcode);
+			});
+		});
+
 		describe('Instance', function () {
 			describe('.enabled', function () {
 				const unlock = new Unlock();
