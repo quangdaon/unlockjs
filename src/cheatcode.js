@@ -1,5 +1,4 @@
 import { keyMap, stringKeyMap } from './utils/maps';
-import { validate } from './utils/errors';
 import debug from 'debug';
 import { arraysMatch } from './utils/helpers';
 
@@ -52,11 +51,6 @@ export default class CheatCode {
 	}
 
 	set code(v) {
-		validate(v)
-			.as('CheatCode#code')
-			.required()
-			.type(['string', Array]);
-
 		this._code = compileCode(v);
 	}
 
@@ -65,11 +59,6 @@ export default class CheatCode {
 	}
 
 	set callback(v) {
-		validate(v)
-			.as('CheatCode#callback')
-			.required()
-			.type('function');
-
 		this._callback = v;
 	}
 

@@ -9,3 +9,4 @@ For the most part, the api should functionally be the same as the previous versi
 - The ability to toggle cheatcode state by name has been removed (ie. `unlock.disable('konami')`). Use `unlock.find('cheatcode').disable()` instead.
 - `CheatCode.set()` (Previously deprecated) has been removed.
 - Previous functionality of `Unlock.reset()` has been removed. This now resets the cheat code tracker.
+- `Unlock.settings` has been removed. Settings are now on the root object.
