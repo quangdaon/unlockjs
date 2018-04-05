@@ -41,7 +41,7 @@ export default class Unlock {
 		let keyTimer;
 
 		document.addEventListener('keydown', e => {
-			if (!this.enabled) return false;
+			if (!this.enabled) return true;
 			this.keyslist.push(e.which);
 
 			clearTimeout(keyTimer);

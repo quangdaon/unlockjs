@@ -71,12 +71,12 @@ export default class Shortcut {
 	}
 
 	handleKeyPress(e) {
-		if (this.data.preventDefault) e.preventDefault();
 		this.check(e);
 	}
 
-	check(data) {
-		if (this.enabled && objectSearch(data, this.data.keyEvent)) {
+	check(e) {
+		if (this.enabled && objectSearch(e, this.data.keyEvent)) {
+			if (this.data.preventDefault) e.preventDefault();
 			this.callback();
 		}
 	}
