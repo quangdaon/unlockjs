@@ -34,12 +34,20 @@ export default class Shortcut {
 	@Private
 	_enabled = true;
 
-	constructor(xhotkey, callback) {
+	constructor(xhotkey, xelem, callback) {
 		if (typeof xhotkey === 'object') {
-			const { hotkey, callback } = xhotkey;
-			Object.assign(this, { hotkey, callback });
+			const { hotkey, callback, element } = xhotkey;
+			Object.assign(this, { hotkey, callback, element });
 		} else {
-			Object.assign(this, { hotkey: xhotkey, callback });
+			const data = { hotkey: xhotkey, callback };
+
+			if (!data.callback) {
+				data.callback = xelem;
+			} else {
+				data.element = xelem;
+			}
+
+			Object.assign(this, data);
 		}
 
 		this.handleKeyPress = this.handleKeyPress.bind(this);
@@ -75,6 +83,17 @@ export default class Shortcut {
 	}
 
 	check(e) {
+		const elem = this.element;
+		if (elem) {
+			if (elem instanceof Element) {
+				if (e.target !== elem) {
+					return;
+				}
+			} else if (!(e.target && e.target.matches && e.target.matches(elem))) {
+				return;
+			}
+		}
+
 		if (this.enabled && objectSearch(e, this.data.keyEvent)) {
 			if (this.data.preventDefault) e.preventDefault();
 			this.callback();

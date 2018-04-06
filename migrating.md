@@ -10,3 +10,4 @@ For the most part, the api should functionally be the same as the previous versi
 - `CheatCode.set()` (Previously deprecated) has been removed.
 - Previous functionality of `Unlock.reset()` has been removed. This now resets the cheat code tracker.
 - `Unlock.settings` has been removed. Settings are now on the root object.
+- `Shortcut.selector` has been renamed to `.element` to make it clear that you can pass either a selector string or element object.x

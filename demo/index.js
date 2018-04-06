@@ -21,6 +21,8 @@ cheat.disable();
 
 log(cheat.code);
 
-new Shortcut('-^b', function () {
+const input = document.querySelector('input');
+
+new Shortcut('-^b', input, function () {
 	log('B pressed.');
 }).bind();

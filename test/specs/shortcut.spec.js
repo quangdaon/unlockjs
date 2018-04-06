@@ -91,26 +91,45 @@ describe('Shortcut', () => {
 	});
 
 	describe('Instantiation', () => {
-		let options;
-
-		function newInstance() {
-			return new Shortcut(options);
-		}
-
-		beforeEach(() => {
-			options = {
+		it('should accept options object', () => {
+			const shortcut = new Shortcut({
 				hotkey: 'a',
 				callback: () => null
-			};
+			});
+
+			expect(shortcut).to.be.instanceOf(Shortcut);
+			expect(shortcut.hotkey).to.equal('a');
+			expect(shortcut.callback).to.be.a('function');
 		});
 
-		it('should accept options object', () => {
-			expect(newInstance()).to.be.instanceOf(Shortcut);
+		it('should accept signature of (hotkey: string, callback: function)', () => {
+			const shortcut = new Shortcut('a', () => {
+			});
+
+			expect(shortcut).to.be.instanceOf(Shortcut);
+			expect(shortcut.hotkey).to.equal('a');
+			expect(shortcut.callback).to.be.a('function');
 		});
 
-		it('should accept signature of (string, function)', () => {
-			expect(new Shortcut('a', () => {
-			})).to.be.instanceOf(Shortcut);
+		it('should accept signature of (hotkey: string, selector: string, callback: function)', () => {
+			let shortcut = new Shortcut('a', '.elem', () => {
+			});
+
+			expect(shortcut).to.be.instanceOf(Shortcut);
+			expect(shortcut.hotkey).to.equal('a');
+			expect(shortcut.element).to.equal('.elem');
+			expect(shortcut.callback).to.be.a('function');
+		});
+
+		it('should accept signature of (hotkey: string, element: Element, callback: function)', () => {
+			const input = document.createElement('input');
+			let shortcut = new Shortcut('a', input, () => {
+			});
+
+			expect(shortcut).to.be.instanceOf(Shortcut);
+			expect(shortcut.hotkey).to.equal('a');
+			expect(shortcut.element).to.equal(input);
+			expect(shortcut.callback).to.be.a('function');
 		});
 	});
 
@@ -119,7 +138,7 @@ describe('Shortcut', () => {
 		let shortcut;
 
 		beforeEach(() => {
-			shortcut = new Shortcut('a', callback);
+			shortcut = new Shortcut({ hotkey: 'a', callback });
 			callback.reset();
 		});
 
@@ -183,6 +202,45 @@ describe('Shortcut', () => {
 				shortcut.bind();
 				press(65);
 				expect(callback).to.have.been.called;
+			});
+
+			it('should be bound to element if selector provided', () => {
+				const input = document.createElement('input');
+				input.id = 'testInput';
+				document.body.appendChild(input);
+
+				shortcut.bind();
+				shortcut.element = '#testInput';
+
+				press(65);
+				expect(callback).to.not.have.been.called;
+
+				press(65, null, input);
+				expect(callback).to.have.been.called;
+
+				input.remove();
+			});
+
+			it('should be bound to element if specific element provided', () => {
+				const input = document.createElement('input');
+				const input2 = document.createElement('input');
+				document.body.appendChild(input);
+				document.body.appendChild(input2);
+
+				shortcut.bind();
+				shortcut.element = input;
+
+				press(65);
+				expect(callback).to.not.have.been.called;
+
+				press(65, null, input2);
+				expect(callback).to.not.have.been.called;
+
+				press(65, null, input);
+				expect(callback).to.have.been.called;
+
+				input.remove();
+				input2.remove();
 			});
 
 			it('should prevent default if hotkey starts with "-"', () => {
