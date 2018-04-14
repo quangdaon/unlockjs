@@ -5,7 +5,7 @@ node_js:
 - 8.4.0
 branches:
   only:
-  - version-2
+  - master
 cache:
   directories:
   - node_modules
@@ -22,7 +22,8 @@ deploy:
   provider: npm
   email: quangdaon@gmail.com
   api_key:
-    secure: s3BXycZgx1ZcF/FGSrtqMPXeteeMtwgWzo5ykHydi9KO6jCC3ai/6Q9XaHV9KBYTWbiEKxnkiKbkM2P7ScbOnL3JkTyQdXTlIJruwwKjXFgbB18DREqUFdN942Gs4zRCW0UWopKLPLpabypV4sL1tOd0Q1ApmB/u6j1kS2qAfpTs5NG4xGTQ+ODbGOEwRybnfh/px6IYdsfnQdYWkYsK2vI3Z9e8czoBN5v4Z0/5u5L1RYc3FfIdEFWjfD1j/ml+y4uvu5a0YrsEIkbdB/OqxopYu9aRH83O9WsO9zpTItWiKNF0B9eFusaZqOoBS2O0w9HS1jgaHz7BbYEsw0WSIkvMxzPRLyYXuAJHolH9wNQ0pR0dEXdDwcFPezKeaBGCF9eJwcj2uv9wl4xJooTUP3xiZaU8DtLHzOGiMwOWnmaOqZ+DXZKK6pemjp7Yvr+J3xnOx5g9dgSg4+Rxao2rCWuL9gszo/Vl6V0WMHpjmtUfmEGe4CpAzsEFXwEHvn0npYqCvZcDcPI0gLVpoZBhB1fluqwjFkMpdQ4Gu16noqsgB7mWpt6D4O7q4qipP2OI9Y2+3SUEV2kTQBsIgv9ieU+eWVmxZJf5j6SQBKmO6ZtjH1h64Rs9COdkUsQ4u54q/iV4x46i9LTCtJ2gqyBNuimIHHoUlE0IuCak6kSIzkA=
+    secure: Np7Hrg5JMCupTAJTGu6onCyGilq+IyOLAMofgTj0sKDuDjrW68qfhC11lw7eERo7+MeKuQ2EYrnhDgNm/Yzl5e3xpMbmHma++oLZBGymVwpoLLVPJ3otY5Y4kXRV4xWGwKkpWdeV3QKXAQGae3eOI9/WStHsYXlSk9Oy4GAIp+bgy0HTpu8T961J72Yvt9FTE5AHqWTt7qo/J664OSO/FObbUuRq13RTxdunh+onHsLrXY6BhEkqXiOB1tGXb/HgWHA5vFoLXXJfCmUvmZ50WL+F/zFIIg0DoYBlBmdBqYj7K72AsP57f3OU38lw0e8JnjsWE7tP9hgEiR+lvqoElkzBNLmc6UATQOZjGGKc7JKlB9/J+s/m/JwIFGhoO8DgbP+KXFXcz9Ee04L/zlGJ7sSk7ztAILL37a4THQknB/WeonfPLE/Kh93HGrSeYjwDT8wdERhToEMrqlyC4CidfxqM8w2A8J2FjMHx/L9y+OtRL8XESP7EW6KPBsPzEPyAWI5WObioGXmFQx4iD81a5yjyIGRrcHZDTXdaV/JSJfbyk+gA6RG1SSW64zkWqfevLSKNopmlkcEU46p3nA4jIrQ+D99Erfnj8KUp7dO8bv0TbwmRue3+ZoFO4KwKWCjzFHrau8FJaWZKjyqSEtnhzbxvMEv3CPjslQVT761upH4=
   on:
     tags: true
     repo: quangdaon/unlockjs
+    branch: master
