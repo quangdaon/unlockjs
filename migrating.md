@@ -2,6 +2,7 @@
 
 For the most part, the api should functionally be the same as the previous versions, but there were a few breaking changes.
 
+- Bower support has been discontinued.
 - The "delay" option on Unlock has been renamed to "timeout".
 - "Hotkey" and all references have been renamed to "shortcut".
     - The "Hotkey" keyword now replaces "trigger" in reference to the textual combination.
@@ -10,4 +11,4 @@ For the most part, the api should functionally be the same as the previous versi
 - `CheatCode.set()` (Previously deprecated) has been removed.
 - Previous functionality of `Unlock.reset()` has been removed. This now resets the cheat code tracker.
 - `Unlock.settings` has been removed. Settings are now on the root object.
-- `Shortcut.selector` has been renamed to `.element` to make it clear that you can pass either a selector string or element object.x
+- `Shortcut.selector` has been renamed to `.element` to make it clear that you can pass either a selector string or element object.

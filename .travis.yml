@@ -1,23 +1,28 @@
 language: node_js
-
 node_js:
-  - "stable"
-
+- latest
+- stable
+- 8.4.0
 branches:
   only:
-    - "version-2"
-
+  - version-2
 cache:
   directories:
-    - "node_modules"
-
+  - node_modules
 before_install:
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
-
+- export DISPLAY=:99.0
+- sh -e /etc/init.d/xvfb start
 before_script:
-  - npm install
-
+- npm install
 script:
-  - npm test
-  - npm run codacy
+- npm test
+- npm run codacy
+- npm run build
+deploy:
+  provider: npm
+  email: quangdaon@gmail.com
+  api_key:
+    secure: s3BXycZgx1ZcF/FGSrtqMPXeteeMtwgWzo5ykHydi9KO6jCC3ai/6Q9XaHV9KBYTWbiEKxnkiKbkM2P7ScbOnL3JkTyQdXTlIJruwwKjXFgbB18DREqUFdN942Gs4zRCW0UWopKLPLpabypV4sL1tOd0Q1ApmB/u6j1kS2qAfpTs5NG4xGTQ+ODbGOEwRybnfh/px6IYdsfnQdYWkYsK2vI3Z9e8czoBN5v4Z0/5u5L1RYc3FfIdEFWjfD1j/ml+y4uvu5a0YrsEIkbdB/OqxopYu9aRH83O9WsO9zpTItWiKNF0B9eFusaZqOoBS2O0w9HS1jgaHz7BbYEsw0WSIkvMxzPRLyYXuAJHolH9wNQ0pR0dEXdDwcFPezKeaBGCF9eJwcj2uv9wl4xJooTUP3xiZaU8DtLHzOGiMwOWnmaOqZ+DXZKK6pemjp7Yvr+J3xnOx5g9dgSg4+Rxao2rCWuL9gszo/Vl6V0WMHpjmtUfmEGe4CpAzsEFXwEHvn0npYqCvZcDcPI0gLVpoZBhB1fluqwjFkMpdQ4Gu16noqsgB7mWpt6D4O7q4qipP2OI9Y2+3SUEV2kTQBsIgv9ieU+eWVmxZJf5j6SQBKmO6ZtjH1h64Rs9COdkUsQ4u54q/iV4x46i9LTCtJ2gqyBNuimIHHoUlE0IuCak6kSIzkA=
+  on:
+    tags: true
+    repo: quangdaon/unlockjs

@@ -1,8 +1,5 @@
-import debug from 'debug';
 import CheatCode from './cheatcode';
 import Shortcut from './shortcut';
-
-const log = debug('unlock:core');
 
 export default class Unlock {
 
@@ -23,8 +20,6 @@ export default class Unlock {
 			timeout = 500,
 			resetOnMatch = false
 		} = options;
-
-		log('Unlock created.');
 
 		this.timeout = timeout;
 

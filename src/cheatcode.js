@@ -1,8 +1,5 @@
 import { keyMap, stringKeyMap } from './utils/maps';
-import debug from 'debug';
 import { arraysMatch } from './utils/helpers';
-
-const log = debug('unlock:cheatcode');
 
 function compileCode(v) {
 	const codeArray = (typeof v === 'string') ? v.split('') : v;
@@ -45,8 +42,6 @@ export default class CheatCode {
 			Object.assign(this, { name: xname, code, callback });
 		}
 
-		log('CheatCode created: %s', this.name);
-
 		this.handleKeyPress = this.handleKeyPress.bind(this);
 	}
 
@@ -79,7 +74,6 @@ export default class CheatCode {
 	}
 
 	handleKeyPress(e) {
-		//console.log(this);
 		this.keyslist.push(e.keyCode);
 
 		this.check(this.keyslist);

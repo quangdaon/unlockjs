@@ -60,7 +60,5 @@
 		"webpack-serve": "^0.1.5",
 		"yargs": "^6.6.0"
 	},
-	"dependencies": {
-		"debug": "latest"
-	}
+	"dependencies": {}
 }

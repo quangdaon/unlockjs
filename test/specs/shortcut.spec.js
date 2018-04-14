@@ -205,12 +205,12 @@ describe('Shortcut', () => {
 			});
 
 			it('should be bound to element if selector provided', () => {
+				shortcut.bind();
+				shortcut.element = '#testInput';
+
 				const input = document.createElement('input');
 				input.id = 'testInput';
 				document.body.appendChild(input);
-
-				shortcut.bind();
-				shortcut.element = '#testInput';
 
 				press(65);
 				expect(callback).to.not.have.been.called;
