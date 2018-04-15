@@ -72,7 +72,7 @@ unlocker.addCheat('konami', konamiCode, function () {
 });
 ```
 
-When passing the parameters as an object, the code property also accepts a string of individual characters. For example, the cheat code above can be rewritten as `code: 'UUDDLRLRba>'`. Below is a list of key codes, as used in an array and the single character counterpart. Special key symbols are loosely based off of [AutoShortcut](https://autoshortcut.com/docs/Shortcuts.htm#Symbols).
+When passing the parameters as an object, the code property also accepts a string of individual characters. For example, the cheat code above can be rewritten as `code: 'UUDDLRLRba>'`. Below is a list of key codes, as used in an array and the single character counterpart. Special key symbols are loosely based off of [AutoHotkey](https://autohotkey.com/docs/Hotkeys.htm#Symbols).
 
 ###### Character Chart
 

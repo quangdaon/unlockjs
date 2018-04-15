@@ -1,4 +1,6 @@
-const config = require('./webpack.config');
+const config = require('./webpack.config')({
+	babelPlugins: ['istanbul']
+});
 
 config.mode = 'development';
 config.entry = {
