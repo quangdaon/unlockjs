@@ -1,7 +1,7 @@
 import CheatCode from './cheatcode';
 import Shortcut from './shortcut';
 
-export default class Unlock {
+class Unlock {
 
 	@Private
 	cheats = [];
@@ -103,3 +103,7 @@ export default class Unlock {
 
 	static Shortcut = Shortcut;
 }
+
+export default Unlock;
+
+module.exports = Unlock;
