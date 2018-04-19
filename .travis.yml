@@ -2,9 +2,6 @@ language: node_js
 node_js:
 - stable
 - 8.4.0
-branches:
-  only:
-  - master
 cache:
   directories:
   - node_modules
@@ -25,3 +22,4 @@ deploy:
   on:
     tags: true
     repo: quangdaon/unlockjs
+    all_branches: true
