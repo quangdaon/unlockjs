@@ -25,4 +25,3 @@ deploy:
   on:
     tags: true
     repo: quangdaon/unlockjs
-    branch: master
