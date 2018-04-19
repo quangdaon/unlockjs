@@ -20,12 +20,12 @@ module.exports = function (config) {
 			mode: webpackConfig.mode,
 			module: webpackConfig.module
 		},
-		reporters: ['progress', 'coverage'],
+		reporters: [process.env.KARMA_REPORTER || 'progress', 'coverage'],
 		coverageReporter: {
 			dir: 'coverage/',
 			reporters: [
 				{ type: 'html', subdir: 'report-html' },
-				{ type: 'lcov', subdir: 'report-lcov' },
+				{ type: 'lcov', subdir: 'report-lcov' }
 			]
 		},
 		port: 9876,
