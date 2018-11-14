@@ -1,6 +1,6 @@
 {
 	"name": "unlockjs",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"description": "Use keyboard keys to their fullest potential!",
 	"main": "dist/unlock.js",
 	"module": "src/unlock.js",

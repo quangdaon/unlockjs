@@ -5,8 +5,7 @@ node_js:
 cache:
   directories:
   - node_modules
-env:
-  KARMA_REPORTER=dots
+env: KARMA_REPORTER=dots
 before_install:
 - export DISPLAY=:99.0
 - sh -e /etc/init.d/xvfb start
@@ -20,8 +19,7 @@ deploy:
   provider: npm
   email: quangdaon@gmail.com
   api_key:
-    secure: Np7Hrg5JMCupTAJTGu6onCyGilq+IyOLAMofgTj0sKDuDjrW68qfhC11lw7eERo7+MeKuQ2EYrnhDgNm/Yzl5e3xpMbmHma++oLZBGymVwpoLLVPJ3otY5Y4kXRV4xWGwKkpWdeV3QKXAQGae3eOI9/WStHsYXlSk9Oy4GAIp+bgy0HTpu8T961J72Yvt9FTE5AHqWTt7qo/J664OSO/FObbUuRq13RTxdunh+onHsLrXY6BhEkqXiOB1tGXb/HgWHA5vFoLXXJfCmUvmZ50WL+F/zFIIg0DoYBlBmdBqYj7K72AsP57f3OU38lw0e8JnjsWE7tP9hgEiR+lvqoElkzBNLmc6UATQOZjGGKc7JKlB9/J+s/m/JwIFGhoO8DgbP+KXFXcz9Ee04L/zlGJ7sSk7ztAILL37a4THQknB/WeonfPLE/Kh93HGrSeYjwDT8wdERhToEMrqlyC4CidfxqM8w2A8J2FjMHx/L9y+OtRL8XESP7EW6KPBsPzEPyAWI5WObioGXmFQx4iD81a5yjyIGRrcHZDTXdaV/JSJfbyk+gA6RG1SSW64zkWqfevLSKNopmlkcEU46p3nA4jIrQ+D99Erfnj8KUp7dO8bv0TbwmRue3+ZoFO4KwKWCjzFHrau8FJaWZKjyqSEtnhzbxvMEv3CPjslQVT761upH4=
+    secure: P1AKEqheATbMml0reT5Bl1CDU/xioOS25N0GAnLmI9Nukp756FbhJv72uEckH1FKDYUas/oouXrnQCGfS6A7OXSjRILNtC9m+GyJDowmevqCxaJoGD0ZoioI1BLYNaw6Qaq6gFtzJ205UZWnOHPkOn5PX5PHnvRO2wOJKmjZdvo1dtIGFvqfQXyy/TvFf1egI5Xu22v7eUcDShuX7OKGLqW3nHGg0y/2Sg2EHdUzFdHZ8bTxS1MDv2V9IyCUNz45Xo90KCsFnM5cZ3oYuNb8wEbTZBc4iKiUUxRAMe7j35HcXTbHh+UaNzaBoROqdOzhgWm6VlTbPdkb6XvBoaGoAcpgluiUkxRxCX6Eby7Mx/E8y9FoMXTZaYL71A21ukeT+wfrMjqNqOQK2Ob8JcROH/m1BSh82CfZ23dST/88O5Uac8KJ/PmOj/FwawOzPIKd/XvYiJrKKjc0sDouu+MJA/fsFfdw13+/sQHfPd3YG42uf9aJNWwwoREaH6c9RxMil8e8Vsf8uh63NkQLcXob6DRe+ksldsWfeYFmad0Qtrl/k+K/eHTLt0GbuO2hvcg9CH+vN3pGka8MEfjWCuedtgrZEDOVAH1EZew1mdqFi+kNJ8ZBLWVQycak57bjjvtYRo+o7ncUX8JcCOvWq4MrdZ9hV2haLhHnxCRz8bCxvnM=
   on:
     tags: true
     repo: quangdaon/unlockjs
-    node: stable
