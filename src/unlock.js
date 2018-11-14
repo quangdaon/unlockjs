@@ -1,19 +1,15 @@
 import CheatCode from './cheatcode';
 import Shortcut from './shortcut';
 
-class Unlock {
+export default class Unlock {
 
-	@Private
-	cheats = [];
+	#cheats = [];
 
-	@Private
-	shortcuts = [];
+	#shortcuts = [];
 
-	@Private
-	keyslist = [];
+	#keyslist = [];
 
-	@Private
-	_enabled = true;
+	#enabled = true;
 
 	constructor(options = {}) {
 		const {
@@ -31,25 +27,24 @@ class Unlock {
 		this.bindListener();
 	}
 
-	@Private
 	bindListener() {
 		let keyTimer;
 
 		document.addEventListener('keydown', e => {
 			if (!this.enabled) return true;
-			this.keyslist.push(e.which);
+			this.#keyslist.push(e.which);
 
 			clearTimeout(keyTimer);
 			keyTimer = setTimeout(() => {
 				this.reset();
 			}, this.timeout);
 
-			this.cheats.forEach(cheat => {
-				const matched = cheat.check(this.keyslist);
+			this.#cheats.forEach(cheat => {
+				const matched = cheat.check(this.#keyslist);
 				if (matched && this.resetOnMatch) this.reset();
 			});
 
-			this.shortcuts.forEach(shortcut => {
+			this.#shortcuts.forEach(shortcut => {
 				shortcut.check(e);
 			});
 		});
@@ -63,32 +58,32 @@ class Unlock {
 		}
 
 		const cheatCode = new CheatCode(...args);
-		this.cheats.push(cheatCode);
+		this.#cheats.push(cheatCode);
 
 		return cheatCode;
 	}
 
 	addShortcut(...args) {
 		const shortcut = new Shortcut(...args);
-		this.shortcuts.push(shortcut);
+		this.#shortcuts.push(shortcut);
 
 		return shortcut;
 	}
 
 	find(name) {
-		return this.cheats.find(e => e.name === name);
+		return this.#cheats.find(e => e.name === name);
 	}
 
 	reset() {
-		this.keyslist.length = 0;
+		this.#keyslist.length = 0;
 	}
 
 	get enabled() {
-		return this._enabled;
+		return this.#enabled;
 	}
 
 	toggle(condition) {
-		this._enabled = typeof condition !== 'undefined' ? condition : !this._enabled;
+		this.#enabled = typeof condition !== 'undefined' ? condition : !this.#enabled;
 	}
 
 	enable() {
@@ -103,7 +98,3 @@ class Unlock {
 
 	static Shortcut = Shortcut;
 }
-
-export default Unlock;
-
-module.exports = Unlock;

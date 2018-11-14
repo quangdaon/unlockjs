@@ -28,11 +28,9 @@ function parseHotkey(v) {
 export default class Shortcut {
 	data = {};
 
-	@Private
-	_hotkey = '';
+	#hotkey = '';
 
-	@Private
-	_enabled = true;
+	#enabled = true;
 
 	constructor(xhotkey, xelem, callback) {
 		if (typeof xhotkey === 'object') {
@@ -54,20 +52,20 @@ export default class Shortcut {
 	}
 
 	get hotkey() {
-		return this._hotkey;
+		return this.#hotkey;
 	}
 
 	set hotkey(v) {
 		this.data = parseHotkey(v);
-		this._hotkey = v;
+		this.#hotkey = v;
 	}
 
 	get enabled() {
-		return this._enabled;
+		return this.#enabled;
 	}
 
 	toggle(condition) {
-		this._enabled = typeof condition !== 'undefined' ? condition : !this._enabled;
+		this.#enabled = typeof condition !== 'undefined' ? condition : !this.#enabled;
 	}
 
 	enable() {

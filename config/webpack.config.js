@@ -12,6 +12,7 @@ module.exports = function (options = { babelPlugins: [] }) {
 			path: path.resolve(__dirname, '../dist'),
 			filename: '[name].js',
 			library: 'Unlock',
+			libraryExport: 'default',
 			libraryTarget: 'umd',
 			umdNamedDefine: true
 		},
@@ -24,10 +25,9 @@ module.exports = function (options = { babelPlugins: [] }) {
 						{
 							loader: 'babel-loader',
 							options: {
-								presets: ['env', 'stage-3', 'stage-2'],
+								presets: ['@babel/preset-env'],
 								plugins: [
-									'babel-plugin-transform-private-properties',
-									'transform-decorators-legacy',
+									'@babel/plugin-proposal-class-properties',
 									...babelPlugins
 								]
 							}

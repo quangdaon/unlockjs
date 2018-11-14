@@ -17,20 +17,15 @@ function compileCode(v) {
 }
 
 export default class CheatCode {
-	@Private
-	_callback = null;
+	#callback = null;
 
-	@Private
-	_code = [];
+	#code = [];
 
-	@Private
-	keyslist = [];
+	#keyslist = [];
 
-	@Private
-	keyTimer = null;
+	#keyTimer = null;
 
-	@Private
-	_enabled = true;
+	#enabled = true;
 
 	timeout = 500;
 
@@ -46,23 +41,23 @@ export default class CheatCode {
 	}
 
 	set code(v) {
-		this._code = compileCode(v);
+		this.#code = compileCode(v);
 	}
 
 	get code() {
-		return this._code;
+		return this.#code;
 	}
 
 	set callback(v) {
-		this._callback = v;
+		this.#callback = v;
 	}
 
 	get callback() {
-		return this._callback;
+		return this.#callback;
 	}
 
 	get enabled() {
-		return this._enabled;
+		return this.#enabled;
 	}
 
 	check(keys) {
@@ -74,12 +69,12 @@ export default class CheatCode {
 	}
 
 	handleKeyPress(e) {
-		this.keyslist.push(e.keyCode);
+		this.#keyslist.push(e.keyCode);
 
-		this.check(this.keyslist);
+		this.check(this.#keyslist);
 
-		clearTimeout(this.keyTimer);
-		this.keyTimer = setTimeout(() => {
+		clearTimeout(this.#keyTimer);
+		this.#keyTimer = setTimeout(() => {
 			this.reset();
 		}, this.timeout);
 	}
@@ -93,11 +88,11 @@ export default class CheatCode {
 	}
 
 	reset() {
-		this.keyslist.length = 0;
+		this.#keyslist.length = 0;
 	}
 
 	toggle(condition) {
-		this._enabled = typeof condition !== 'undefined' ? condition : !this._enabled;
+		this.#enabled = typeof condition !== 'undefined' ? condition : !this.#enabled;
 	}
 
 	enable() {
