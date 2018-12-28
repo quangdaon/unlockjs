@@ -21,7 +21,7 @@ npm i unlockjs -S
 Alternatively, you can use jsDelivr:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/unlockjs@1.1.2/dist/unlock.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/unlockjs@1.1.3/dist/unlock.min.js"></script>
 ```
 
 ## Usage
