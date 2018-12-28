@@ -2,6 +2,7 @@ import Unlock from '../../src/unlock';
 import CheatCode from '../../src/cheatcode';
 import Shortcut from '../../src/shortcut';
 import { press } from '../utils/helpers';
+import * as presets from '../../src/utils/presets';
 
 describe('Unlock', () => {
 	it('should be a class', () => {
@@ -15,6 +16,11 @@ describe('Unlock', () => {
 
 	it('should expose Shortcut as a static prop', () => {
 		expect(Unlock).to.have.property('Shortcut');
+		expect(Unlock.Shortcut).to.equal(Shortcut);
+	});
+
+	it('should expose presets as a static prop', () => {
+		expect(Unlock).to.have.property('presets');
 		expect(Unlock.Shortcut).to.equal(Shortcut);
 	});
 

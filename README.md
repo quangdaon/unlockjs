@@ -21,7 +21,7 @@ npm i unlockjs -S
 Alternatively, you can use jsDelivr:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/unlockjs@1.1.1/dist/unlock.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/unlockjs@1.1.2/dist/unlock.min.js"></script>
 ```
 
 ## Usage
@@ -136,6 +136,30 @@ konami.code = 'UUDDLRLRba';
 
 Please Note: The name property used to be read-only and is now changeable as UnlockJS no longer emphasizes restricting the things you do. However, if you do decide to manually set the name, you're a moron. No offense.
 
+#### Presets
+
+UnlockJS comes with several presets for common cheat codes.
+
+```javascript
+konami.code = Unlock.presets.KONAMI;
+
+```
+
+Users of ES Modules can also import the presets like so:
+
+```javascript
+import { KONAMI } from 'unlockjs/src/utils/presets';
+
+konami.code = KONAMI;
+
+```
+
+| Preset   | Code                                            |
+|:---------|:------------------------------------------------|
+| KONAMI   | Up Up Down Down Left Right Left Right B A Enter |
+| MK_BLOOD | A B A C A B B                                   |
+| GOD_MODE | I D D Q D                                       |
+
 ### Shortcuts
 
 Shortcuts are added in pretty much the same way as cheatcodes:
@@ -172,6 +196,17 @@ The supported characters match the [character chart above](#character-chart). Th
 #### Modifying Shortcuts
 
 Like cheat codes, shortcut parameters can be modified by assigning them a new value.
+
+## ES Modules
+
+At its core, the Unlock module is actually a wrapper around two separate submodules, providing extra functionality for managing both cheatcodes and shortcuts. As such, it may carry additional load that's not relevant to your project. Therefore, if you are using a build system that support modules, it is recommended that you instead import the components you need.
+
+```javascript
+import CheatCode from 'unlockjs/src/cheatcode';
+import Shortcut from 'unlockjs/src/shortcut';
+```
+
+Usage is mostly the same. Behind the scenes, `unlocker.addCheat([args])` is calling `new CheatCode([args])` using the same parameters you passed in and returns the CheatCode instance that was created. Therefore, anything in the documentation for CheatCodes above that's not specific to the Unlock class will apply here as well. Likewise, `unlocker.addShortcut([args])` creates and returns an instance of `new Shortcut([args])`
 
 ## Contribution
 

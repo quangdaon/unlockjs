@@ -1,5 +1,6 @@
 import CheatCode from '../../src/cheatcode';
 import { press } from '../utils/helpers';
+import { GOD_MODE, KONAMI, MK_BLOOD } from '../../src/utils/presets';
 
 describe('CheatCode', () => {
 	it('should be a class', () => {
@@ -201,6 +202,20 @@ describe('CheatCode', () => {
 				cheatcode.disable();
 				expect(cheatcode.enabled).to.equal(false);
 			});
+		});
+	});
+
+	describe('Presets', function () {
+		it('.KONAMI compiles into the Konami Code (Up, Up, Down, Down, Left, Right, Left, Right, B, A, Enter)', () => {
+			expect(CheatCode.compile(KONAMI)).to.eql([38, 38, 40, 40, 37, 39, 37, 39, 66, 65, 13]);
+		});
+
+		it('.MK_BLOOD compiles into the Mortal Combat Blood Code (A, B, A, C, A, B, B)', () => {
+			expect(CheatCode.compile(MK_BLOOD)).to.eql([65, 66, 65, 67, 65, 66, 66]);
+		});
+
+		it('.GOD_MODE compiles into the DOOM God Mode Code (I, D, D, Q, D)', () => {
+			expect(CheatCode.compile(GOD_MODE)).to.eql([73, 68, 68, 81, 68]);
 		});
 	});
 });

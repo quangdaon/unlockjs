@@ -1,6 +1,8 @@
 import CheatCode from './cheatcode';
 import Shortcut from './shortcut';
 
+import * as presets from './utils/presets';
+
 export default class Unlock {
 
 	#cheats = [];
@@ -97,4 +99,6 @@ export default class Unlock {
 	static CheatCode = CheatCode;
 
 	static Shortcut = Shortcut;
+
+	static presets = presets;
 }
