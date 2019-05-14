@@ -1,11 +1,33 @@
+/* @module Shortcut */
+
 import { keyMap, metaMap, stringKeyMap } from './utils/maps';
 import { objectSearch } from './utils/helpers';
 
 const triggerRegex = /^(-)?([\^+!#]*)(.)$/;
 
-function parseHotkey(v) {
-	const match = v.match(triggerRegex);
-	if (!match) throw new Error('Invalid Hotkey: ' + v);
+/**
+ * @typedef {Object} KeyEvent
+ * @property {string} keyCode - Numeric Key Code
+ * @property {bool} ctrlKey - Ctrl is pressed
+ * @property {bool} shiftKey - Shift is pressed
+ * @property {bool} altKey - Alt is pressed
+ * @property {bool} metaKey - Windows/Meta is pressed
+ */
+
+/**
+ * @typedef {Object} HotKey
+ * @property {KeyEvent} keyEvent
+ * @property {bool} preventDefault
+ */
+
+/**
+ * @private
+ * @param {string} string
+ * @returns HotKey
+ */
+function parseHotkey(string) {
+	const match = string.match(triggerRegex);
+	if (!match) throw new Error('Invalid Hotkey: ' + string);
 
 	const [, prevent, meta, key] = match;
 
@@ -25,61 +47,106 @@ function parseHotkey(v) {
 	return { keyEvent, preventDefault: !!prevent };
 }
 
+/** Shortcut object */
 export default class Shortcut {
+	/**
+	 * Hotkey data
+	 * @type {Object}
+	 */
 	data = {};
 
+	/**
+	 * Hotkey string
+	 * @private
+	 * @type {string}
+	 */
 	#hotkey = '';
 
+	/**
+	 * Active state
+	 * @private
+	 * @type {boolean}
+	 */
 	#enabled = true;
 
-	constructor(xhotkey, xelem, callback) {
-		if (typeof xhotkey === 'object') {
-			const { hotkey, callback, element } = xhotkey;
-			Object.assign(this, { hotkey, callback, element });
-		} else {
-			const data = { hotkey: xhotkey, callback };
-
-			if (!data.callback) {
-				data.callback = xelem;
-			} else {
-				data.element = xelem;
-			}
-
-			Object.assign(this, data);
+	/**
+	 * @constructs
+	 * @param {Object|string} hotkey - Hotkey string or settings object
+	 * @param {Element|string} [element] - Bind to element
+	 * @param {Function} callback - function to trigger on hotkey
+	 */
+	constructor(hotkey, element, callback) {
+		if (typeof hotkey === 'object') {
+			element = hotkey.element;
+			callback = hotkey.callback;
+			hotkey = hotkey.hotkey;
+		} else if (!callback) {
+			callback = element;
 		}
+
+		this.callback = callback;
+		this.element = element;
+		this.hotkey = hotkey;
 
 		this.handleKeyPress = this.handleKeyPress.bind(this);
 	}
 
+	/**
+	 * @type {string}
+	 */
 	get hotkey() {
 		return this.#hotkey;
 	}
 
-	set hotkey(v) {
-		this.data = parseHotkey(v);
-		this.#hotkey = v;
+	set hotkey(string) {
+		this.data = parseHotkey(string);
+		this.#hotkey = string;
 	}
 
+	/**
+	 * @type {boolean}
+	 * @readonly
+	 */
 	get enabled() {
 		return this.#enabled;
 	}
 
+	/**
+	 * Toggle the enabled state of the hotkey
+	 * @param {boolean} [condition] - Force a toggle state
+	 */
 	toggle(condition) {
 		this.#enabled = typeof condition !== 'undefined' ? condition : !this.#enabled;
 	}
 
+	/**
+	 * Sets enabled to true, shorthand for Shortcut.toggle(true)
+	 */
 	enable() {
 		this.toggle(true);
 	}
 
+	/**
+	 * Sets enabled to false, shorthand for Shortcut.toggle(false)
+	 */
 	disable() {
 		this.toggle(false);
 	}
 
+	/**
+	 * Abstraction of check for the purpose of binding and unbinding listeners
+	 * @private
+	 * @alias check
+	 * @param e
+	 */
 	handleKeyPress(e) {
 		this.check(e);
 	}
 
+	/**
+	 * Compares keyboard event with Shortcut data
+	 * @param {KeyboardEvent} e
+	 */
 	check(e) {
 		const elem = this.element;
 		if (elem) {
@@ -98,13 +165,23 @@ export default class Shortcut {
 		}
 	}
 
+	/**
+	 * Bind the event listener
+	 */
 	bind() {
 		document.addEventListener('keydown', this.handleKeyPress);
 	}
 
+	/**
+	 * Unbind the event listener
+	 */
 	unbind() {
 		document.removeEventListener('keydown', this.handleKeyPress);
 	}
 
+	/**
+	 * @alias parseHotkey
+	 * @public
+	 */
 	static parse = parseHotkey;
 }

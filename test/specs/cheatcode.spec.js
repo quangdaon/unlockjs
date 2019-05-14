@@ -210,7 +210,7 @@ describe('CheatCode', () => {
 			expect(CheatCode.compile(KONAMI)).to.eql([38, 38, 40, 40, 37, 39, 37, 39, 66, 65, 13]);
 		});
 
-		it('.MK_BLOOD compiles into the Mortal Combat Blood Code (A, B, A, C, A, B, B)', () => {
+		it('.MK_BLOOD compiles into the Mortal Kombat Blood Code (A, B, A, C, A, B, B)', () => {
 			expect(CheatCode.compile(MK_BLOOD)).to.eql([65, 66, 65, 67, 65, 66, 66]);
 		});
 

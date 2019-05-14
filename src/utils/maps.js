@@ -1,3 +1,7 @@
+/**
+ * @type {Object.<string, number>}
+ * Maps key string to numeric keycode value
+ */
 export const keyMap = (function () {
 	const keys = {
 		tab: 9,
@@ -39,6 +43,10 @@ export const keyMap = (function () {
 	return keys;
 })();
 
+/**
+ * @type {Object.<char, string>}
+ * Maps character to equivalent string
+ */
 export const stringKeyMap = {
 	U: 'up',
 	D: 'down',
@@ -54,6 +62,10 @@ export const stringKeyMap = {
 	'>': 'enter'
 };
 
+/**
+ * @type {Object.<string, char>}
+ * Maps meta keys to shortcut character
+ */
 export const metaMap = {
 	'ctrlKey': '^',
 	'shiftKey': '+',
