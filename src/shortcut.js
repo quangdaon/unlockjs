@@ -1,4 +1,8 @@
-/* @module Shortcut */
+/**
+ * @file Shortcut Class
+ * @author Quangdao Nguyen
+ * @see Shortcut
+ */
 
 import { keyMap, metaMap, stringKeyMap } from './utils/maps';
 import { objectSearch } from './utils/helpers';
@@ -7,6 +11,7 @@ const triggerRegex = /^(-)?([\^+!#]*)(.)$/;
 
 /**
  * @typedef {Object} KeyEvent
+ * @memberOf Shortcut
  * @property {string} keyCode - Numeric Key Code
  * @property {bool} ctrlKey - Ctrl is pressed
  * @property {bool} shiftKey - Shift is pressed
@@ -16,6 +21,7 @@ const triggerRegex = /^(-)?([\^+!#]*)(.)$/;
 
 /**
  * @typedef {Object} HotKey
+ * @memberOf Shortcut
  * @property {KeyEvent} keyEvent
  * @property {bool} preventDefault
  */
@@ -47,7 +53,6 @@ function parseHotkey(string) {
 	return { keyEvent, preventDefault: !!prevent };
 }
 
-/** Shortcut object */
 export default class Shortcut {
 	/**
 	 * Hotkey data
@@ -70,7 +75,7 @@ export default class Shortcut {
 	#enabled = true;
 
 	/**
-	 * @constructs
+	 * @constructs Shortcut
 	 * @param {Object|string} hotkey - Hotkey string or settings object
 	 * @param {Element|string} [element] - Bind to element
 	 * @param {Function} callback - function to trigger on hotkey
@@ -92,6 +97,8 @@ export default class Shortcut {
 	}
 
 	/**
+	 * The hotkey string of the shortcut
+	 * @name Shortcut#hotkey
 	 * @type {string}
 	 */
 	get hotkey() {
@@ -104,6 +111,8 @@ export default class Shortcut {
 	}
 
 	/**
+	 * Gets enabled state.
+	 * @name Shortcut#enabled
 	 * @type {boolean}
 	 * @readonly
 	 */
@@ -112,7 +121,8 @@ export default class Shortcut {
 	}
 
 	/**
-	 * Toggle the enabled state of the hotkey
+	 * Toggle the enabled state of the shortcut
+	 * @name Shortcut#toggle
 	 * @param {boolean} [condition] - Force a toggle state
 	 */
 	toggle(condition) {
@@ -120,14 +130,16 @@ export default class Shortcut {
 	}
 
 	/**
-	 * Sets enabled to true, shorthand for Shortcut.toggle(true)
+	 * Sets enabled to true, shorthand for Shortcut#toggle(true)
+	 * @name Shortcut#enable
 	 */
 	enable() {
 		this.toggle(true);
 	}
 
 	/**
-	 * Sets enabled to false, shorthand for Shortcut.toggle(false)
+	 * Sets enabled to false, shorthand for Shortcut#toggle(false)
+	 * @name Shortcut#disable
 	 */
 	disable() {
 		this.toggle(false);
@@ -145,6 +157,7 @@ export default class Shortcut {
 
 	/**
 	 * Compares keyboard event with Shortcut data
+	 * @name Shortcut#check
 	 * @param {KeyboardEvent} e
 	 */
 	check(e) {
@@ -167,6 +180,7 @@ export default class Shortcut {
 
 	/**
 	 * Bind the event listener
+	 * @name Shortcut#bind
 	 */
 	bind() {
 		document.addEventListener('keydown', this.handleKeyPress);
@@ -174,13 +188,16 @@ export default class Shortcut {
 
 	/**
 	 * Unbind the event listener
+	 * @name Shortcut#unbind
 	 */
 	unbind() {
 		document.removeEventListener('keydown', this.handleKeyPress);
 	}
 
 	/**
+	 * Parses a hotkey string into a KeyEvent object
 	 * @alias parseHotkey
+	 * @name Shortcut.parse
 	 * @public
 	 */
 	static parse = parseHotkey;

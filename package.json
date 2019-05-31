@@ -1,5 +1,6 @@
 {
 	"name": "unlockjs",
+	"title": "UnlockJS",
 	"version": "1.1.5",
 	"description": "Use keyboard keys to their fullest potential!",
 	"main": "dist/unlock.js",
@@ -8,7 +9,8 @@
 		"test": "karma start ./karma.conf.js --single-run",
 		"codacy": "cat ./coverage/report-lcov/lcov.info | codacy-coverage",
 		"dev": "webpack-serve --config ./config/webpack.dev.config.js --content ./demo --log-level info",
-		"build": "webpack --config ./config/webpack.prod.config.js --progress --hide-modules || true"
+		"build": "webpack --config ./config/webpack.prod.config.js --progress --hide-modules || true",
+		"docs": "jsdoc -c .jsdoc.json"
 	},
 	"repository": {
 		"type": "git",
@@ -42,6 +44,7 @@
 		"codacy-coverage": "^3.4.0",
 		"eslint": "^5.15.3",
 		"eslint-loader": "^2.1.2",
+		"jsdoc": "^3.6.2",
 		"karma": "^4.0.1",
 		"karma-chai": "^0.1.0",
 		"karma-chai-subset": "^2.0.1",

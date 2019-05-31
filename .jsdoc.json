@@ -1,0 +1,14 @@
+{
+	"source": {
+		"include": [ "README.md", "src/unlock.js", "src/cheatcode.js", "src/shortcut.js", "src/utils/presets.js" ]
+	},
+	"sourceType": "class",
+	"opts": {
+		"destination": "./docs/"
+	},
+	"templates": {
+		"default": {
+			"outputSourceFiles": false
+		}
+	}
+}

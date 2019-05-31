@@ -1,11 +1,13 @@
-/* @module Unlock */
+/**
+ * @file Unlock Class
+ * @author Quangdao Nguyen
+ * @see Unlock
+ */
 
 import CheatCode from './cheatcode';
 import Shortcut from './shortcut';
 
 import * as presets from './utils/presets';
-
-/** Unlock object */
 export default class Unlock {
 
 	/**
@@ -38,6 +40,7 @@ export default class Unlock {
 
 	/**
 	 * @typedef UnlockJSOptions
+	 * @memberOf Unlock
 	 * @property {number} timeout - Duration before cheatcode timer resets,
 	 * @property {boolean} resetOnMatch - Whether or not completing a cheatcode resets the timer
 	 */
@@ -91,6 +94,7 @@ export default class Unlock {
 
 	/**
 	 * Adds a cheatcode
+	 * @name Unlock#addCheat
 	 * @see {@link CheatCode.constructor} for parameters
 	 * @returns {CheatCode}
 	 */
@@ -109,6 +113,7 @@ export default class Unlock {
 
 	/**
 	 * Adds a shortcut
+	 * @name Unlock#addShortcut
 	 * @see {@see Shortcut.constructor} for parameters
 	 * @returns {Shortcut}
 	 */
@@ -121,6 +126,7 @@ export default class Unlock {
 
 	/**
 	 * Finds a cheat created with Unlock by name
+	 * @name Unlock#find
 	 * @param {string} name - Name of cheatcode
 	 * @returns {CheatCode}
 	 */
@@ -130,12 +136,15 @@ export default class Unlock {
 
 	/**
 	 * Resets the current keys chain
+	 * @name Unlock#reset
 	 */
 	reset() {
 		this.#keyslist.length = 0;
 	}
 
 	/**
+	 * Get enabled state
+	 * @name Unlock#enabled
 	 * @type {boolean}
 	 * @readonly
 	 */
@@ -144,7 +153,8 @@ export default class Unlock {
 	}
 
 	/**
-	 * Toggle the enabled state of the hotkey
+	 * Toggle the enabled state of the unlock object
+	 * @name Unlock#toggle
 	 * @param {boolean} [condition] - Force a toggle state
 	 */
 	toggle(condition) {
@@ -152,14 +162,16 @@ export default class Unlock {
 	}
 
 	/**
-	 * Sets enabled to true, shorthand for Shortcut.toggle(true)
+	 * Sets enabled to true, shorthand for Unlock#toggle(true)
+	 * @name Unlock#enable
 	 */
 	enable() {
 		this.toggle(true);
 	}
 
 	/**
-	 * Sets enabled to false, shorthand for Shortcut.toggle(false)
+	 * Sets enabled to false, shorthand for Unlock#toggle(false)
+	 * @name Unlock#disable
 	 */
 	disable() {
 		this.toggle(false);

@@ -1,10 +1,15 @@
-/* @module CheatCode */
+/**
+ * @file CheatCode Class
+ * @author Quangdao Nguyen
+ * @see CheatCode
+ */
 
 import { keyMap, stringKeyMap } from './utils/maps';
 import { arraysMatch } from './utils/helpers';
 
 /**
- * @private
+ * Converts a cheatcode in any supported format into a number array
+ * @alias CheatCode.compile
  * @param {Array<string>|string} v
  * @returns {Array<number>}
  */
@@ -23,12 +28,11 @@ function compileCode(v) {
 		});
 }
 
-/* CheatCode Object */
 export default class CheatCode {
 	/**
 	 * Callback function
 	 * @private
-	 * @type [Function]
+	 * @type {Function|null}
 	 */
 	#callback = null;
 
@@ -57,20 +61,21 @@ export default class CheatCode {
 	/**
 	 * Active state
 	 * @private
-	 * @type {boolean}
+	 * @type {Boolean}
 	 */
 	#enabled = true;
 
 	/**
 	 * Duration before cheatcode timer resets
-	 * @type {number}
+	 * @name CheatCode#timeout
+	 * @type {Number}
 	 */
 	timeout = 500;
 
 	/**
 	 * @constructs CheatCode
-	 * @param {string|Object} name - Identifier or settings object
-	 * @param {string|array} code - Code
+	 * @param {String|Object} name - Identifier or settings object
+	 * @param {String|Array} code - Code
 	 * @param {Function} callback - Callback function
 	 */
 	constructor(name, code, callback) {
@@ -88,7 +93,9 @@ export default class CheatCode {
 	}
 
 	/**
-	 * @type {Array<number>}
+	 * The chain of keys to trigger the cheat
+	 * @name CheatCode#code
+	 * @type {Array<number>|Array<string>|String}
 	 */
 	set code(v) {
 		this.#code = compileCode(v);
@@ -99,6 +106,7 @@ export default class CheatCode {
 	}
 
 	/**
+	 * @name CheatCode#callback
 	 * @type {function}
 	 */
 	set callback(v) {
@@ -110,6 +118,9 @@ export default class CheatCode {
 	}
 
 	/**
+	 * Get enabled state.
+	 *
+	 * @name CheatCode#enabled
 	 * @type {boolean}
 	 * @readonly
 	 */
@@ -119,6 +130,7 @@ export default class CheatCode {
 
 	/**
 	 * Compare keylist with cheat code and trigger the callback
+	 * @method CheatCode#check
 	 * @param {Array<string>} keys
 	 * @returns {boolean}
 	 */
@@ -132,6 +144,7 @@ export default class CheatCode {
 
 	/**
 	 * Handles the keypress events
+	 * @method CheatCode#handleKeyPress
 	 * @private
 	 * @param {KeyboardEvent} e
 	 */
@@ -148,6 +161,7 @@ export default class CheatCode {
 
 	/**
 	 * Bind the event listener
+	 * @method CheatCode#bind
 	 */
 	bind() {
 		document.addEventListener('keydown', this.handleKeyPress);
@@ -155,6 +169,7 @@ export default class CheatCode {
 
 	/**
 	 * Unbind the event listener
+	 * @method CheatCode#unbind
 	 */
 	unbind() {
 		document.removeEventListener('keydown', this.handleKeyPress);
@@ -162,13 +177,15 @@ export default class CheatCode {
 
 	/**
 	 * Resets the current keys chain
+	 * @method CheatCode#reset
 	 */
 	reset() {
 		this.#keyslist.length = 0;
 	}
 
 	/**
-	 * Toggle the enabled state of the hotkey
+	 * Toggle the enabled state of the cheatcode
+	 * @method CheatCode#toggle
 	 * @param {boolean} [condition] - Force a toggle state
 	 */
 	toggle(condition) {
@@ -176,23 +193,21 @@ export default class CheatCode {
 	}
 
 	/**
-	 * Sets enabled to true, shorthand for Shortcut.toggle(true)
+	 * Sets enabled to true, shorthand for CheatCode#toggle(true)
+	 * @method CheatCode#enable
 	 */
 	enable() {
 		this.toggle(true);
 	}
 
 	/**
-	 * Sets enabled to false, shorthand for Shortcut.toggle(false)
+	 * Sets enabled to true, shorthand for CheatCode#toggle(false)
+	 * @method CheatCode#disable
 	 */
 	disable() {
 		this.toggle(false);
 	}
 
-	/**
-	 * @alias compileCode
-	 * @public
-	 */
 	static compile = compileCode;
 
 	toJSON() {
