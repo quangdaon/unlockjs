@@ -55,7 +55,7 @@ jobs:
         - git remote
         - git config user.email ${GH_EMAIL}
         - git config user.name ${GH_USER}
-        - git add ${DOC_FOLDER_NAME}/*
+        - git add ${DOC_FOLDER_NAME}/* ./assets/data/packages.json
         - git commit -m "${DOC_FOLDER_NAME} - ${MESSAGE}"
         - git push "https://${GITHUB_ACCESS_TOKEN}@${DOC_REPO_URL}" master
 stages:
