@@ -44,6 +44,6 @@ after_success:
   - git remote
   - git config user.email ${GH_EMAIL}
   - git config user.name ${GH_USER}
-  - git add ${DOC_DESTINATION}/*
+  - git add ${DOC_FOLDER_NAME}/*
   - git commit -m "${MESSAGE}"
   - git push "https://${GITHUB_ACCESS_TOKEN}@${GH_REPO}" master > /dev/null 2>&1
