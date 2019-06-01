@@ -7,17 +7,16 @@ env:
 cache:
   directories:
     - node_modules
+before_install:
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+before_script:
+  - npm ci
+script:
+  - npm test
+  - npm run codacy
 jobs:
   include:
-    - stage: test
-      before_install:
-        - export DISPLAY=:99.0
-        - sh -e /etc/init.d/xvfb start
-      before_script:
-        - npm ci
-      script:
-        - npm test
-        - npm run codacy
     - stage: build
       node_js: stable
       script:
