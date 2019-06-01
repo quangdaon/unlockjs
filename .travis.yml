@@ -41,6 +41,7 @@ after_success:
   - mkdir -p ${DOC_DESTINATION}
   - mv -f ${DOC_FILES} ${DOC_DESTINATION}
   - cd ${REPO}
+  - pwd
   - git remote
   - git config user.email ${GH_EMAIL}
   - git config user.name ${GH_USER}
