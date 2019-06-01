@@ -9,7 +9,7 @@ jobs:
   include:
     - stage: test
       env:
-        matrix:
+        - matrix:
           - KARMA_REPORTER=dots
       before_install:
         - export DISPLAY=:99.0
