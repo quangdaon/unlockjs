@@ -1,7 +1,7 @@
 language: node_js
 node_js:
   - stable
-  - 8.4.0
+  - 10.3.0
 cache:
   directories:
     - node_modules
@@ -39,7 +39,7 @@ after_success:
   - npm run docs
   - git clone git://${DOC_REPO_URL}
   - mkdir -p ${DOC_DESTINATION}
-  - mv -rf ${DOC_FILES} ${DOC_DESTINATION}
+  - mv -f ${DOC_FILES} ${DOC_DESTINATION}
   - cd ${REPO}
   - git remote
   - git config user.email ${GH_EMAIL}
