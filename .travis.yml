@@ -46,10 +46,12 @@ jobs:
       after_success:
         - MESSAGE=$(git log --format=%B -n 1 $TRAVIS_COMMIT)
         - DOC_DESTINATION="${DOC_REPO}/${DOC_FOLDER_NAME}"
+        - PACKAGE_LOCATION=`pwd`
         - git clone git://${DOC_REPO_URL}
         - mkdir -p ${DOC_DESTINATION}
         - mv -f ${DOC_FILES} ${DOC_DESTINATION}
         - cd ${DOC_REPO}
+        - node _update ${DOC_FOLDER_NAME} ${PACKAGE_LOCATION}/package.json
         - git remote
         - git config user.email ${GH_EMAIL}
         - git config user.name ${GH_USER}
@@ -61,4 +63,3 @@ stages:
   - name: deploy
     if: tag IS present
   - name: docs
-    if: tag IS present
