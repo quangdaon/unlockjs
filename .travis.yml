@@ -46,4 +46,4 @@ after_success:
   - git config user.name ${GH_USER}
   - git add ${DOC_FOLDER_NAME}/*
   - git commit -m "${MESSAGE}"
-  - git push "https://${GITHUB_ACCESS_TOKEN}@${GH_REPO}" master
+  - git push "https://${GITHUB_ACCESS_TOKEN}@${DOC_REPO_URL}" master
