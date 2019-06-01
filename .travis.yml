@@ -19,31 +19,47 @@ env:
 before_install:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
-before_script:
-  - npm ci
-script:
-  - npm test
-  - npm run codacy
-  - npm run build
-deploy:
-  provider: npm
-  email: quangdaon@gmail.com
-  api_key:
-    secure: P1AKEqheATbMml0reT5Bl1CDU/xioOS25N0GAnLmI9Nukp756FbhJv72uEckH1FKDYUas/oouXrnQCGfS6A7OXSjRILNtC9m+GyJDowmevqCxaJoGD0ZoioI1BLYNaw6Qaq6gFtzJ205UZWnOHPkOn5PX5PHnvRO2wOJKmjZdvo1dtIGFvqfQXyy/TvFf1egI5Xu22v7eUcDShuX7OKGLqW3nHGg0y/2Sg2EHdUzFdHZ8bTxS1MDv2V9IyCUNz45Xo90KCsFnM5cZ3oYuNb8wEbTZBc4iKiUUxRAMe7j35HcXTbHh+UaNzaBoROqdOzhgWm6VlTbPdkb6XvBoaGoAcpgluiUkxRxCX6Eby7Mx/E8y9FoMXTZaYL71A21ukeT+wfrMjqNqOQK2Ob8JcROH/m1BSh82CfZ23dST/88O5Uac8KJ/PmOj/FwawOzPIKd/XvYiJrKKjc0sDouu+MJA/fsFfdw13+/sQHfPd3YG42uf9aJNWwwoREaH6c9RxMil8e8Vsf8uh63NkQLcXob6DRe+ksldsWfeYFmad0Qtrl/k+K/eHTLt0GbuO2hvcg9CH+vN3pGka8MEfjWCuedtgrZEDOVAH1EZew1mdqFi+kNJ8ZBLWVQycak57bjjvtYRo+o7ncUX8JcCOvWq4MrdZ9hV2haLhHnxCRz8bCxvnM=
-  on:
-    tags: true
-    repo: quangdaon/unlockjs
-after_success:
-  - MESSAGE=$(git log --format=%B -n 1 $TRAVIS_COMMIT)
-  - DOC_DESTINATION="${DOC_REPO}/${DOC_FOLDER_NAME}"
-  - npm run docs
-  - git clone git://${DOC_REPO_URL}
-  - mkdir -p ${DOC_DESTINATION}
-  - mv -f ${DOC_FILES} ${DOC_DESTINATION}
-  - cd ${DOC_REPO}
-  - git remote
-  - git config user.email ${GH_EMAIL}
-  - git config user.name ${GH_USER}
-  - git add ${DOC_FOLDER_NAME}/*
-  - git commit -m "${MESSAGE}"
-  - git push "https://${GITHUB_ACCESS_TOKEN}@${DOC_REPO_URL}" master
+jobs:
+  include:
+    - stage: build
+      name: "Test and Build"
+      before_script:
+        - npm ci
+      script:
+        - npm test
+        - npm run codacy
+        - npm run build
+    - stage: deploy
+      name: "Deploy to NPM"
+      script: skip
+      deploy:
+        provider: npm
+        email: quangdaon@gmail.com
+        api_key:
+          secure: P1AKEqheATbMml0reT5Bl1CDU/xioOS25N0GAnLmI9Nukp756FbhJv72uEckH1FKDYUas/oouXrnQCGfS6A7OXSjRILNtC9m+GyJDowmevqCxaJoGD0ZoioI1BLYNaw6Qaq6gFtzJ205UZWnOHPkOn5PX5PHnvRO2wOJKmjZdvo1dtIGFvqfQXyy/TvFf1egI5Xu22v7eUcDShuX7OKGLqW3nHGg0y/2Sg2EHdUzFdHZ8bTxS1MDv2V9IyCUNz45Xo90KCsFnM5cZ3oYuNb8wEbTZBc4iKiUUxRAMe7j35HcXTbHh+UaNzaBoROqdOzhgWm6VlTbPdkb6XvBoaGoAcpgluiUkxRxCX6Eby7Mx/E8y9FoMXTZaYL71A21ukeT+wfrMjqNqOQK2Ob8JcROH/m1BSh82CfZ23dST/88O5Uac8KJ/PmOj/FwawOzPIKd/XvYiJrKKjc0sDouu+MJA/fsFfdw13+/sQHfPd3YG42uf9aJNWwwoREaH6c9RxMil8e8Vsf8uh63NkQLcXob6DRe+ksldsWfeYFmad0Qtrl/k+K/eHTLt0GbuO2hvcg9CH+vN3pGka8MEfjWCuedtgrZEDOVAH1EZew1mdqFi+kNJ8ZBLWVQycak57bjjvtYRo+o7ncUX8JcCOvWq4MrdZ9hV2haLhHnxCRz8bCxvnM=
+        on:
+          tags: true
+          repo: quangdaon/unlockjs
+    - stage: docs
+      name: "Deploy Documentation"
+      script:
+        - npm run docs
+      after_success:
+        - MESSAGE=$(git log --format=%B -n 1 $TRAVIS_COMMIT)
+        - DOC_DESTINATION="${DOC_REPO}/${DOC_FOLDER_NAME}"
+        - git clone git://${DOC_REPO_URL}
+        - mkdir -p ${DOC_DESTINATION}
+        - mv -f ${DOC_FILES} ${DOC_DESTINATION}
+        - cd ${DOC_REPO}
+        - git remote
+        - git config user.email ${GH_EMAIL}
+        - git config user.name ${GH_USER}
+        - git add ${DOC_FOLDER_NAME}/*
+        - git commit -m "${MESSAGE}"
+        - git push "https://${GITHUB_ACCESS_TOKEN}@${DOC_REPO_URL}" master
+stages:
+  - build
+  - name: deploy
+    if: node_js = stable
+  - name: docs
+    if: node_js = stable
