@@ -21,16 +21,17 @@ before_install:
   - sh -e /etc/init.d/xvfb start
 jobs:
   include:
-    - stage: build
-      name: "Test and Build"
+    - stage: test
       before_script:
         - npm ci
       script:
         - npm test
         - npm run codacy
+    - stage: build
+      script:
         - npm run build
     - stage: deploy
-      name: "Deploy to NPM"
+      name: "Deploy Package to NPM"
       script: skip
       deploy:
         provider: npm
@@ -42,6 +43,7 @@ jobs:
           repo: quangdaon/unlockjs
     - stage: docs
       name: "Deploy Documentation"
+      node_js: stable
       script:
         - npm run docs
       after_success:
@@ -58,8 +60,7 @@ jobs:
         - git commit -m "${MESSAGE}"
         - git push "https://${GITHUB_ACCESS_TOKEN}@${DOC_REPO_URL}" master
 stages:
+  - test
   - build
-  - name: deploy
-    if: node_js = stable
-  - name: docs
-    if: node_js = stable
+  - deploy
+  - docs
