@@ -1,5 +1,7 @@
 # UnlockJS
 
+Documentation: [https://docs.quangdao.com/unlockjs/](https://docs.quangdao.com/unlockjs/)
+
 [![Build Status](https://travis-ci.org/quangdaon/unlockjs.svg?branch=version-2)](https://travis-ci.org/quangdaon/unlockjs)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/698acb80de9a47529903498ec0f3f050)](https://www.codacy.com/app/quangdaon/unlockjs?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=quangdaon/unlockjs&amp;utm_campaign=Badge_Grade)
 [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/698acb80de9a47529903498ec0f3f050)](https://www.codacy.com/app/quangdaon/unlockjs?utm_source=github.com&utm_medium=referral&utm_content=quangdaon/unlockjs&utm_campaign=Badge_Coverage)
@@ -21,7 +23,7 @@ npm i unlockjs -S
 Alternatively, you can use jsDelivr:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/unlockjs@1.1.4/dist/unlock.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/unlockjs@1.1.8/dist/unlock.min.js"></script>
 ```
 
 ## Usage

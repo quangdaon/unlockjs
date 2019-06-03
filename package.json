@@ -1,7 +1,7 @@
 {
 	"name": "unlockjs",
 	"title": "UnlockJS",
-	"version": "1.1.5",
+	"version": "1.1.8-0",
 	"description": "Use keyboard keys to their fullest potential!",
 	"main": "dist/unlock.js",
 	"module": "src/unlock.js",
@@ -31,7 +31,7 @@
 	"bugs": {
 		"url": "https://github.com/quangdaon/unlockjs/issues"
 	},
-	"homepage": "https://github.com/quangdaon/unlockjs#readme",
+	"homepage": "https://docs.quangdao.com/unlockjs/",
 	"devDependencies": {
 		"@babel/core": "^7.4.0",
 		"@babel/plugin-proposal-class-properties": "^7.4.0",
