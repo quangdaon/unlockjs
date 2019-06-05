@@ -20,11 +20,13 @@ npm i unlockjs -S
 
 ### jsDelivr
 
-Alternatively, you can use jsDelivr:
+Alternatively, you can use [jsDelivr](https://www.jsdelivr.com/package/npm/unlockjs):
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/unlockjs@1.1.8/dist/unlock.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/unlockjs/dist/unlock.min.js"></script>
 ```
+
+<sub><b>Note:</b> I'm just picky about the `.js` at the end. You can also use `<script src="https://cdn.jsdelivr.net/npm/unlockjs"></script>`</sub>
 
 ## Usage
 
