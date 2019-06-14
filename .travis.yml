@@ -21,9 +21,7 @@ jobs:
       name: "Deploy Package to NPM"
       node_js: stable
       script:
-        - NODE_ENV=production npm run build
-      before_deploy:
-        - cd pkg
+        - npm run build
       deploy:
         provider: npm
         skip_cleanup: true
