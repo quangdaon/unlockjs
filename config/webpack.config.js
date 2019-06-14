@@ -23,14 +23,7 @@ module.exports = function (options = { babelPlugins: [] }) {
 					exclude: /(node_modules|bower_components)/,
 					use: [
 						{
-							loader: 'babel-loader',
-							options: {
-								presets: ['@babel/preset-env'],
-								plugins: [
-									'@babel/plugin-proposal-class-properties',
-									...babelPlugins
-								]
-							}
+							loader: 'babel-loader'
 						},
 						{
 							loader: 'eslint-loader',

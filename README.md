@@ -28,6 +28,14 @@ Alternatively, you can use [jsDelivr](https://www.jsdelivr.com/package/npm/unloc
 
 <sub><b>Note:</b> I'm just picky about the `.js` at the end. You can also use `<script src="https://cdn.jsdelivr.net/npm/unlockjs"></script>`</sub>
 
+### Pika
+
+UnlockJS is now available through [Pika](https://www.pika.dev/packages/unlockjs), a new modern JS CDN! [Learn more about Pika here.](https://www.pika.dev/about/)
+
+```javascript
+import Unlock from 'https://cdn.pika.dev/unlockjs/'
+```
+
 ## Usage
 
 ### Getting Started

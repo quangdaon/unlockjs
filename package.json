@@ -9,7 +9,7 @@
 		"test": "karma start ./karma.conf.js --single-run",
 		"codacy": "cat ./coverage/report-lcov/lcov.info | codacy-coverage",
 		"dev": "webpack-serve --config ./config/webpack.dev.config.js --content ./demo --log-level info",
-		"build": "webpack --config ./config/webpack.prod.config.js --progress --hide-modules || true",
+		"build": "webpack --config ./config/webpack.prod.config.js --progress --hide-modules && pack build",
 		"docs": "jsdoc -c .jsdoc.json"
 	},
 	"repository": {
@@ -32,10 +32,19 @@
 		"url": "https://github.com/quangdaon/unlockjs/issues"
 	},
 	"homepage": "https://docs.quangdao.com/unlockjs/",
+	"@pika/pack": {
+		"pipeline": [
+			[
+				"@pika/plugin-standard-pkg"
+			]
+		]
+	},
 	"devDependencies": {
 		"@babel/core": "^7.4.0",
 		"@babel/plugin-proposal-class-properties": "^7.4.0",
 		"@babel/preset-env": "^7.4.2",
+		"@pika/pack": "^0.3.7",
+		"@pika/plugin-standard-pkg": "^0.4.0",
 		"babel-eslint": "^10.0.1",
 		"babel-loader": "^8.0.5",
 		"babel-plugin-istanbul": "^5.1.1",
