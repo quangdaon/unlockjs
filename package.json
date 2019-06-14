@@ -4,7 +4,7 @@
 	"version": "1.1.13",
 	"description": "Use keyboard keys to their fullest potential!",
 	"main": "dist/unlock.js",
-	"module": "src/unlock.js",
+	"module": "src/index.js",
 	"scripts": {
 		"test": "karma start ./karma.conf.js --single-run",
 		"codacy": "cat ./coverage/report-lcov/lcov.info | codacy-coverage",
