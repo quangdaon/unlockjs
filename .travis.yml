@@ -40,6 +40,7 @@ jobs:
         - DOC_REPO="unlockjs"
         - DOC_BRANCH="gh-pages"
         - DOC_FOLDER_NAME="docs"
+        - DEPLOY_FOLDER_NAME="deploy"
         - DOC_REPO_URL="github.com/${GH_USER}/${DOC_REPO}.git"
         - secure: OYsX0V1Rtn/wVU8Fn3R7qpqPFZhAT2O+nvrHCCDD/fUVwQFMrRHyS0AjDMq7v+MTmrSozP7hMPaXFj/n9uRs903ekEnkILxwM5fLOwOdn/LO0c3RFIPSnpjkgTsePrl6Mnjvv1ary7PtisgmeD6ssP7dB5WbOJG1PZwqNZIlCb86ZdOVkjJk0+edfDAq5TuqwwjLLwULaTcMrG9Tv8p/nqTm4Gk44CbvM66Swydx0gwSEHYqQchnkJ6mh5HVnWI01AepfnNZ+OHX3ym20OHFLI+fMgACkFj610akYrE2sRxolXYKc4jpk2wb0oZ5sxQnSDOXEdUjSdRqCtitBatAyue4WSvrwWGiirQP1KZtw6Ve34PC/3TAmaeWN8sLltpof52uuE7CYxGorgZrygYlWRx7MHO9BPCiYqgqDwfMjrGmuiEnEIRsaPACIXbQQSJkxo3IARn+hBZIbNvchilS8ynr2HoiTHL+7r0pCQCo+yfIxlTSFVcxT634N15WzwwbNTveKV40Fdek2YBEH12XpsVbpzHuS0kG8IAylqPWBAQTcYP3hzQ41D5FVn3U2CxA4LhMZugRKTpVJac7LXmfLlixByf6pja8wWnoou4AXc+kbDh2xzWDQOgPeKQ0v9VvQKw9OXjgv7LLkuWcjpVXsVdlkPtOiD9mX7QKXyw38e4=
       script:
@@ -49,9 +50,11 @@ jobs:
         - git remote
         - git config user.email ${GH_EMAIL}
         - git config user.name ${GH_USER}
-        - git add ${DOC_FOLDER_NAME}/*
-        - git commit -m "${DOC_REPO} - ${MESSAGE}" --force
-        - git subtree push --prefix ${DOC_FOLDER_NAME} "https://${GITHUB_ACCESS_TOKEN}@${DOC_REPO_URL}" ${DOC_BRANCH}
+        - git subtree add --prefix ${DEPLOY_FOLDER_NAME} "https://${GITHUB_ACCESS_TOKEN}@${DOC_REPO_URL}" ${DOC_BRANCH}
+        - cp -rf ${DOC_FOLDER_NAME}/* ${DEPLOY_FOLDER_NAME}
+        - git add ${DEPLOY_FOLDER_NAME}/* 
+        - git commit -m "${DOC_REPO} - ${MESSAGE}"
+        - git subtree push --prefix ${DEPLOY_FOLDER_NAME} "https://${GITHUB_ACCESS_TOKEN}@${DOC_REPO_URL}" ${DOC_BRANCH}
 stages:
   - test
   - name: deploy
