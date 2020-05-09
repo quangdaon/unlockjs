@@ -37,28 +37,21 @@ jobs:
       env:
         - GH_USER="quangdaon"
         - GH_EMAIL="quangdaon@gmail.com"
-        - DOC_REPO="quangdaon.github.io"
-        - DOC_FOLDER_NAME="unlockjs"
-        - DOC_FILES="docs/*"
+        - DOC_REPO="unlockjs"
+        - DOC_BRANCH="docs"
+        - DOC_FOLDER_NAME="docs"
         - DOC_REPO_URL="github.com/${GH_USER}/${DOC_REPO}.git"
         - secure: DVqCHEk2u2JrGXN628DecZPf0xfYmhqXUtxarKDqb8DT3mmrbQVZJBepagudGETew1XXTwVO0rT9YUdWEcR4DkHSxnvZVhUYdKXooazVNcjRLwK4lm450EY3jgjC/8mzkS7e4TmI/LduJ7+L1rZ0vXn83lZGCWXshfXBqRjKiXBlkXjLnj0G0QZoIdJEySKFjR8AbD6UMGQ1zWkbyMJlcMHe5m/8FisQvRGFfmF0X8ag3aUhhj2teEZVHrNy9/Q/saLCoO7xPkyQDHkR3/3U4FUcs1yguoRH13kJMZPww3pwHnmjPnGETi4ltHvur8AHee8nxSfPMP2XDKaY/1Y25liWJx97TCN3vxs2525SnQPngqnx/8FEOxOVB78eJwZucXgsSB/+vjgMeM5DTT9yPtucn+2Kq68hcJBUzZsEPdsriU+NQG9uga+3xGn8Ptm9BEbRvaoWKcR5kuWF4wdpP/N0N+dExBjVBvk4WybONle4sScmz0s2C10YK/GZzXTG58YnteIRdLFHpXlCYmJeo1TQmOlwt7vhJp0YRKWLr6apBSmFRsy5dNWcEH+kiUsqwpvoQDhvX37D4mEn/rPE2HumxFF5u7/v9ODsdIr8Nf0ORIo09eDsL2CZ7X/1R0GK1Srv7JorWsHWx0t8orEA5BF7Jd5IaoIWT7sWA6LzJnI=
       script:
         - npm run docs
       after_success:
         - MESSAGE=$(git log --format=%B -n 1 $TRAVIS_COMMIT)
-        - DOC_DESTINATION="${DOC_REPO}/${DOC_FOLDER_NAME}"
-        - PACKAGE_LOCATION=`pwd`
-        - git clone git://${DOC_REPO_URL}
-        - mkdir -p ${DOC_DESTINATION}
-        - mv -f ${DOC_FILES} ${DOC_DESTINATION}
-        - cd ${DOC_REPO}
-        - node _update ${DOC_FOLDER_NAME} ${PACKAGE_LOCATION}/package.json
         - git remote
         - git config user.email ${GH_EMAIL}
         - git config user.name ${GH_USER}
-        - git add ${DOC_FOLDER_NAME}/* ./assets/data/packages.json
-        - git commit -m "${DOC_FOLDER_NAME} - ${MESSAGE}"
-        - git push "https://${GITHUB_ACCESS_TOKEN}@${DOC_REPO_URL}" master
+        - git add ${DOC_FOLDER_NAME}/*
+        - git commit -m "${DOC_REPO} - ${MESSAGE}"
+        - git subtree push --prefix ${DOC_FOLDER_NAME} "https://${GITHUB_ACCESS_TOKEN}@${DOC_REPO_URL}" ${DOC_BRANCH}
 stages:
   - test
   - name: deploy
