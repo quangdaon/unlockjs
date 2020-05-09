@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Home</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Home</h1>
+
+    
+
+
+
+    
+
+
+    <h3> </h3>
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section>
+        <article><h1>UnlockJS</h1>
+<p>Documentation: <a href="https://docs.quangdao.com/unlockjs/">https://docs.quangdao.com/unlockjs/</a></p>
+<p><a href="https://travis-ci.org/quangdaon/unlockjs"><img src="https://travis-ci.org/quangdaon/unlockjs.svg?branch=version-2" alt="Build Status"></a>
+<a href="https://www.codacy.com/app/quangdaon/unlockjs?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=quangdaon/unlockjs&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/698acb80de9a47529903498ec0f3f050" alt="Codacy Badge"></a>
+<a href="https://www.codacy.com/app/quangdaon/unlockjs?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=quangdaon/unlockjs&amp;utm_campaign=Badge_Coverage"><img src="https://api.codacy.com/project/badge/Coverage/698acb80de9a47529903498ec0f3f050" alt="Codacy Badge"></a></p>
+<p><a href="https://www.npmjs.com/package/unlockjs"><img src="https://nodei.co/npm/unlockjs.png?mini=true" alt="NPM Install"></a></p>
+<p>UnlockJS is a JavaScript library to activate cheat codes and keyboard shortcuts in your project.</p>
+<h2>Installation</h2>
+<p>This library is available through npm.</p>
+<pre class="prettyprint source"><code>npm i unlockjs -S
+</code></pre>
+<h3>jsDelivr</h3>
+<p>Alternatively, you can use <a href="https://www.jsdelivr.com/package/npm/unlockjs">jsDelivr</a>:</p>
+<pre class="prettyprint source lang-html"><code>&lt;script src=&quot;https://cdn.jsdelivr.net/npm/unlockjs/dist/unlock.min.js&quot;>&lt;/script>
+</code></pre>
+<p><sub><b>Note:</b> I'm just picky about the <code>.js</code> at the end. You can also use <code>&lt;script src=&quot;https://cdn.jsdelivr.net/npm/unlockjs&quot;&gt;&lt;/script&gt;</code></sub></p>
+<!--
+### Pika
+
+UnlockJS is now available through [Pika](https://www.pika.dev/packages/unlockjs), a new modern JS CDN! [Learn more about Pika here.](https://www.pika.dev/about/)
+
+```javascript
+import Unlock from 'https://cdn.pika.dev/unlockjs/'
+```-->
+<h2>Usage</h2>
+<h3>Getting Started</h3>
+<p>By default, UnlockJS creates a global function in the browser, but is exported as a UMD module so you can probably import using your setup ;)</p>
+<p>To get started, initialize a new Unlock object using:</p>
+<pre class="prettyprint source lang-javascript"><code>var unlocker = new Unlock({ /*** options ***/ });
+</code></pre>
+<h4>Options</h4>
+<p>When creating a new Unlock object, you can pass in the following parameters:</p>
+<p><strong>timeout (number)</strong></p>
+<p>This sets the amount of time in ms before a cheat code times out. This is 500 by default.</p>
+<p><strong>resetOnMatch (bool)</strong></p>
+<p>If true, when you successfully match a cheatcode, the timer is reset. For example, this allows chaining cheats one after another. False by default.</p>
+<h3>Cheat Codes</h3>
+<pre class="prettyprint source lang-javascript"><code>var konamiCode = ['up', 'up', 'down', 'down', 'left', 'right', 'left', 'right', 'b', 'a', 'enter'];
+
+unlocker.addCheat({
+	name: 'konami',
+	code: konamiCode,
+	callback: function() {
+		alert('Cheater!');
+	}
+});
+</code></pre>
+<p>The <code>.addCheat</code> method accepts three parameters: a name, code array, and callback function. The name is just an identifier and has no use other than to find the cheat later on, but it should be descriptive enough for other developers to identify. Currently, UnlockJS has only been testing and verified as working on a traditional US keyboard layout.</p>
+<p>There are two ways of passing in the parameters. The preferred method, as seen above, is by passing them in as an object. Alternatively, you can pass in parameters in the order of name, code, and callback:</p>
+<pre class="prettyprint source lang-javascript"><code>unlocker.addCheat('konami', konamiCode, function () {
+	alert('Cheater!');
+});
+</code></pre>
+<p>When passing the parameters as an object, the code property also accepts a string of individual characters. For example, the cheat code above can be rewritten as <code>code: 'UUDDLRLRba&gt;'</code>. Below is a list of key codes, as used in an array and the single character counterpart. Special key symbols are loosely based off of <a href="https://autohotkey.com/docs/Hotkeys.htm#Symbols">AutoHotkey</a>.</p>
+<h6>Character Chart</h6>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Key</th>
+<th style="text-align:left">Array Item (case insensitive)</th>
+<th style="text-align:left">Character (match case)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">A-Z</td>
+<td style="text-align:left">a-z</td>
+<td style="text-align:left">a-z</td>
+</tr>
+<tr>
+<td style="text-align:left">0-9</td>
+<td style="text-align:left">0-9</td>
+<td style="text-align:left">0-9</td>
+</tr>
+<tr>
+<td style="text-align:left">NumPad 0-9</td>
+<td style="text-align:left">pad0-pad9</td>
+<td style="text-align:left">Unsupported</td>
+</tr>
+<tr>
+<td style="text-align:left">Up Arrow Key</td>
+<td style="text-align:left">up</td>
+<td style="text-align:left">U</td>
+</tr>
+<tr>
+<td style="text-align:left">Down Arrow Key</td>
+<td style="text-align:left">down</td>
+<td style="text-align:left">D</td>
+</tr>
+<tr>
+<td style="text-align:left">Left Arrow Key</td>
+<td style="text-align:left">left</td>
+<td style="text-align:left">L</td>
+</tr>
+<tr>
+<td style="text-align:left">Right Arrow Key</td>
+<td style="text-align:left">right</td>
+<td style="text-align:left">R</td>
+</tr>
+<tr>
+<td style="text-align:left">Tab</td>
+<td style="text-align:left">tab</td>
+<td style="text-align:left">_</td>
+</tr>
+<tr>
+<td style="text-align:left">Esc</td>
+<td style="text-align:left">esc</td>
+<td style="text-align:left">X</td>
+</tr>
+<tr>
+<td style="text-align:left">Ctrl</td>
+<td style="text-align:left">ctrl</td>
+<td style="text-align:left">^</td>
+</tr>
+<tr>
+<td style="text-align:left">Shift</td>
+<td style="text-align:left">shift</td>
+<td style="text-align:left">+</td>
+</tr>
+<tr>
+<td style="text-align:left">Alt</td>
+<td style="text-align:left">alt</td>
+<td style="text-align:left">!</td>
+</tr>
+<tr>
+<td style="text-align:left">Backspace</td>
+<td style="text-align:left">backspace</td>
+<td style="text-align:left">&lt;</td>
+</tr>
+<tr>
+<td style="text-align:left">Enter</td>
+<td style="text-align:left">enter</td>
+<td style="text-align:left">&gt;</td>
+</tr>
+<tr>
+<td style="text-align:left">Windows</td>
+<td style="text-align:left">win</td>
+<td style="text-align:left">#</td>
+</tr>
+<tr>
+<td style="text-align:left">Caps Lock</td>
+<td style="text-align:left">capsLock</td>
+<td style="text-align:left">Unsupported</td>
+</tr>
+</tbody>
+</table>
+<h4>Enabling/Disabling Cheats</h4>
+<p>Cheats can be enabled or disabled on command:</p>
+<pre class="prettyprint source lang-javascript"><code>unlocker.disable() // Disables all cheats.
+</code></pre>
+<p><code>unlocker.enable</code> and <code>unlocker.toggle</code> can be used in the same way.</p>
+<h4>Modifying Cheats</h4>
+<p>Newly created cheats return themselves, and can be passed by reference to a variable. Alternatively, you can use <code>unlocker.find(name)</code> to obtain the cheat using the name used to create it.</p>
+<pre class="prettyprint source lang-javascript"><code>var konami = unlocker.addCheat({
+	name: 'konami',
+	code: ['up', 'up', 'down', 'down', 'left', 'right', 'left', 'right', 'b', 'a', 'enter'],
+	callback: function() {
+		alert('Cheater!');
+	}
+});
+
+// is the same as:
+
+var konami = unlocker.find('konami');
+</code></pre>
+<p>The cheat object contains the same enabling methods as the Unlock object, but is specific to itself (meaning you can use <code>konami.disable()</code> to disable that specific cheat). Furthermore, you can set the hotkey and callback using by assigning new values to them:</p>
+<pre class="prettyprint source lang-javascript"><code>konami.callback = function() {
+	gainLives(30);
+};
+
+konami.code = 'UUDDLRLRba';
+
+</code></pre>
+<p>Please Note: The name property used to be read-only and is now changeable as UnlockJS no longer emphasizes restricting the things you do. However, if you do decide to manually set the name, you're a moron. No offense.</p>
+<h4>Presets</h4>
+<p>UnlockJS comes with several presets for common cheat codes.</p>
+<pre class="prettyprint source lang-javascript"><code>konami.code = Unlock.presets.KONAMI;
+
+</code></pre>
+<p>Users of ES Modules can also import the presets like so:</p>
+<pre class="prettyprint source lang-javascript"><code>import { KONAMI } from 'unlockjs/src/utils/presets';
+
+konami.code = KONAMI;
+
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Preset</th>
+<th style="text-align:left">Code</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">KONAMI</td>
+<td style="text-align:left">Up Up Down Down Left Right Left Right B A Enter</td>
+</tr>
+<tr>
+<td style="text-align:left">MK_BLOOD</td>
+<td style="text-align:left">A B A C A B B</td>
+</tr>
+<tr>
+<td style="text-align:left">GOD_MODE</td>
+<td style="text-align:left">I D D Q D</td>
+</tr>
+</tbody>
+</table>
+<h3>Shortcuts</h3>
+<p>Shortcuts are added in pretty much the same way as cheatcodes:</p>
+<pre class="prettyprint source lang-javascript"><code>unlocker.addShortcut({
+	hotkey: '^z',
+	selector: '.selector',
+	callback: function() {
+		alert('Undo!');
+	}
+});
+
+unlocker.addShortcut('^z', '.selector', function() {
+	alert('Undo!');
+});
+</code></pre>
+<p>The <code>.addShortcut</code> function accepts three parameters, <code>hotkey</code>, <code>selector</code>, and <code>callback</code>. Like cheat codes, they can be passed as an object. When passed as individual parameters, the selector is optional. Providing a selector, which accepts either a string selector or an actual DOM element, binds the shortcut to that element so it does not hotkey outside of it.</p>
+<h4>The Hotkey Parameter</h4>
+<p>The hotkey is what activates the callback and must be in the following format:</p>
+<pre class="prettyprint source"><code>'^+a'
+</code></pre>
+<ul>
+<li>Zero or more modifier key character (^, +, !, or #).</li>
+<li>Exactly one hotkey (Any non-modifier key character).</li>
+</ul>
+<p>The supported characters match the <a href="#character-chart">character chart above</a>. The initial behavior of a shortcut is not disabled by default (i.e. Ctrl+S still opens a save dialog). To prevent the default behavior, prepend your hotkey string with a hyphen. For example, <code>^s</code> (Ctrl+S) should be replaced with <code>-^s</code>.</p>
+<h4>Modifying Shortcuts</h4>
+<p>Like cheat codes, shortcut parameters can be modified by assigning them a new value.</p>
+<h2>ES Modules</h2>
+<p>At its core, the Unlock module is actually a wrapper around two separate submodules, providing extra functionality for managing both cheatcodes and shortcuts. As such, it may carry additional load that's not relevant to your project. Therefore, if you are using a build system that support modules, it is recommended that you instead import the components you need.</p>
+<pre class="prettyprint source lang-javascript"><code>import CheatCode from 'unlockjs/src/cheatcode';
+import Shortcut from 'unlockjs/src/shortcut';
+</code></pre>
+<p>Usage is mostly the same. Behind the scenes, <code>unlocker.addCheat([args])</code> is calling <code>new CheatCode([args])</code> using the same parameters you passed in and returns the CheatCode instance that was created. Therefore, anything in the documentation for CheatCodes above that's not specific to the Unlock class will apply here as well. Likewise, <code>unlocker.addShortcut([args])</code> creates and returns an instance of <code>new Shortcut([args])</code></p>
+<h2>Contribution</h2>
+<p>This project uses Webpack to build the distribution files and tests. Please make sure to have npm and Webpack installed. The scripts are in package.json for your leisurely use.</p>
+<h2>License</h2>
+<p><a href="https://github.com/quangdaon/unlockjs/blob/master/LICENSE">MIT License</a></p></article>
+    </section>
+
+
+
+
+
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>cheatcode.js</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description">CheatCode Class</div>
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-author">Author:</dt>
+    <dd class="tag-author">
+        <ul>
+            <li>Quangdao Nguyen</li>
+        </ul>
+    </dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="CheatCode.html">CheatCode</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>shortcut.js</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description">Shortcut Class</div>
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-author">Author:</dt>
+    <dd class="tag-author">
+        <ul>
+            <li>Quangdao Nguyen</li>
+        </ul>
+    </dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="Shortcut.html">Shortcut</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>unlock.js</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description">Unlock Class</div>
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-author">Author:</dt>
+    <dd class="tag-author">
+        <ul>
+            <li>Quangdao Nguyen</li>
+        </ul>
+    </dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="Unlock.html">Unlock</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Presets.html">Presets</a></li></ul><h3>Classes</h3><ul><li><a href="CheatCode.html">CheatCode</a></li><li><a href="Shortcut.html">Shortcut</a></li><li><a href="Unlock.html">Unlock</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Fri May 08 2020 22:32:15 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
