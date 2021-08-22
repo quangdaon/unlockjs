@@ -8,7 +8,7 @@
 	"scripts": {
 		"test": "karma start ./karma.conf.js --single-run",
 		"codacy": "cat ./coverage/report-lcov/lcov.info | codacy-coverage",
-		"dev": "webpack-serve --config ./config/webpack.dev.config.js --content ./demo --log-level info",
+		"dev": "webpack-dev-server --config ./config/webpack.dev.config.js",
 		"build": "webpack --config ./config/webpack.prod.config.js --progress --hide-modules && pack build",
 		"docs": "jsdoc -c .jsdoc.json"
 	},
@@ -68,9 +68,9 @@
 		"sinon": "^7.5.0",
 		"sinon-chai": "^3.3.0",
 		"webpack": "^4.41.2",
-		"webpack-cli": "^3.3.10",
+		"webpack-cli": "^4.8.0",
+		"webpack-dev-server": "^4.0.0",
 		"webpack-serve": "^3.2.0",
 		"yargs": "^12.0.5"
-	},
-	"dependencies": {}
+	}
 }
