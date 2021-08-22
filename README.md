@@ -1,6 +1,6 @@
 # UnlockJS
 
-Documentation: [https://docs.quangdao.com/unlockjs/](https://docs.quangdao.com/unlockjs/)
+Documentation: [https://www.quangdao.com/unlockjs/](https://www.quangdao.com/unlockjs/)
 
 [![Build Status](https://travis-ci.org/quangdaon/unlockjs.svg?branch=version-2)](https://travis-ci.org/quangdaon/unlockjs)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/119136f6106e40c289e7d1ca2484a451)](https://www.codacy.com/gh/quangdaon/unlockjs/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=quangdaon/unlockjs&amp;utm_campaign=Badge_Grade)
