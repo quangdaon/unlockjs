@@ -1,7 +1,7 @@
 name: NPM Publish
 on:
   push:
-		branches: [ release/2.0.0 ] # Change to tags on release
+    branches: [ release/2.0.0 ] # Change to main on release
     # tags:
     #   - '*'
 

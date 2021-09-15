@@ -1,2 +1,1 @@
-export class Unlock {
-}
+export class Unlock {}
