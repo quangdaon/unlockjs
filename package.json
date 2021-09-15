@@ -1,48 +1,50 @@
 {
-  "name": "unlockjs",
-  "title": "UnlockJS",
-  "version": "2.0.0",
-  "description": "Use keyboard keys to their fullest potential!",
-  "main": "dist/unlock.js",
-  "scripts": {
-    "start": "webpack --watch --config ./config/webpack.dev.config.js",
-    "build": "webpack --config ./config/webpack.prod.config.js",
-    "test": "jest",
-    "lint": "eslint . --ext .js,.ts"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/quangdaon/unlockjs.git"
-  },
-  "keywords": [
-    "unlock",
-    "cheats",
-    "cheater",
-    "cheat",
-    "codes",
-    "keyboard",
-    "shortcuts",
-    "hotkeys"
-  ],
-  "author": "Quangdao Nguyen",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/quangdaon/unlockjs/issues"
-  },
-  "homepage": "https://docs.quangdao.com/unlockjs/",
-  "devDependencies": {
-    "@types/jest": "^27.0.1",
-    "@typescript-eslint/eslint-plugin": "^4.31.1",
-    "@typescript-eslint/parser": "^4.31.1",
-    "eslint": "^7.32.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "jest": "^27.2.0",
-    "prettier": "^2.4.0",
-    "ts-jest": "^27.0.5",
-    "ts-loader": "^9.2.5",
-    "typescript": "^4.4.3",
-    "webpack": "^5.52.1",
-    "webpack-cli": "^4.8.0"
-  }
+	"name": "unlockjs",
+	"title": "UnlockJS",
+	"version": "2.0.0",
+	"description": "Use keyboard keys to their fullest potential!",
+	"main": "dist/unlock.js",
+	"scripts": {
+		"start": "webpack --watch --config ./config/webpack.dev.config.js",
+		"build": "webpack --config ./config/webpack.prod.config.js",
+		"test": "jest",
+		"lint": "eslint . --ext .js,.ts",
+		"docs": "typedoc src/unlock.ts"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/quangdaon/unlockjs.git"
+	},
+	"keywords": [
+		"unlock",
+		"cheats",
+		"cheater",
+		"cheat",
+		"codes",
+		"keyboard",
+		"shortcuts",
+		"hotkeys"
+	],
+	"author": "Quangdao Nguyen",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/quangdaon/unlockjs/issues"
+	},
+	"homepage": "https://docs.quangdao.com/unlockjs/",
+	"devDependencies": {
+		"@types/jest": "^27.0.1",
+		"@typescript-eslint/eslint-plugin": "^4.31.1",
+		"@typescript-eslint/parser": "^4.31.1",
+		"eslint": "^7.32.0",
+		"eslint-config-prettier": "^8.3.0",
+		"eslint-plugin-prettier": "^4.0.0",
+		"jest": "^27.2.0",
+		"prettier": "^2.4.0",
+		"ts-jest": "^27.0.5",
+		"ts-loader": "^9.2.5",
+		"typedoc": "^0.22.3",
+		"typescript": "^4.4.3",
+		"webpack": "^5.52.1",
+		"webpack-cli": "^4.8.0"
+	}
 }
