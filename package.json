@@ -1,0 +1,29 @@
+{
+  "name": "unlockjs",
+	"title": "UnlockJS",
+  "version": "2.0.0",
+  "description": "Use keyboard keys to their fullest potential!",
+  "main": "dist/unlock.js",
+  "scripts": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/quangdaon/unlockjs.git"
+  },
+	"keywords": [
+		"unlock",
+		"cheats",
+		"cheater",
+		"cheat",
+		"codes",
+		"keyboard",
+		"shortcuts",
+		"hotkeys"
+	],
+  "author": "Quangdao Nguyen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/quangdaon/unlockjs/issues"
+  },
+	"homepage": "https://docs.quangdao.com/unlockjs/"
+}
